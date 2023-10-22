@@ -14,33 +14,24 @@ const Navbar = () => {
             Profile
           </Link>
         </li>
+        <li className="nav-item">
+          <Link to={`/dashboard/${role}/meetings`} className="nav-link">
+            Meetings
+          </Link>
+        </li>
         {role === "mentee" && (
           <>
             <li className="nav-item">
-              <Link to={`/dashboard/${role}/meetings`} className="nav-link">
-                Meetings
+              <Link to={`/dashboard/${role}/form`} className="nav-link">
+                Form and Responses
               </Link>
             </li>
             {/* Add more mentee-specific tabs here */}
           </>
         )}
-        {role === "mentor" && (
-          <>
-            <li className="nav-item">
-              <Link to={`/dashboard/${role}/meetings`} className="nav-link">
-                Meetings
-              </Link>
-            </li>
-            {/* Add more mentor-specific tabs here */}
-          </>
-        )}
+        {role === "mentor" && <>{/* Add more mentor-specific tabs here */}</>}
         {role === "admin" && (
           <>
-            <li className="nav-item">
-              <Link to={`/dashboard/${role}/meetings`} className="nav-link">
-                Meetings
-              </Link>
-            </li>
             <li className="nav-item">
               <Link to={`/dashboard/${role}/mentors`} className="nav-link">
                 Mentors

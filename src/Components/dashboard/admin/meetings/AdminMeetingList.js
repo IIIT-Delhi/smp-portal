@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react'
 import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
 
-export default function MentorsList() {
+export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   return (
     <div>
@@ -12,7 +12,7 @@ export default function MentorsList() {
           <div className="col-12">
             <div>
               {/* Include profile information specific to Mentees */}
-              <h4>Admin Mentor List</h4>
+              <h4>Admin Meetings</h4>
               <p>
                 <strong>Role:</strong> {userDetails.role}
               </p>
