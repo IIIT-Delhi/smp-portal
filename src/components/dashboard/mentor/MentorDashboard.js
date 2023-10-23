@@ -1,6 +1,5 @@
 import React from "react";
 import Navbar from "../common/Navbar";
-import { useLocation } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 const MentorDashboard = () => {
