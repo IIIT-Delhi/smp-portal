@@ -1,5 +1,4 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 import Navbar from "../common/Navbar";
 import { useAuth } from "../../../context/AuthContext"
 
@@ -14,7 +13,7 @@ const AdminDashboard = () => {
           <div className="col-12">
             <div>
               {/* Include profile information specific to Mentees */}
-              <h4>Mentee Dashboard</h4>
+              <h4>Admin Dashboard</h4>
               <p>
                 <strong>Role:</strong> {userDetails.role}
               </p>
