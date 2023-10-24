@@ -45,25 +45,22 @@ const AdminDashboard = () => {
                   <div>
                     <div
                       className="rounded-top text-white d-flex flex-row"
-                      style={{ backgroundColor: "#000", height: "200px" }}
+                      style={{ backgroundColor: "#000" }}
                     >
-                      <div
-                        className="ms-4 mt-5 d-flex flex-column"
-                        style={{ width: "150px" }}
-                      >
+                      <div className="ms-4 mt-5 d-flex flex-column">
                         <img
                           src={adminData.imgSrc}
-                          alt="Generic placeholder image"
+                          alt="Profile"
                           className="img-fluid img-thumbnail mt-4 mb-2"
-                          style={{ width: "150px", zIndex: 1 }}
+                          style={{ width: "150px", borderRadius: "10%" }}
                         />
                         <button
                           type="button"
-                          className="btn btn-outline-dark mb-2"
-                          data-mdb-ripple-color="dark"
-                          style={{ zIndex: 1 }}
+                          className="btn btn-outline-light mb-2 mt-2"
+                          data-mdb-ripple-color="light"
+                          style={{ width: "150px" }}
                         >
-                          Edit profile
+                          Edit Profile
                         </button>
                       </div>
                       <div className="ms-3" style={{ marginTop: "130px" }}>
@@ -71,47 +68,56 @@ const AdminDashboard = () => {
                         <p>IIIT Delhi</p>
                       </div>
                     </div>
-                    <div
-                      className="p-4 text-black"
-                      style={{ backgroundColor: "#f8f9fa" }}
-                    ></div>
-                    <div class="col-lg-8 mt-5">
-                      <div class="card mb-4">
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-sm-3">
-                              <p class="mb-0">Email</p>
-                            </div>
-                            <div class="col-sm-9">
-                              <p class="text-muted mb-0">{adminData.email}</p>
-                            </div>
+                    <div className="card mx-3 my-3">
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Email</p>
                           </div>
-                          <hr />
-                          <div class="row">
-                            <div class="col-sm-3">
-                              <p class="mb-0">Phone</p>
-                            </div>
-                            <div class="col-sm-9">
-                              <p class="text-muted mb-0">{adminData.phone}</p>
-                            </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">{adminData.email}</p>
                           </div>
-                          <hr />
-                          <div class="row">
-                            <div class="col-sm-3">
-                              <p class="mb-0">Mobile</p>
-                            </div>
-                            <div class="col-sm-9">
-                              <p class="text-muted mb-0">{adminData.mobile}</p>
-                            </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Department</p>
                           </div>
-                          <hr />
-                          <div class="row">
-                            <div class="col-sm-3">
-                              <p class="mb-0">Address</p>
-                            </div>
-                            <div class="col-sm-9">
-                              <p class="text-muted mb-0">{adminData.address}</p>
-                            </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {adminData.department}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Phone</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">{adminData.phone}</p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Mobile</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {adminData.mobile}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Address</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {adminData.address}
+                            </p>
                           </div>
                         </div>
                       </div>
