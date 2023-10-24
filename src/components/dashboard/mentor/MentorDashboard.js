@@ -56,14 +56,6 @@ const MentorDashboard = () => {
                           className="img-fluid img-thumbnail mt-4 mb-2"
                           style={{ width: "150px", borderRadius: "10%" }}
                         />
-                        <button
-                          type="button"
-                          className="btn btn-outline-light mb-2 mt-2"
-                          data-mdb-ripple-color="light"
-                          style={{ width: "150px" }}
-                        >
-                          Edit Profile
-                        </button>
                       </div>
                       <div className="ms-3" style={{ marginTop: "130px" }}>
                         <h5>{mentorData.name}</h5>
