@@ -1,23 +1,24 @@
 import React from 'react'
 
-export default function SinlgeMeeting({meeting}) {
+export default function SinlgeMeeting({meet}) {
   const handleButtonClick = (e) => {
     e.stopPropagation();
   };
 
+  const meetingId = `meeting-${meet.id}`
 
   return (
     <div>
       <div className="accordion" id="accordionExample">
         <div className="accordion-item">
           <h2 className="accordion-header">
-            <button className="accordion-button" onClick={handleButtonClick} type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Meeting ID : {meeting.id}
+            <button className="accordion-button" onClick={handleButtonClick} type="button" data-bs-toggle="collapse" data-bs-target={`#${meetingId}`} aria-expanded="true" aria-controls={meetingId}>
+              Meeting ID : {meet.id}
             </button>
           </h2>
-          <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+          <div id={meetingId} className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
             <div className="accordion-body" >
-              <strong>Meeting ID : {meeting.id}, Meeting Title : {meeting.title}</strong> 
+              <strong>Meeting ID : {meet.id}, Meeting Title : {meet.title}</strong> 
             </div>
           </div>
         </div>

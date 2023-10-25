@@ -6,7 +6,7 @@ import ScheduleMeetingButton from './ScheduleMeetingButton';
 
 export default function AdminMeetingList() {
   const { userDetails } = useAuth();
-  const [meetings, setmeetings] = useState([{ id: 1, title: 'Meeting 1', date: '2023-10-24', completed: false }]);
+  const [meetings, setmeetings] = useState([]);
 
   return (
     <div>
@@ -32,12 +32,12 @@ export default function AdminMeetingList() {
 
       <div className="container">
         {
-          meetings.map((m) => (
-            <SinlgeMeeting meeting={m}/>
+          meetings.map((meet) => (
+            <SinlgeMeeting meet={meet} key = {meet.id}/>
           ))
         }
 
-        <ScheduleMeetingButton></ScheduleMeetingButton>
+        <ScheduleMeetingButton setmeetings = {setmeetings} ></ScheduleMeetingButton>
       </div>
 
     </div>

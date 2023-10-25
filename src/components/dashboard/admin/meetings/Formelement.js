@@ -67,7 +67,7 @@ export default function Formelement({currmeeting, setcurrmeeting}) {
         <div className="accordion mb-3" id="accordionExample">
           <div className="accordion-item">
             <h2 className="accordion-header">
-              <button className="accordion-button btn-sm" onClick = {handleButtonClick} type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <button className="accordion-button btn-sm collapsed" onClick = {handleButtonClick} type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 Attendees
               </button>
             </h2>
