@@ -36,7 +36,7 @@ const ScheduleMeetingButton = ({setmeetings}) => {
     }
 
     return (
-        <>
+        <div>
             {/* <i class="bi bi-plus-circle"></i> */}
             <button className="btn btn-primary btn-floating position-fixed" style={{ bottom: '20px', right: '20px' }} onClick={handleScheduleClick}>
                 {/* Schedule Meeting */}
@@ -67,7 +67,7 @@ const ScheduleMeetingButton = ({setmeetings}) => {
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 };
 

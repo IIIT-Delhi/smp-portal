@@ -8,7 +8,7 @@ export default function SinlgeMeeting({meet}) {
   const meetingId = `meeting-${meet.id}`
 
   return (
-    <div>
+    <div className='mb-2' style={{width:'100%'}}>
       <div className="accordion" id="accordionExample">
         <div className="accordion-item">
           <h2 className="accordion-header">
