@@ -56,22 +56,22 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting}) {
     });
   };
 
-  const handleattendees = (e) => {
-    const value = e.target.value;
-    const isChecked = e.target.checked;
+  // const handleattendees = (e) => {
+  //   const value = e.target.value;
+  //   const isChecked = e.target.checked;
 
-    setEditedMeeting((prevDetails) => {
-      const updatedAttendees = isChecked
-        ? [...prevDetails.attendees, value]
-        : prevDetails.attendees.filter((attendee) => attendee !== value);
+  //   setEditedMeeting((prevDetails) => {
+  //     const updatedAttendees = isChecked
+  //       ? [...prevDetails.attendees, value]
+  //       : prevDetails.attendees.filter((attendee) => attendee !== value);
   
-      return {
-        ...prevDetails,
-        attendees: updatedAttendees,
-      };
-    });
+  //     return {
+  //       ...prevDetails,
+  //       attendees: updatedAttendees,
+  //     };
+  //   });
     
-  };
+  // };
 
   return (
     <div className='mb-2' style={{width:'100%'}}>
@@ -88,12 +88,7 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting}) {
               <strong>Meeting ID : {meet.id}, Meeting Title : {meet.title}</strong>
               <p>Time: {meet.time}</p>
               <p>Date: {meet.date}</p>
-              <p>Attendees:</p>
-              <ul>
-                {meet.attendees.map((attendee, index) => (
-                  <li key={index}>{attendee}</li>
-                ))}
-              </ul>
+              <p>Attendees: All Assigned Mentees</p>
               <div className='mt-3'>
                 <button className="btn btn-danger mx-2" onClick={handleDeleteClick}>Delete</button>
                 <button className="btn btn-primary mx-2" onClick={handleEditClick}>Edit</button>
@@ -110,7 +105,6 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting}) {
               handledate={handledate}
               handletime={handletime}
               handletitle={handletitle}
-              handleattendees={handleattendees}
             />
 
           }

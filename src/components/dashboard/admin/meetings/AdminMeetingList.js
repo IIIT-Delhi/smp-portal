@@ -8,6 +8,19 @@ export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   const [meetings, setmeetings] = useState([]);
 
+  const deleteMeeting = (meetingId) => {
+    // Implement your delete logic here
+    setmeetings(prevMeetings => prevMeetings.filter(meet => meet.id !== meetingId));
+  };
+
+  const editMeeting = (meetingId, newValues) => {
+    setmeetings(prevMeetings => 
+      prevMeetings.map(meet => 
+        meet.id === meetingId ? { ...meet, ...newValues } : meet
+      )
+    );
+  };
+
   return (
     <div>
       <Navbar userDetails={userDetails} />
@@ -19,7 +32,7 @@ export default function AdminMeetingList() {
         <div className="container" style={{ marginLeft: '5px', marginRight: '0', width: '85%', overflowY: 'auto' }}>
           {
             meetings.map((meet) => (
-              <SinlgeMeeting meet={meet} key = {meet.id}/>
+              <SinlgeMeeting meet={meet} key = {meet.id} ondelete={deleteMeeting} editMeeting={editMeeting}/>
             ))
           }
         </div>
