@@ -47,7 +47,7 @@ const MentorDashboard = () => {
                   <div>
                     <div
                       className="rounded-top text-white d-flex flex-row"
-                      style={{ backgroundColor: "#000" }}
+                      style={{ backgroundColor: "#3fada8" }}
                     >
                       <div className="ms-4 mt-5 d-flex flex-column">
                         <img
