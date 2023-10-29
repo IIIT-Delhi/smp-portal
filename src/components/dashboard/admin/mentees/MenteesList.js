@@ -99,7 +99,7 @@ const MenteesList = () => {
           </div>
         </div>
         <button className="btn btn-primary mx-2">Add Mentee</button>
-        <button className="btn btn-secondary mx-2">Upload CSV</button>
+        <button className="btn btn-primary mx-2">Upload CSV</button>
         <div
           className="table-container"
         >

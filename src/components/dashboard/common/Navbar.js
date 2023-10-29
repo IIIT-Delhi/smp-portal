@@ -1,18 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
+import iiitdLogo from '../../../images/iiitd_logo.png';
 
 const Navbar = () => {
   const { userDetails } = useAuth();
   const role = userDetails?.role;
+  const navStyle = {
+    backgroundColor: "#3fada8",
+    padding: "0.5rem 1rem",
+    height: "50px",
+    display: "flex",
+    justifyContent: "space-between", // Align items horizontally
+    alignItems: "center", // Align items vertically
+  };
+
+  const listStyle = {
+    listStyle: "none",
+    display: "flex",
+    gap: "20px",
+  };
 
   return (
-    <nav
-      className="navbar navbar-expand navbar-dark"
-      style={{ backgroundColor: "#3fada8" }}
-    >
-      <ul className="navbar-nav">
-        <li className="nav-item">
+    <nav className="navbar navbar-expand navbar-dark" style={navStyle}>
+      <img
+        className="navbar-brand"
+        src={iiitdLogo}
+        alt="IIITD Logo"
+        style={{ height: "60px", marginRight: "10px" }}
+      />
+      <ul className="navbar-nav ml-autp">
+        <li className="nav-item" style={listStyle}>
           <Link
             to={`/dashboard/${role}/profile`}
             className="nav-link"
