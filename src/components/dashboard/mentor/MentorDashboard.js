@@ -17,6 +17,7 @@ const MentorDashboard = () => {
       name: "Vishesh Jain",
       email: userDetails.email,
       department: "Computational Biology",
+      reimbursedAmount: "10000",
       mentees: [{
   "id": "1",
   "name": "Ghost in The Wires",
@@ -82,6 +83,17 @@ const MentorDashboard = () => {
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
                               {mentorData.department}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Reimbursed Amount</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {mentorData.reimbursedAmount}
                             </p>
                           </div>
                         </div>
