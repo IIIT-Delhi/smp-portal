@@ -1,8 +1,8 @@
 import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import deleteIcon from "../../../../images/delete_icon.png";
+import MenteeProfile from "./MenteeProfile";
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
@@ -13,47 +13,22 @@ const MenteesList = () => {
     { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
     { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
     { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
+
     // Add more mentees as needed
   ];
 
   const [mentees, setMentees] = useState(dummyMenteesData); // Initialize with dummy data
   const [searchTerm, setSearchTerm] = useState("");
   const [menteeToDelete, setMenteeToDelete] = useState(null);
+  const [selectedMentee, setSelectedMentee] = useState(null);
+
+  const openMenteeProfile = (mentee) => {
+    setSelectedMentee(mentee);
+  };
+
+  const closeMenteeProfile = () => {
+    setSelectedMentee(null);
+  };
 
   // Function to handle deletion confirmation
   const handleDeleteConfirmation = (mentee) => {
@@ -75,6 +50,10 @@ const MenteesList = () => {
   // Function to cancel the mentee deletion
   const handleCancelDelete = () => {
     setMenteeToDelete(null); // Clear the mentee to delete
+  };
+
+  const editMenteeProfile = () => {
+    console.log(`Edit Clicked for ${selectedMentee.name}`);
   };
 
   return (
@@ -100,9 +79,7 @@ const MenteesList = () => {
         </div>
         <button className="btn btn-primary mx-2">Add Mentee</button>
         <button className="btn btn-primary mx-2">Upload CSV</button>
-        <div
-          className="table-container"
-        >
+        <div className="table-container">
           <div className="table-headers">
             <table className="table mt-4 mx-2" border="1">
               <thead>
@@ -118,18 +95,26 @@ const MenteesList = () => {
             className="table-body"
             style={{ maxHeight: "250px", overflowY: "scroll" }}
           >
-            <table className="table mb-4 mx-2" border="1">
+            <table className="table table-hover mb-4 mx-2" border="1">
               <tbody>
                 {mentees
                   .filter((mentee) =>
                     mentee.name.toLowerCase().includes(searchTerm.toLowerCase())
                   )
                   .map((mentee) => (
-                    <tr key={mentee.id}>
+                    <tr
+                      className=""
+                      key={mentee.id}
+                      onClick={() => openMenteeProfile(mentee)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <td>
-                        <Link to={`/dashboard/admin/mentees/${mentee.id}`}>
-                          {mentee.name}
-                        </Link>
+                        {/* <button
+                          className="btn btn-link"
+                          onClick={() => openMenteeProfile(mentee)}
+                        > */}
+                        {mentee.name}
+                        {/* </button> */}
                       </td>
                       <td>{mentee.email}</td>
                       <td>
@@ -148,6 +133,25 @@ const MenteesList = () => {
                   ))}
               </tbody>
             </table>
+            {/* Mentee Profile Popup */}
+            {selectedMentee && (
+              <div
+                className="modal fade show"
+                style={{ display: "block" }}
+                tabIndex="-1"
+                role="dialog"
+                aria-labelledby="menteeProfilePopup"
+                aria-hidden="true"
+              >
+                <div className="modal-dialog">
+                  <MenteeProfile
+                    mentee={selectedMentee}
+                    onClose={closeMenteeProfile}
+                    onEdit={editMenteeProfile}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div
@@ -198,29 +202,3 @@ const MenteesList = () => {
 };
 
 export default MenteesList;
-
-// export default function MenteesList() {
-//   const { userDetails } = useAuth();
-//   return (
-//     <div>
-//       <Navbar userDetails={userDetails} />
-//       <div className="container mt-4">
-//         <div className="row">
-//           <div className="col-12">
-//             <div>
-//               {/* Include profile information specific to Mentees */}
-//               <h4>Admin Mentees List</h4>
-//               <p>
-//                 <strong>Role:</strong> {userDetails.role}
-//               </p>
-//               <p>
-//                 <strong>Email:</strong> {userDetails.email}
-//               </p>
-//               {/* Other Mentee-specific content */}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
