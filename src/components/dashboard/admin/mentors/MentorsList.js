@@ -1,59 +1,34 @@
 import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import deleteIcon from "../../../../images/delete_icon.png";
+import MentorProfile from "./MentorProfile";
 
 const MentorsList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
   const dummyMentorsData = [
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
+    { id: 1, name: "Mentor 1", email: "aish@example.com" },
     { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
     { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
     { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
     { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
-    { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
-    { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
-    { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
-    { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
-    { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
-    { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
-    { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
-    { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
-    { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
-    { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
-    { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
-    { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
-    { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
-    { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
-    { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
-    { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
-    { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
-    { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
-    { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
-    { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
-    { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
-    { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
-    { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
-    { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
-    { id: 1, name: "Mentor 1", email: "mentor1@example.com" },
-    { id: 2, name: "Mentor 2", email: "mentor2@example.com" },
-    { id: 3, name: "Mentor 3", email: "mentor3@example.com" },
-    { id: 4, name: "Mentor 4", email: "mentor4@example.com" },
-    { id: 5, name: "Mentor 5", email: "mentor5@example.com" },
+
     // Add more mentors as needed
   ];
 
   const [mentors, setMentors] = useState(dummyMentorsData); // Initialize with dummy data
   const [searchTerm, setSearchTerm] = useState("");
   const [mentorToDelete, setMentorToDelete] = useState(null);
+  const [selectedMentor, setSelectedMentor] = useState(null);
+
+  const openMentorProfile = (mentor) => {
+    setSelectedMentor(mentor);
+  };
+
+  const closeMentorProfile = () => {
+    setSelectedMentor(null);
+  };
 
   // Function to handle deletion confirmation
   const handleDeleteConfirmation = (mentor) => {
@@ -75,6 +50,10 @@ const MentorsList = () => {
   // Function to cancel the mentor deletion
   const handleCancelDelete = () => {
     setMentorToDelete(null); // Clear the mentor to delete
+  };
+
+  const editMentorProfile = () => {
+    console.log(`Edit Clicked for ${selectedMentor.name}`);
   };
 
   return (
@@ -123,17 +102,25 @@ const MentorsList = () => {
                     mentor.name.toLowerCase().includes(searchTerm.toLowerCase())
                   )
                   .map((mentor) => (
-                    <tr key={mentor.id}>
+                    <tr
+                      className=""
+                      key={mentor.id}
+                    >
                       <td>
-                        <Link to={`/dashboard/admin/mentors/${mentor.id}`}>
-                          {mentor.name}
-                        </Link>
+                        <button
+                          className="btn btn-link"
+                          onClick={() => openMentorProfile(mentor)}
+                        >
+                        {mentor.name}
+                        </button>
                       </td>
                       <td>{mentor.email}</td>
                       <td>
                         <button
                           className="btn btn-sm"
                           onClick={() => handleDeleteConfirmation(mentor)}
+                          data-toggle="modal"
+                          data-target="#confirmationModal"
                         >
                           <img
                             src={deleteIcon}
@@ -148,8 +135,26 @@ const MentorsList = () => {
             </table>
           </div>
         </div>
+        {/* Mentor Profile Popup */}
+
+          <div
+            className="modal fade show"
+            tabIndex="-1"
+            role="dialog"
+            style={{ display: selectedMentor ? "block" : "none" }}
+            aria-labelledby="mentorProfilePopup"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog">
+              <MentorProfile
+                mentor={selectedMentor}
+                onClose={closeMentorProfile}
+                onEdit={editMentorProfile}
+              />
+          </div>
+        </div>
         <div
-          className="modal"
+          className="modal fade show"
           style={{ display: mentorToDelete ? "block" : "none" }}
         >
           <div className="modal-dialog">

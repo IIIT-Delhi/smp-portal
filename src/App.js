@@ -13,6 +13,8 @@ import MenteesList from "./components/dashboard/admin/mentees/MenteesList";
 import MentorsList from "./components/dashboard/admin/mentors/MentorsList";
 import FormList from "./components/dashboard/admin/forms/FormList";
 import MenteeForm from "./components/dashboard/mentee/forms/MenteeForm";
+// import MenteeProfile from "./components/dashboard/admin/mentees/MenteeProfile";
+// import MentorProfile from "./components/dashboard/admin/mentors/MentorProfile";
 
 function App() {
   return (
@@ -50,6 +52,14 @@ function App() {
             <Route path="/dashboard/admin/mentors" Component={MentorsList} />
             <Route path="/dashboard/admin/mentees" Component={MenteesList} />
             <Route path="/dashboard/admin/form" Component={FormList} />
+            {/* <Route
+              path="/dashboard/admin/mentors/:mentorId"
+              component={MentorProfile}
+            />
+            <Route
+              path="/dashboard/admin/mentors/:menteeId"
+              component={MenteeProfile}
+            /> */}
           </Routes>
         </div>
       </Router>
