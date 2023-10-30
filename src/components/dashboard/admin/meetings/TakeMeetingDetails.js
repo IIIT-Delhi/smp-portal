@@ -1,7 +1,7 @@
 import React from 'react'
 import Formelement from './Formelement';
 
-export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,handletitle,handletime,handledate,handleattendees}) {
+export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,handletitle,handletime,handledate,handleattendees,handleDescription}) {
   return (
     <div>
 
@@ -20,6 +20,7 @@ export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,h
                             handledate={handledate}
                             handletime={handletime}
                             handletitle={handletitle}
+                            handleDescription = {handleDescription}
                         />
                     </div>
                     <div className="modal-footer">
