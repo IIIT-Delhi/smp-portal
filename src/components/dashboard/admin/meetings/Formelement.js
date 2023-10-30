@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Formelement({currmeeting, handletitle,handledate, handletime,handleattendees}) {
+export default function Formelement({currmeeting, handletitle,handledate, handletime,handleattendees,handleDescription}) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
@@ -22,14 +22,14 @@ export default function Formelement({currmeeting, handletitle,handledate, handle
             <input type="time" value = {currmeeting.time} onChange = {handletime} className="form-control" id="meetingTime" />
         </div>
 
-        <div className="accordion mb-3" id="accordionExample">
+        <div className="accordion mb-2" id="accordionExample">
           <div className="accordion-item">
             <h2 className="accordion-header">
               <button className="accordion-button btn-sm collapsed" onClick = {handleButtonClick} type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 Attendees
               </button>
             </h2>
-            <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div id="collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
               <div className="accordion-body" >
                 <div className="form-check">
                   <input className="form-check-input" onChange = {handleattendees} checked = {currmeeting.attendees.includes('Mentors')} type="checkbox" value="Mentors" id="mentorCheck" />
@@ -46,6 +46,11 @@ export default function Formelement({currmeeting, handletitle,handledate, handle
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="form-group">
+            <label htmlFor="Description">Description</label>
+            <textarea type="text" style={{height: "100px"}} value = {currmeeting.Description} onChange = {handleDescription} className="form-control" id="meetDescription" placeholder="Enter meeting Details" />
         </div>
 
       </div>

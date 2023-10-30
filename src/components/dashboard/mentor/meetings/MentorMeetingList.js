@@ -40,10 +40,8 @@ export default function MentorMeetingList() {
           }
         </div>
         
-        <div style={{ position: 'relative' , width : '15%'}}>
-          {/* <div style={{ position: 'absolute', textAlign: 'center' }}> */}
-            <ScheduleMeetingButton setmeetings={setusermeetings} />
-          {/* </div> */}
+        <div style={{ position: 'relative',width: '20%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+          <ScheduleMeetingButton setmeetings={setusermeetings} />
         </div>
 
         {/* <div style={{ position: 'fixed', bottom: '20px', right: '20px', border: '2px solid blue' }}>

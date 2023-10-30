@@ -9,6 +9,7 @@ const ScheduleMeetingButton = ({setmeetings}) => {
         time : '',
         date : '',
         title : '',
+        Descriptoin : '',
         attendees : [],
     });
 
@@ -20,6 +21,7 @@ const ScheduleMeetingButton = ({setmeetings}) => {
             time: '',
             date: '',
             title: '',
+            Description : '',
             attendees: [],
           });
         setShowModal(true);
@@ -75,6 +77,13 @@ const ScheduleMeetingButton = ({setmeetings}) => {
           }
         });
     };
+
+    const handleDescription = (e) => {
+      setcurrmeeting(
+        {...currmeeting,
+        Description: e.target.value}
+      )
+    }
     
 
     return (
@@ -108,6 +117,7 @@ const ScheduleMeetingButton = ({setmeetings}) => {
             handledate={handledate}
             handletime={handletime}
             handletitle={handletitle}
+            handleDescription = {handleDescription}
           />
         )}
       </div>
