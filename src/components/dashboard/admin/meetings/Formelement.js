@@ -1,52 +1,10 @@
 import React from 'react'
 
-export default function Formelement({currmeeting, setcurrmeeting}) {
+export default function Formelement({currmeeting, handletitle,handledate, handletime,handleattendees}) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
   };
-
-
-  const handletitle = (e) => {
-    setcurrmeeting({
-      ...currmeeting,
-      title: e.target.value,
-    });
-  };
-
-  const handledate = (e) => {
-    setcurrmeeting({
-      ...currmeeting,
-      date: e.target.value,
-    });
-  };
-
-  const handletime = (e) => {
-    setcurrmeeting({
-      ...currmeeting,
-      time: e.target.value,
-    });
-  };
-
-  const handleattendees = (e) => {
-    const value = e.target.value;
-    const isChecked = e.target.checked;
-
-    setcurrmeeting((prevDetails) => {
-      if (isChecked) {
-        return {
-          ...prevDetails,
-          attendees: [...prevDetails.attendees, value],
-        };
-      } else {
-        return {
-          ...prevDetails,
-          attendees: prevDetails.attendees.filter((attendee) => attendee !== value),
-        };
-      }
-    });
-  };
-
 
   return (
     <div>

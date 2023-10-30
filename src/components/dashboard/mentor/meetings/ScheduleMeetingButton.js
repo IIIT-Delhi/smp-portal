@@ -57,24 +57,24 @@ const ScheduleMeetingButton = ({setmeetings}) => {
         });
     };
 
-    const handleattendees = (e) => {
-        const value = e.target.value;
-        const isChecked = e.target.checked;
+    // const handleattendees = (e) => {
+    //     const value = e.target.value;
+    //     const isChecked = e.target.checked;
     
-        setcurrmeeting((prevDetails) => {
-          if (isChecked) {
-            return {
-              ...prevDetails,
-              attendees: [...prevDetails.attendees, value],
-            };
-          } else {
-            return {
-              ...prevDetails,
-              attendees: prevDetails.attendees.filter((attendee) => attendee !== value),
-            };
-          }
-        });
-    };
+    //     setcurrmeeting((prevDetails) => {
+    //       if (isChecked) {
+    //         return {
+    //           ...prevDetails,
+    //           attendees: [...prevDetails.attendees, value],
+    //         };
+    //       } else {
+    //         return {
+    //           ...prevDetails,
+    //           attendees: prevDetails.attendees.filter((attendee) => attendee !== value),
+    //         };
+    //       }
+    //     });
+    // };
     
 
     return (
@@ -93,7 +93,6 @@ const ScheduleMeetingButton = ({setmeetings}) => {
                     currmeeting = {currmeeting} 
                     handleClose={handleCloseModal} 
                     handleSave={handleSaveModal}
-                    handleattendees={handleattendees}
                     handledate = {handledate}
                     handletime={handletime}
                     handletitle={handletitle}
