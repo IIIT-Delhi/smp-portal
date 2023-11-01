@@ -1,8 +1,21 @@
 import React from 'react'
 import Formelement from './Formelement';
+import { useState } from 'react';
 
 export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,handletitle,handletime,handledate,handleattendees,handleDescription}) {
-  return (
+
+    const [formValid, setFormValid] = useState(true);
+
+    const handleButtonSave = (e) => {
+        e.stopPropagation();
+        if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendees.length > 0 && currmeeting.Description) {
+          handleSave();
+        } else {
+          setFormValid(false);
+        }
+    };
+  
+    return (
     <div>
 
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
@@ -21,11 +34,12 @@ export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,h
                             handletime={handletime}
                             handletitle={handletitle}
                             handleDescription = {handleDescription}
+                            formValid = {formValid}
                         />
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>Close</button>
-                        <button type="button" className="btn btn-primary" onClick={handleSave}>Save changes</button>
+                        <button type="button" className="btn btn-primary" onClick={handleButtonSave}>Save changes</button>
                     </div>
                 </div>
             </div>
