@@ -1,0 +1,52 @@
+[
+    {
+      "id": "2023123",
+      "name": "Ram",
+      "email": "ram@iiitd.ac.in",
+      "department": "Computaiton Biology",
+      "mentorName": "Vishesh Jain",
+      "mentorEmail": "vishesh20550@iiitd.ac.in",
+      "imgSrc":
+        "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
+    },
+    {
+      "id": "2023124",
+      "name": "Mohit",
+      "email": "mohit@iiitd.ac.in",
+      "department": "Computaiton Biology",
+      "mentorName": "Vishesh Jain",
+      "mentorEmail": "vishesh20550@iiitd.ac.in",
+      "imgSrc":
+        "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
+    },
+    {
+      "id": "2023125",
+      "name": "Akshay",
+      "email": "akshay@iiitd.ac.in",
+      "department": "Computaiton Biology",
+      "mentorName": "Vishesh Jain",
+      "mentorEmail": "vishesh20550@iiitd.ac.in",
+      "imgSrc":
+        "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
+    },
+    {
+      "id": "2023126",
+      "name": "Rohan",
+      "email": "rohan@iiitd.ac.in",
+      "department": "Computaiton Biology",
+      "mentorName": "Vishesh Jain",
+      "mentorEmail": "vishesh20550@iiitd.ac.in",
+      "imgSrc":
+        "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
+    },
+    {
+      "id": "2023127",
+      "name": "Rahul",
+      "email": "rahul@iiitd.ac.in",
+      "department": "Computaiton Biology",
+      "mentorName": "Vishesh Jain",
+      "mentorEmail": "vishesh20550@iiitd.ac.in",
+      "imgSrc":
+        "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
+    }
+]

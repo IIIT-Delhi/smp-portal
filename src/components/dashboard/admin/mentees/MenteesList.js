@@ -1,26 +1,44 @@
 import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import deleteIcon from "../../../../images/delete_icon.png";
 import MenteeProfile from "./MenteeProfile";
+import menteeList from "../../../../data/menteeList.json";
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
-  const dummyMenteesData = [
-    { id: 1, name: "Mentee 1", email: "mentee1@example.com" },
-    { id: 2, name: "Mentee 2", email: "mentee2@example.com" },
-    { id: 3, name: "Mentee 3", email: "mentee3@example.com" },
-    { id: 4, name: "Mentee 4", email: "mentee4@example.com" },
-    { id: 5, name: "Mentee 5", email: "mentee5@example.com" },
-
-    // Add more mentees as needed
-  ];
-
-  const [mentees, setMentees] = useState(dummyMenteesData); // Initialize with dummy data
+  const [mentees, setMentees] = useState(menteeList);
   const [searchTerm, setSearchTerm] = useState("");
   const [menteeToDelete, setMenteeToDelete] = useState(null);
   const [selectedMentee, setSelectedMentee] = useState(null);
+
+  // State for controlling the "Add Mentee" pop-up
+  const [addMenteeModalVisible, setAddMenteeModalVisible] = useState(false);
+
+  // State for mentee form fields
+  const [menteeForm, setMenteeForm] = useState({
+    name: "",
+    id: "",
+    department: "",
+    email: "",
+    mentorName: "",
+    mentorEmail: "",
+  });
+  // Define the fixed widths for the header columns
+  const headerColumnWidths = {
+    name: "30%",
+    id: "20%",
+    department: "30%",
+    actions: "20%",
+  };
+
+  const headerColumns = [
+    { label: "Name", key: "name" },
+    { label: "Roll Number", key: "id" },
+    { label: "Department", key: "department" },
+    { label: "Actions", key: "actions" },
+  ];
 
   const openMenteeProfile = (mentee) => {
     setSelectedMentee(mentee);
@@ -56,6 +74,37 @@ const MenteesList = () => {
     console.log(`Edit Clicked for ${selectedMentee.name}`);
   };
 
+  // Function to handle the form submission when adding a mentee
+  const handleAddMentee = () => {
+    // Form validation
+    if (
+      !menteeForm.name || // Check if name is empty
+      !menteeForm.id || // Check if roll number is empty
+      !menteeForm.department || // Check if department is empty
+      !menteeForm.email || // Check if email is empty
+      !menteeForm.mentorName || // Check if mentor name is empty
+      !menteeForm.mentorEmail // Check if mentor email is empty
+    ) {
+      // You can display an error message or handle validation as needed
+      console.error("Please fill in all required fields.");
+      return;
+    }
+
+    // Add the mentee to the list
+    setMentees([...mentees, menteeForm]);
+
+    // Clear the form and close the modal
+    setMenteeForm({
+      name: "",
+      id: "",
+      department: "",
+      email: "",
+      mentorName: "",
+      mentorEmail: "",
+    });
+    setAddMenteeModalVisible(false);
+  };
+
   return (
     <div>
       <Navbar userDetails={userDetails} />
@@ -77,16 +126,128 @@ const MenteesList = () => {
             </button>
           </div>
         </div>
-        <button className="btn btn-primary mx-2">Add Mentee</button>
+        <button
+          className="btn btn-primary mx-2"
+          onClick={() => setAddMenteeModalVisible(true)}
+        >
+          Add Mentee
+        </button>
+        <div
+          className={`modal ${addMenteeModalVisible ? "show" : ""}`}
+          tabIndex="-1"
+          role="dialog"
+          style={{ display: addMenteeModalVisible ? "block" : "none" }}
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Add Mentee</h5>
+                <button
+                  type="button"
+                  className="close"
+                  onClick={() => setAddMenteeModalVisible(false)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                {/* Mentee Form */}
+                <form onSubmit={handleAddMentee}>
+                  <div className="form-group">
+                    <label>Name *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.name}
+                      onChange={(e) =>
+                        setMenteeForm({ ...menteeForm, name: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Roll Number *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.id}
+                      onChange={(e) =>
+                        setMenteeForm({ ...menteeForm, id: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.email}
+                      onChange={(e) =>
+                        setMenteeForm({ ...menteeForm, email: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Department *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.department}
+                      onChange={(e) =>
+                        setMenteeForm({ ...menteeForm, department: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Mentor Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.mentorName}
+                      onChange={(e) =>
+                        setMenteeForm({ ...menteeForm, mentorName: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Mentor Email</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.mentorEmail}
+                      onChange={(e) =>
+                        setMenteeForm({ ...menteeForm, mentorEmail: e.target.value })
+                      }
+                    />
+                  </div>
+                  {/* Add other form fields (Roll Number, Department, Email, Mentor Name, Mentor Email) here */}
+
+                  <button type="submit" className="btn btn-primary">
+                    Add
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
         <button className="btn btn-primary mx-2">Upload CSV</button>
-        <div className="table-container">
+        <div className="table-container text-left">
           <div className="table-headers">
             <table className="table mt-4 mx-2" border="1">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Actions</th>
+                  {headerColumns.map((column) => (
+                    <th
+                      key={column.key}
+                      style={{ width: headerColumnWidths[column.key] }}
+                    >
+                      {column.label}
+                    </th>
+                  ))}
                 </tr>
               </thead>
             </table>
@@ -105,19 +266,40 @@ const MenteesList = () => {
                     <tr
                       className=""
                       key={mentee.id}
-                      onClick={() => openMenteeProfile(mentee)}
+                      // onClick={() => openMenteeProfile(mentee)}
                       style={{ cursor: "pointer" }}
                     >
-                      <td>
-                        {/* <button
+                      <td
+                        style={{
+                          width: headerColumnWidths["name"],
+                        }}
+                      >
+                        <button
                           className="btn btn-link"
                           onClick={() => openMenteeProfile(mentee)}
-                        > */}
-                        {mentee.name}
-                        {/* </button> */}
+                        >
+                          {mentee.name}
+                        </button>
                       </td>
-                      <td>{mentee.email}</td>
-                      <td>
+                      <td
+                        style={{
+                          width: headerColumnWidths["id"],
+                        }}
+                      >
+                        {mentee.id}
+                      </td>
+                      <td
+                        style={{
+                          width: headerColumnWidths["department"],
+                        }}
+                      >
+                        {mentee.department}
+                      </td>
+                      <td
+                        style={{
+                          width: headerColumnWidths["actions"],
+                        }}
+                      >
                         <button
                           className="btn btn-sm"
                           onClick={() => handleDeleteConfirmation(mentee)}
