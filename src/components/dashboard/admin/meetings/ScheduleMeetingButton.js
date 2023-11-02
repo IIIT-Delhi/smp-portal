@@ -90,15 +90,15 @@ const ScheduleMeetingButton = ({setmeetings}) => {
       <div>
         {/* <i class="bi bi-plus-circle"></i> */}
         <button
-          className="btn btn-primary btn-floating position-fixed"
-          style={{ bottom: "10%" }}
+          className="btn btn-primary btn-floating position-fixed d-flex justify-content-center align-items-center"
+          style={{ bottom: "10%" ,fontSize: "40px !important"}}
           onClick={handleScheduleClick}
         >
           {/* Schedule Meeting */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
+            width="30"
+            height="30"
             fill="currentColor"
             class="bi bi-plus-circle"
             viewBox="0 0 16 16"
