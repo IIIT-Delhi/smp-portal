@@ -8,6 +8,9 @@ export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   const [meetings, setmeetings] = useState([]);
 
+  
+
+
   const deleteMeeting = (meetingId) => {
     // Implement your delete logic here
     setmeetings(prevMeetings => prevMeetings.filter(meet => meet.id !== meetingId));

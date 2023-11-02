@@ -32,7 +32,7 @@ const LoginPage = () => {
         }}
       >
         <h2>Login Page</h2>
-        <AuthButton onLogin={handleLogin} />
+        <AuthButton handleLogin={handleLogin} />
       </div>
     </div>
   );

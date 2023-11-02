@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 
-const AuthButton = ({onLogin}) => {
+const AuthButton = ({handleLogin}) => {
   const { user,userDetails, login, logout } = useAuth();
 
   return (
@@ -18,7 +18,7 @@ const AuthButton = ({onLogin}) => {
               data-mdb-ripple-color="light"
               onClick={() => {
                 login({ role: "mentee" });
-                onLogin("mentee");
+                handleLogin("mentee");
               }}
             >
               Login as Mentee
@@ -30,7 +30,7 @@ const AuthButton = ({onLogin}) => {
               data-mdb-ripple-color="light"
               onClick={() => {
                 login({ role: "mentor" });
-                onLogin("mentor");
+                handleLogin("mentor");
               }}
             >
               Login as Mentor
@@ -42,7 +42,7 @@ const AuthButton = ({onLogin}) => {
               data-mdb-ripple-color="light"
               onClick={() => {
                 login({ role: "admin" });
-                onLogin("admin");
+                handleLogin("admin");
               }}
             >
               Login as Admin
