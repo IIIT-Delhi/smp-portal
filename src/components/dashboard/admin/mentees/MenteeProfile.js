@@ -19,7 +19,11 @@ const MenteeProfile = ({ mentee, onClose, onEdit }) => {
             {/* Display mentee's profile information here */}
             <div>
               <p>Name: {mentee.name}</p>
+              <p>Roll Number: {mentee.id}</p>
               <p>Email: {mentee.email}</p>
+              <p>Department: {mentee.department}</p>
+              <p>Mentor Name: {mentee.mentorName}</p>
+              <p>Mentor Email: {mentee.mentorEmail}</p>
               {/* Add more mentee profile details here */}
             </div>
           </div>
