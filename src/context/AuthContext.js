@@ -7,22 +7,23 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Store user information
+  // const [user, setUser] = useState(null); // Store user information
   const [userDetails, setUserDetails] = useState(null); // Store user details
 
   const login = (user) => {
     // Perform login logic, e.g., using Google Auth or any other method
     // Set the user information after successful login
-    setUser(user);
+    // setUser(user);
     // Fetch user details and set them here
     // Example: setUserDetails({ role: user.role, email: user.email });
-    setUserDetails({ role: user.role, email: "sample@gmail.com" });
+    setUserDetails({ role: user.role, email: user.email});
+    // console.log(userDetails)
   };
 
   const logout = () => {
     // Perform logout logic, e.g., sign out from Google Auth
     // Clear the user information after logout
-    setUser(null);
+    // setUser(null);
     // Clear user details on logout
     setUserDetails(null);
   };
@@ -34,7 +35,6 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const value = {
-    user,
     userDetails,
     login,
     logout,

@@ -2,8 +2,19 @@ import React from 'react'
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './style.css'
 import jwt_decode from "jwt-decode";
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Login = () => {
+
+    const {userDetails, login, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const currrole = params.get('role');
 
     function handleFaliure(result){
         // alert(result)
@@ -14,7 +25,21 @@ const Login = () => {
         var decoded = jwt_decode(result.credential);
         console.log("Login Succesful")
         console.log(decoded)
+        
+        const userObject = {
+            role: currrole,
+            email: decoded.email,
+          };
+          
+        login(userObject)
     }
+
+
+    useEffect(() => {
+        if (userDetails) {
+          navigate(`/dashboard/${userDetails.role}/profile`);
+        }
+      }, [userDetails, navigate]);
 
 
   return (
