@@ -1,18 +1,22 @@
 import React from "react";
 import AuthButton from "../components/auth/AuthButton";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../context/AuthContext"; // Import the AuthContext
 import bgImage from "../images/iiitdrndblock2.jpeg";
+import { useAuth } from "../context/AuthContext";
+// import Login from "../components/Login";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+  const { setvaliduser } = useAuth();
   // const { login } = useAuth(); // Get the login function from the AuthContext
 
-  const handleLogin = (userDetails) => {
-    // Assuming userDetails include role and email
-    // Redirect to the role-specific dashboard with the updated userDetails
-    navigate(`/dashboard/${userDetails}/profile`);
-  };
+  // const handleLogin = (userDetails) => {
+  //   // Assuming userDetails include role and email
+  //   // Redirect to the role-specific dashboard with the updated userDetails
+  //   navigate(`/dashboard/${userDetails}/profile`);
+  // };
+  setvaliduser(null)
 
   return (
     <div
@@ -32,7 +36,7 @@ const LoginPage = () => {
         }}
       >
         <h2>Login Page</h2>
-        <AuthButton handleLogin={handleLogin} />
+        <AuthButton/>
       </div>
     </div>
   );

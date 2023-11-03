@@ -13,6 +13,7 @@ import MenteesList from "./components/dashboard/admin/mentees/MenteesList";
 import MentorsList from "./components/dashboard/admin/mentors/MentorsList";
 import FormList from "./components/dashboard/admin/forms/FormList";
 import MenteeForm from "./components/dashboard/mentee/forms/MenteeForm";
+import Login from "./components/Login";
 // import MenteeProfile from "./components/dashboard/admin/mentees/MenteeProfile";
 // import MentorProfile from "./components/dashboard/admin/mentors/MentorProfile";
 
@@ -23,6 +24,7 @@ function App() {
         <div>
           <Routes>
             <Route path="/login" Component={LoginPage} />
+            <Route path="/google-login" element={<Login/>} />
             {/* <Route path="/dashboard/*" Component={DashboardPage} /> */}
             {/*------------------- Mentor BELOW--------------------------------*/}
             <Route
