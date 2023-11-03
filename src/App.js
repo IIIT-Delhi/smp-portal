@@ -14,7 +14,7 @@ import MentorsList from "./components/dashboard/admin/mentors/MentorsList";
 import FormList from "./components/dashboard/admin/forms/FormList";
 import MenteeForm from "./components/dashboard/mentee/forms/MenteeForm";
 import Login from "./components/Login";
-import RegistrationForm from "./components/dashboard/admin/mentors/registration/RegistrationForm";
+import RegistrationForm from "./components/dashboard/mentor/registration/RegistrationForm";
 // import MenteeProfile from "./components/dashboard/admin/mentees/MenteeProfile";
 // import MentorProfile from "./components/dashboard/admin/mentors/MentorProfile";
 

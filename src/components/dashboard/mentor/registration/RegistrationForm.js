@@ -27,18 +27,20 @@ export default function RegistrationForm() {
   };
 
   const yearOptions = {
-    1: "1",
-    2: "2",
-    3: "3",
-    4: "4",
+    "B1": "B.Tech. 1st year",
+    "B2": "B.Tech. 2nd year",
+    "B3": "B.Tech. 3rd year",
+    "B4": "B.Tech. 4th year",
+    "M1": "M.Tech. 1st year",
+    "M2": "M.Tech. 2nd year",
   };
 
   const sizeOptions = {
-    S: "Small",
-    M: "Medium",
-    L: "Large",
-    XL: "Extra Large",
-    XXL: "XXL",
+    "S": "Small",
+    "M": "Medium",
+    "L": "Large",
+    "XL": "Extra Large",
+    "XXL": "XXL",
   };
 
   const nextStep = () => {
