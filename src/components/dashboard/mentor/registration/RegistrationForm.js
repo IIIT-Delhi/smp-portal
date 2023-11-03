@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UserDetails from "./UserDetails";
 import Confirmation from "./Confirmation";
+import { useNavigate } from "react-router-dom";
 
 export default function RegistrationForm() {
   const [step, setStep] = useState(1);
@@ -56,6 +57,16 @@ export default function RegistrationForm() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const navigate = useNavigate();
+  
+  const saveAndContinue = (e) =>{
+    e.preventDefault();
+
+    // code for writing to the file or database
+
+    navigate('/login');
+  }
+
   switch (step) {
     case 1:
       return (
@@ -86,6 +97,7 @@ export default function RegistrationForm() {
           sizeOptions={sizeOptions}
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
+          saveAndContinue = {saveAndContinue}
         />
       );
     default:

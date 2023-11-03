@@ -3,10 +3,11 @@ import React from "react";
 const Confirmation = ({
   inputValues,
   prevStep,
-  nextStep,
+  saveAndContinue,
   sizeOptions,
   yearOptions,
   departmentOptions,
+
 }) => {
   const { name, id, email, department, year, size } = inputValues;
 
@@ -15,10 +16,10 @@ const Confirmation = ({
     prevStep();
   };
 
-  const saveAndContinue = (e) => {
-    e.preventDefault();
-    nextStep();
-  };
+  // const saveAndContinue = (e) => {
+  //   e.preventDefault();
+  //   nextStep();
+  // };
 
   return (
     <div className="container">

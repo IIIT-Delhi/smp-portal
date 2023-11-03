@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 const Login = () => {
 
-    const {userDetails, login, logout , validuser,setvaliduser} = useAuth();
+    const {userDetails, login , validuser, isNewMentor} = useAuth();
     const navigate = useNavigate();
 
     const location = useLocation();
@@ -38,7 +38,6 @@ const Login = () => {
           };
           
         login(userObject)
-        return
     }
 
 
@@ -57,7 +56,12 @@ const Login = () => {
               navigate('/login'); // Redirect to login page
           }, 3000); // Wait for 3 seconds before redirecting
         }
-    }, [userDetails, navigate, validuser]);
+        
+        if(isNewMentor === true){
+          navigate('/registration');
+        } 
+        
+    }, [userDetails, navigate, validuser,isNewMentor]);
 
 
   return (
