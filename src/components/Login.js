@@ -6,15 +6,21 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom";
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
 const Login = () => {
 
-    const {userDetails, login, logout } = useAuth();
+    const {userDetails, login, logout , validuser,setvaliduser} = useAuth();
     const navigate = useNavigate();
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const currrole = params.get('role');
+
+    // const [showTimer, setShowTimer] = useState(false);
+    const [timer, setTimer] = useState(3);
+
+    // setvaliduser(null)
 
     function handleFaliure(result){
         // alert(result)
@@ -32,6 +38,7 @@ const Login = () => {
           };
           
         login(userObject)
+        return
     }
 
 
@@ -39,19 +46,36 @@ const Login = () => {
         if (userDetails) {
           navigate(`/dashboard/${userDetails.role}/profile`);
         }
-      }, [userDetails, navigate]);
+
+        if (validuser === false) {
+          const interval = setInterval(() => {
+            setTimer(prevTimer => prevTimer - 1);
+          }, 1000);
+
+          setTimeout(() => {
+              clearInterval(interval);
+              navigate('/login'); // Redirect to login page
+          }, 3000); // Wait for 3 seconds before redirecting
+        }
+    }, [userDetails, navigate, validuser]);
 
 
   return (
     <div className='Login-Button'>
-        <GoogleOAuthProvider clientId="768207836010-qau8258pg290qg54havis7u8srfp9b1l.apps.googleusercontent.com">
+        {validuser === null && 
+          (<GoogleOAuthProvider clientId="768207836010-qau8258pg290qg54havis7u8srfp9b1l.apps.googleusercontent.com">
             <GoogleLogin
                 // buttonText='Login with Google'
                 onSuccess={handleLogin}
                 onFailure={handleFaliure}
                 cookiePolicy={'single_host_origin'}
             />
-        </GoogleOAuthProvider>
+          </GoogleOAuthProvider>)}
+        {validuser === false && (
+          <div>
+              <p>Unauthorized user. Redirecting in {timer} seconds...</p>
+          </div>
+        )}
     </div>
   )
 }

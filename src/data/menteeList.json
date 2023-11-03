@@ -1,8 +1,8 @@
 [
     {
-      "id": "2023123",
-      "name": "Ram",
-      "email": "ram@iiitd.ac.in",
+      "id": "2020133",
+      "name": "Ayush Singh",
+      "email": "ayush20133@iiitd.ac.in",
       "department": "Computaiton Biology",
       "mentorName": "Vishesh Jain",
       "mentorEmail": "vishesh20550@iiitd.ac.in",
@@ -10,9 +10,9 @@
         "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
     },
     {
-      "id": "2023124",
-      "name": "Mohit",
-      "email": "mohit@iiitd.ac.in",
+      "id": "2020054",
+      "name": "Devraj",
+      "email": "devraj20054@iiitd.ac.in",
       "department": "Computaiton Biology",
       "mentorName": "Vishesh Jain",
       "mentorEmail": "vishesh20550@iiitd.ac.in",

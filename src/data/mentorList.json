@@ -1,8 +1,21 @@
 [
   {
-    "id": "2023123",
+    "id": "2020490",
+    "name": "Aishwary sharma",
+    "email": "aishwary20490@iiitd.ac.in",
+    "department": "Computaiton Biology",
+    "imgSrc": "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg",
+    "year": "2024",
+    "size": "L",
+    "score":"90",
+    "reimbursement" : "900",
+    "goodiesStatus": "approved",
+    "menteesToMentors": ["2023123","2023124","2023125","2023126","2023127"]
+  },
+  {
+    "id": "2020550",
     "name": "Ram",
-    "email": "ram@iiitd.ac.in",
+    "email": "vishesh20550@iiitd.ac.in",
     "department": "Computaiton Biology",
     "imgSrc": "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg",
     "year": "2024",

@@ -1,12 +1,22 @@
 [
     {
-      "id": "8634025",
-      "name": "Ram",
-      "email": "ram@iiitd.ac.in",
+      "id": "2020490",
+      "name": "Aishwary sharma",
+      "email": "aishwary20490@iiitd.ac.in",
+      "department": "Computaiton Biology",
+      "phone": "673246812",
+      "address": "B615 RnD",
+      "imgSrc":
+        "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
+    },
+    {
+      "id": "2020550",
+      "name": "Vishesh Jain",
+      "email": "vishesh20550@iiitd.ac.in",
       "department": "Computaiton Biology",
       "phone": "673246812",
       "address": "B615 RnD",
       "imgSrc":
         "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg"
     }
-]
+] 

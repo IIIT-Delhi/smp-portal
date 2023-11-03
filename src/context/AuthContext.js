@@ -9,15 +9,57 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   // const [user, setUser] = useState(null); // Store user information
   const [userDetails, setUserDetails] = useState(null); // Store user details
+  const [validuser, setvaliduser] = useState(null);
 
   const login = (user) => {
-    // Perform login logic, e.g., using Google Auth or any other method
-    // Set the user information after successful login
-    // setUser(user);
-    // Fetch user details and set them here
-    // Example: setUserDetails({ role: user.role, email: user.email });
-    setUserDetails({ role: user.role, email: user.email});
-    // console.log(userDetails)
+    const email = user.email;
+    const id = `20${email.split('@')[0].slice(-5)}`; // Extract and format the id
+    console.log(id)
+    if (user.role === 'admin') {
+      const adminList = require('../data/adminList.json'); // Assuming the path to the JSON file is correct
+      const isAdmin = adminList.some(admin => admin.id === id);
+
+      if (isAdmin) {
+        setUserDetails({ role: 'admin', email: user.email });
+        setvaliduser(true)
+        // Additional logic for admin login if needed
+      } else {
+        setvaliduser(false)
+        console.error('User is not authorized as an admin');
+      }
+    } else if (user.role === 'mentor') {
+      const mentorList = require('../data/mentorList.json');
+      const isMentor = mentorList.some(mentor => mentor.id === id);
+
+
+      if (isMentor) {
+        // check for the status i.e.
+        // If Rejected or Waiting -> simply show the equivalent message and then redirect to the login page
+        // else Accepted then set the user details and vaild = true
+        setvaliduser(true)
+        setUserDetails({ role: 'mentor', email: user.email });
+        // Additional logic for mentor login if needed
+      } else {
+
+        // make the user fill out the entry form. And check for third or fourth year
+        setvaliduser(false)
+        console.error('User is not authorized as a mentor');
+      }
+    } else if (user.role === 'mentee') {
+      const menteeList = require('../data/menteeList.json');
+      const isMentee = menteeList.some(mentee => mentee.id === id);
+
+      if (isMentee) {
+        setvaliduser(true)
+        setUserDetails({ role: 'mentee', email: user.email });
+        // Additional logic for mentee login if needed
+      } else {
+        setvaliduser(false)
+        console.error('User is not authorized as a mentee');
+      }
+    } else {
+      console.error('Invalid user role');
+    }
   };
 
   const logout = () => {
@@ -38,6 +80,8 @@ export const AuthProvider = ({ children }) => {
     userDetails,
     login,
     logout,
+    validuser,
+    setvaliduser
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
