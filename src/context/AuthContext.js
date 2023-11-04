@@ -10,11 +10,13 @@ export const AuthProvider = ({ children }) => {
   // const [user, setUser] = useState(null); // Store user information
   const [userDetails, setUserDetails] = useState(null); // Store user details
   const [validuser, setvaliduser] = useState(null);
+  const [isNewMentor, setisNewMentor] = useState(false);
 
   const login = (user) => {
     const email = user.email;
     const id = `20${email.split('@')[0].slice(-5)}`; // Extract and format the id
     console.log(id)
+    
     if (user.role === 'admin') {
       const adminList = require('../data/adminList.json'); // Assuming the path to the JSON file is correct
       const isAdmin = adminList.some(admin => admin.id === id);
@@ -42,8 +44,11 @@ export const AuthProvider = ({ children }) => {
       } else {
 
         // make the user fill out the entry form. And check for third or fourth year
-        setvaliduser(false)
-        console.error('User is not authorized as a mentor');
+
+
+        // setvaliduser(false)
+        setisNewMentor(true)
+        console.error('New User for Mentor');
       }
     } else if (user.role === 'mentee') {
       const menteeList = require('../data/menteeList.json');
@@ -81,7 +86,9 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     validuser,
-    setvaliduser
+    setvaliduser,
+    isNewMentor,
+    setisNewMentor
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
