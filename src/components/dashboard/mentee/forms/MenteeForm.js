@@ -6,7 +6,7 @@ export default function MenteeForms() {
   const { userDetails } = useAuth();
   return (
     <div>
-      <Navbar userDetails={userDetails} />
+      <Navbar className="fixed-top" />
       <div className="container mt-4">
         <div className="row">
           <div className="col-12">

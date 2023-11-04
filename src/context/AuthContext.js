@@ -14,12 +14,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = (user) => {
     const email = user.email;
-    const id = `20${email.split('@')[0].slice(-5)}`; // Extract and format the id
-    console.log(id)
+    // const id = `20${email.split('@')[0].slice(-5)}`; // Extract and format the id
+    // console.log(id)
     
     if (user.role === 'admin') {
       const adminList = require('../data/adminList.json'); // Assuming the path to the JSON file is correct
-      const isAdmin = adminList.some(admin => admin.id === id);
+      const isAdmin = adminList.some((admin) => admin.email === email);
 
       if (isAdmin) {
         setUserDetails({ role: 'admin', email: user.email });
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
       }
     } else if (user.role === 'mentor') {
       const mentorList = require('../data/mentorList.json');
-      const isMentor = mentorList.some(mentor => mentor.id === id);
+      const isMentor = mentorList.some((mentor) => mentor.email === email);
 
 
       if (isMentor) {
@@ -48,11 +48,12 @@ export const AuthProvider = ({ children }) => {
 
         // setvaliduser(false)
         setisNewMentor(true)
+        setUserDetails({ role: "newUser", email: user.email });
         console.error('New User for Mentor');
       }
     } else if (user.role === 'mentee') {
       const menteeList = require('../data/menteeList.json');
-      const isMentee = menteeList.some(mentee => mentee.id === id);
+      const isMentee = menteeList.some((mentee) => mentee.email === email);
 
       if (isMentee) {
         setvaliduser(true)

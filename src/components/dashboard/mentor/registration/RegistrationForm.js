@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import UserDetails from "./UserDetails";
 import Confirmation from "./Confirmation";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../context/AuthContext";
+import Navbar from "../../common/Navbar";
 
 export default function RegistrationForm() {
+  const { userDetails } = useAuth();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     id: "",
     name: "",
-    email: "",
+    email: userDetails.email,
     department: "",
     year: "",
     size: "",
@@ -28,20 +31,20 @@ export default function RegistrationForm() {
   };
 
   const yearOptions = {
-    "B1": "B.Tech. 1st year",
-    "B2": "B.Tech. 2nd year",
-    "B3": "B.Tech. 3rd year",
-    "B4": "B.Tech. 4th year",
-    "M1": "M.Tech. 1st year",
-    "M2": "M.Tech. 2nd year",
+    B1: "B.Tech. 1st year",
+    B2: "B.Tech. 2nd year",
+    B3: "B.Tech. 3rd year",
+    B4: "B.Tech. 4th year",
+    M1: "M.Tech. 1st year",
+    M2: "M.Tech. 2nd year",
   };
 
   const sizeOptions = {
-    "S": "Small",
-    "M": "Medium",
-    "L": "Large",
-    "XL": "Extra Large",
-    "XXL": "XXL",
+    S: "Small",
+    M: "Medium",
+    L: "Large",
+    XL: "Extra Large",
+    XXL: "XXL",
   };
 
   const nextStep = () => {
@@ -58,18 +61,19 @@ export default function RegistrationForm() {
   };
 
   const navigate = useNavigate();
-  
-  const saveAndContinue = (e) =>{
+
+  const saveAndContinue = (e) => {
     e.preventDefault();
 
     // code for writing to the file or database
 
-    navigate('/login');
-  }
+    navigate("/login");
+  };
 
-  switch (step) {
-    case 1:
-      return (
+  return (
+    <div>
+      <Navbar className="fixed-top" />
+      {step === 1 && (
         <UserDetails
           nextStep={nextStep}
           handleChange={handleChange}
@@ -78,18 +82,8 @@ export default function RegistrationForm() {
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
         />
-      );
-    // case 2:
-    //   return (
-    //     <QnAFormDetails
-    //       nextStep={nextStep}
-    //       prevStep={prevStep}
-    //       handleChange={handleChange}
-    //       inputValues={formData}
-    //     />
-    //   );
-    case 2:
-      return (
+      )}
+      {step === 2 && (
         <Confirmation
           nextStep={nextStep}
           prevStep={prevStep}
@@ -97,10 +91,9 @@ export default function RegistrationForm() {
           sizeOptions={sizeOptions}
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
-          saveAndContinue = {saveAndContinue}
+          saveAndContinue={saveAndContinue}
         />
-      );
-    default:
-      return null;
-  }
+      )}
+    </div>
+  );
 }

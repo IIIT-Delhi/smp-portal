@@ -9,12 +9,12 @@
     "size": "L",
     "score":"90",
     "reimbursement" : "900",
-    "goodiesStatus": "approved",
+    "goodiesStatus": "Approved",
     "menteesToMentors": ["2023123","2023124","2023125","2023126","2023127"]
   },
   {
     "id": "2020550",
-    "name": "Ram",
+    "name": "Vishesh Jain",
     "email": "vishesh20550@iiitd.ac.in",
     "department": "Computaiton Biology",
     "imgSrc": "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg",
@@ -22,7 +22,7 @@
     "size": "L",
     "score":"90",
     "reimbursement" : "900",
-    "goodiesStatus": "approved",
+    "goodiesStatus": "Approved",
     "menteesToMentors": ["2023123","2023124","2023125","2023126","2023127"]
   },
   {
@@ -37,7 +37,7 @@
     "size": "L",
     "score":"90",
     "reimbursement" : "900",
-    "goodiesStatus": "approved",
+    "goodiesStatus": "Approved",
     "menteesToMentors": ["2023123","2023124","2023125","2023126","2023127"]
   },
   {
@@ -45,14 +45,12 @@
     "name": "Akshay",
     "email": "akshay@iiitd.ac.in",
     "department": "Computaiton Biology",
-    "mentorName": "Vishesh Jain",
-    "mentorEmail": "vishesh20550@iiitd.ac.in",
     "imgSrc": "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg",
     "year": "2024",
     "size": "L",
     "score":"90",
     "reimbursement" : "900",
-    "goodiesStatus": "approved",
+    "goodiesStatus": "Approved",
     "menteesToMentors": ["2023123", "2023124", "2023125", "2023126", "2023127"]
   },
   {
@@ -60,14 +58,12 @@
     "name": "Rohan",
     "email": "rohan@iiitd.ac.in",
     "department": "Computaiton Biology",
-    "mentorName": "Vishesh Jain",
-    "mentorEmail": "vishesh20550@iiitd.ac.in",
     "imgSrc": "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg",
     "year": "2024",
     "size": "L",
     "score":"90",
     "reimbursement" : "900",
-    "goodiesStatus": "approved",
+    "goodiesStatus": "Approved",
     "menteesToMentors": ["2023123", "2023124", "2023125", "2023126", "2023127"]
   },
   {
@@ -75,14 +71,12 @@
     "name": "Rahul",
     "email": "rahul@iiitd.ac.in",
     "department": "Computaiton Biology",
-    "mentorName": "Vishesh Jain",
-    "mentorEmail": "vishesh20550@iiitd.ac.in",
     "imgSrc": "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg",
     "year": "2024",
     "size": "L",
     "score":"90",
     "reimbursement" : "900",
-    "goodiesStatus": "approved",
+    "goodiesStatus": "Approved",
     "menteesToMentors": ["2023123", "2023124", "2023125", "2023126", "2023127"]
   }
 ]
