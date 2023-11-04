@@ -1,53 +1,53 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../common/Navbar";
 import { useAuth } from "../../../context/AuthContext";
+import menteeList from "../../../data/menteeList.json";
 
 const MenteeDashboard = () => {
   const { userDetails } = useAuth();
   const [menteeData, setMenteeData] = useState(null);
 
   useEffect(() => {
-    // Fetch admin data from PSQL API (or use the dummy data for now)
-    // Replace this section with actual API call
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await fetch('your-api-endpoint/admin');
-    //     const data = await response.json();
-    //     setAdminData(data);
-    //   } catch (error) {
-    //     console.error('Error fetching admin data:', error);
-    //   }
-    // };
-    // fetchData();
+    const fetchData = async () => {
+      try {
+        // Find the admin with the matching email
+        const matchingMentee = menteeList.find(
+          (mentee) => mentee.email === "vishesh20550@iiitd.ac.in"
+        );
 
-    // For now, assume dummy data from adminData.json
-    const dummyData = {
-      name: "Prashant",
-      email: userDetails.email, // Use the email from AuthContext
-      department: "Computaiton Biology",
-      mentorName: "Vishesh Jain",
-      mentorEmail: "vishesh20550@iiitd.ac.in",
-      imgSrc:
-        "https://cdn.pixabay.com/photo/2023/05/27/08/04/ai-generated-8021008_1280.jpg",
+        if (matchingMentee) {
+          // Set the matching admin's data to the state
+          setMenteeData(matchingMentee);
+        } else {
+          console.error("Mentee not found for email: vishesh20550@iiitd.ac.in");
+        }
+      } catch (error) {
+        console.error("Error fetching mentee data:", error);
+      }
     };
-    setMenteeData(dummyData);
-  }, [userDetails.email]);
+
+    fetchData();
+  }, ["vishesh20550@iiitd.ac.in"]);
 
   return (
     <div>
-      <Navbar role={userDetails.role} />
+      <Navbar className="fixed-top" />
       <section className="h-100 gradient-custom-2">
         <div className="container py-5 h-100">
           <div className="row d-flex justify-content-center align-items-center h-100">
-            <div className="col col-lg-9 col-xl-7">
+            <div className="col col-lg-9 col-xl-7" style={{ width: "100%" }}>
               <div className="card">
                 {menteeData ? (
-                  <div>
+                  <div className="d-flex flex-row">
                     <div
-                      className="rounded-top text-white d-flex flex-row"
-                      style={{ backgroundColor: "#3fada8" }}
+                      className="rounded-top text-white d-flex flex-column align-items-center"
+                      style={{
+                        backgroundColor: "#3fada8",
+                        flex: 1,
+                        width: "40%",
+                      }}
                     >
-                      <div className="ms-4 mt-5 d-flex flex-column">
+                      <div className="mt-2 d-flex flex-column align-items-center">
                         <img
                           src={menteeData.imgSrc}
                           alt="Profile"
@@ -55,13 +55,22 @@ const MenteeDashboard = () => {
                           style={{ width: "150px", borderRadius: "10%" }}
                         />
                       </div>
-                      <div className="ms-3" style={{ marginTop: "130px" }}>
+                      <div className="mt-2 text-center">
                         <h5>{menteeData.name}</h5>
                         <p>IIIT Delhi</p>
                       </div>
                     </div>
-                    <div className="card mx-3 my-3">
+                    <div className="card mx-3 my-3" style={{ width: "60%" }}>
                       <div className="card-body">
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Roll Number</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">{menteeData.id}</p>
+                          </div>
+                        </div>
+                        <hr />
                         <div className="row">
                           <div className="col-sm-3">
                             <p className="mb-0">Email</p>

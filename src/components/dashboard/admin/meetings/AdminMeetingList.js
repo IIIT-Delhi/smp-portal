@@ -26,21 +26,47 @@ export default function AdminMeetingList() {
 
   return (
     <div>
-      <Navbar userDetails={userDetails} />
+      <Navbar className="fixed-top" />
       <div className="container mt-4 text-center mb-4">
-          <h1 className="font-weight-bold mb-4">Meeting Schedule</h1>
+        <h1 className="font-weight-bold mb-4">Meeting Schedule</h1>
       </div>
 
-      <div style={{display : 'flex', height: '70vh', justifyContent: 'space-between', position : 'relative'}}>
-        <div className="container" style={{ marginLeft: '5px', marginRight: '0', width: '85%', overflowY: 'auto' }}>
-          {
-            meetings.map((meet) => (
-              <SinlgeMeeting meet={meet} key = {meet.id} ondelete={deleteMeeting} editMeeting={editMeeting}/>
-            ))
-          }
+      <div
+        style={{
+          display: "flex",
+          height: "70vh",
+          justifyContent: "space-between",
+          position: "relative",
+        }}
+      >
+        <div
+          className="container"
+          style={{
+            marginLeft: "5px",
+            marginRight: "0",
+            width: "85%",
+            overflowY: "auto",
+          }}
+        >
+          {meetings.map((meet) => (
+            <SinlgeMeeting
+              meet={meet}
+              key={meet.id}
+              ondelete={deleteMeeting}
+              editMeeting={editMeeting}
+            />
+          ))}
         </div>
-        
-        <div style={{ position: 'relative',width: '20%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+
+        <div
+          style={{
+            position: "relative",
+            width: "20%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-end",
+          }}
+        >
           <ScheduleMeetingButton setmeetings={setmeetings} />
         </div>
 
@@ -48,7 +74,6 @@ export default function AdminMeetingList() {
           <ScheduleMeetingButton setmeetings = {setmeetings} ></ScheduleMeetingButton>
         </div> */}
       </div>
-
     </div>
   );
 }

@@ -16,7 +16,7 @@ function UserDetails(props) {
     prevStep();
   };
 
-  const saveAndContinue = (e) => {
+  const saveAndcontinue = (e) => {
     e.preventDefault();
 
     // Check if any input value is empty
@@ -40,7 +40,7 @@ function UserDetails(props) {
     <div className="container">
       <form>
         <div className="mb-3">
-          <label className="label" htmlFor="formName">
+          <label className="form-label" htmlFor="formName">
             Full Name
           </label>
           <input
@@ -54,7 +54,7 @@ function UserDetails(props) {
         </div>
 
         <div className="mb-3">
-          <label className="label" htmlFor="formId">
+          <label className="form-label" htmlFor="formId">
             Roll Number
           </label>
           <input
@@ -68,7 +68,7 @@ function UserDetails(props) {
         </div>
 
         <div className="mb-3">
-          <label className="label" htmlFor="formEmail">
+          <label className="form-label" htmlFor="formEmail">
             Email Address
           </label>
           <input
@@ -77,65 +77,66 @@ function UserDetails(props) {
             defaultValue={inputValues.email}
             name="email"
             required // Make the input required
+            disabled // Disable the input
             onChange={handleChange}
           />
         </div>
 
         <div className="mb-3">
-          <label>Department</label>
+          <label className="form-label">Department</label>
           <select
-            className="form-control"
+            className="form-select"
             name="department"
             value={inputValues.department}
             required // Make the select required
             onChange={handleChange}
           >
+            <option value="" disabled>Select Department</option>
             {Object.entries(departmentOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
             ))}
-            <option value="" disabled />
           </select>
         </div>
 
         <div className="mb-3">
-          <label>Year</label>
+          <label className="form-label">Year</label>
           <select
-            className="form-control"
+            className="form-select"
             name="year"
             value={inputValues.year}
             required // Make the select required
             onChange={handleChange}
           >
+            <option value="" disabled>Select Year</option>
             {Object.entries(yearOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
             ))}
-            <option value="" disabled />
           </select>
         </div>
 
         <div className="mb-3">
-          <label>Size</label>
+          <label className="form-label">Size</label>
           <select
-            className="form-control"
+            className="form-select"
             name="size"
             value={inputValues.size}
             required // Make the select required
             onChange={handleChange}
           >
+            <option value="" disabled>Select Size</option>
             {Object.entries(sizeOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
             ))}
-            <option value="" disabled />
           </select>
         </div>
 
-        <button className="btn btn-primary" onClick={saveAndContinue}>
+        <button className="btn btn-primary mb-5" onClick={saveAndcontinue}>
           Next
         </button>
       </form>
