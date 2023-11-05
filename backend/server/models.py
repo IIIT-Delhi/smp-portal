@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Candidate(models.Model):
-    roll_no = models.CharField(primary_key=True)
+    id = models.CharField(primary_key=True)
     email = models.CharField()
     name = models.CharField()
     department = models.CharField()
@@ -11,23 +11,25 @@ class Candidate(models.Model):
     status = models.CharField
     size = models.CharField()
     score = models.CharField()
+    imgSrc = models.TextField()
 
     def __str__(self):
         return self.roll_no
 
 class Mentee(models.Model):
-    roll_no = models.CharField(primary_key=True)
+    id = models.CharField(primary_key=True)
     email = models.CharField()
     name = models.CharField()
     department = models.CharField()
-    mentor = models.CharField() # roll_no of the mentor
+    imgSrc = models.TextField()
+    mentor_id = models.CharField() # id of the mentor
 
     def __str__(self):
         return self.roll_no
     
 class Mentor(models.Model):
-    roll_no = models.ForeignKey(Candidate, on_delete=models.CASCADE)
-    goods_status = models.CharField()
+    id = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    goodiesStatus = models.CharField()
     reimbursement = models.CharField()
 
     def __str__(self):
@@ -38,6 +40,9 @@ class Admin(models.Model):
     email = models.CharField()
     name = models.CharField()
     department = models.CharField()
+    phone = models.CharField()
+    address = models.CharField()
+    imgSrc = models.TextField()
 
     def __str__(self):
         return self.id
@@ -54,7 +59,7 @@ class Meetings(models.Model):
 
 class Attendance(models.Model):
     attendee_id = models.CharField(primary_key=True)
-    meeting = models.JSONField()
+    meeting = models.JSONField(null=True)
 
     def __str__(self):
         return self.attendee_id
@@ -62,7 +67,7 @@ class Attendance(models.Model):
 class FormResponses(models.Model):
     form_id = models.CharField(primary_key=True)
     submitter_id = models.CharField()
-    responses = models.JSONField()
+    responses = models.JSONField(null=True)
 
     def __str__(self):
         return self.form_id
