@@ -5,34 +5,8 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
 # Create your views here.
-# @csrf_exempt
-# def trying(request):
-#     print("got the data from react")
-#     if request.method == "POST":
-#         data = json.loads(request.body.decode('utf-8'))
-#         desc = data.get('desc')
-#         if(desc):
-#     #         data_obj = Data(desc=desc)
-#     #         data_obj.save()
-#     #         print("Saved successfully")
-#     #         return JsonResponse({"message": "Data saved successfully"})
-#     #     else:
-#     #         return JsonResponse({"message": "Invalid data"})
-#     # else:
-#     #     return JsonResponse({"message": "Invalid request method"})
-#             data_objects = Data.objects.filter(desc=desc)
-#             if data_objects.exists():
-#                 data_objects.delete()
-#                 return JsonResponse({"message": f"Data with desc '{desc}' deleted successfully"})
-#             else:
-#                 return JsonResponse({"message": f"No data with desc '{desc}' found"})
-#         else:
-#             return JsonResponse({"message": "Invalid data"})
-#     else:
-#         return JsonResponse({"message": "Invalid request method"})
-
 def get_all_admins(request):
-    # returns list of json ; {{details},{details},...}
+    # returns list of json ; [{details},{details},...]
     if request.method == "GET":
         admins = Admin.objects.all()  # Fetch all Admin objects from the database.
         serialized_data = serializers.serialize('json', admins)  # Serialize the queryset to JSON.
@@ -41,7 +15,7 @@ def get_all_admins(request):
         return JsonResponse({"message": "Invalid request method"})
 
 def get_admin_by_id(request):
-    # returns list of json with one element; {{details}}
+    # returns list of json with one element; [{details}]
     if request.method == "GET":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         admin = Admin.objects.filter(id=id_to_search)  # Fetch corresponding Admin object
@@ -51,7 +25,7 @@ def get_admin_by_id(request):
         return JsonResponse({"message": "Invalid request method"})
 
 def get_all_mentors(request):
-    # returns list of json ; {{details}, {details}, ...}
+    # returns list of json ; [{details}, {details}, ...]
     if request.method == "GET":
         mentors_from_candidates = Candidate.objects.filter(status="Approved").values()
         for mentor in mentors_from_candidates:
@@ -76,7 +50,7 @@ def get_all_mentors(request):
         return JsonResponse({"message": "Invalid request method"})
     
 def get_mentor_by_id(request):
-    # returns list of json with one element; {{details}}
+    # returns list of json with one element; [{details}]
     if request.method == "GET":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         mentor = Candidate.objects.filter(status="Approved", id=id_to_search).values()
@@ -101,7 +75,7 @@ def get_mentor_by_id(request):
         return JsonResponse({"message": "Invalid request method"})
     
 def get_all_mentees(request):
-    # returns list of json ; {{details}, {details}, ...}
+    # returns list of json ; [{details}, {details}, ...]
     if request.method == "GET":
         mentees = Mentee.objects.all().values()
         for mentee in mentees:
@@ -118,7 +92,7 @@ def get_all_mentees(request):
         return JsonResponse({"message": "Invalid request method"})
 
 def get_mentee_by_id(request):
-    # returns list of json with one element; {{details}}
+    # returns list of json with one element; [{details}]
     if request.method == "GET":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         mentees = Mentee.objects.filter(id=id_to_search).values()
@@ -156,6 +130,7 @@ def delete_all_mentors(request):
     # returns json ; {"message": "//message//"}
     if request.method == "GET":
         deleted = Candidate.objects.filter(status="Approved").delete()
+        deleted = Mentor.objects.all().delete()
         return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -165,6 +140,7 @@ def delete_mentor_by_id(request):
     if request.method == "GET":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         deleted = Candidate.objects.filter(status="Approved", id=id_to_search).delete()
+        deleted = Mentor.objects.filter(id=id_to_search).delete()
         return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -183,6 +159,58 @@ def delete_mentee_by_id(request):
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         deleted = Mentee.objects.filter(id=id_to_search).delete()
         return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+@csrf_exempt
+def add_admin(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        new_admin = Admin(id=data.get('id'), name=data.get('name'), email=data.get('email'),
+                          department=data.get('department'), phone=data.get('phone'),
+                          address=data.get('address'), imgSrc=data.get('imgSrc'))
+        new_admin.save()
+        return JsonResponse({"message": "data added successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+@csrf_exempt
+def add_mentor(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
+                          department=data.get('department'), year=data.get('year'),
+                          size=data.get('size'), score=data.get('score'),
+                          status="Approved", imgSrc=data.get('imgSrc'))
+        new_candidate.save()
+        
+        new_mentor = Mentor(id=data.get('id'), goodiesStatus=data.get('goodiesStatus'),
+                            reimbursement=data.get('reimbursement'))
+        new_mentor.save()
+        
+        for mentee_id in data.get('menteesToMentors'):
+            mentee = Mentee.objects.get(id=mentee_id)
+            mentee.mentor_id = data.get('id')
+            mentee.save()
+        
+        return JsonResponse({"message": "data added successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+@csrf_exempt
+def add_mentee(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        new_mentee = Mentee(id=data.get('id'), name=data.get('name'), email=data.get('email'),
+                          department=data.get('department'), imgSrc=data.get('imgSrc'))
+
+        mentor = Candidate.objects.filter(status="Approved", email=data.get('mentorEmail'))
+        new_mentee.mentor_id = mentor[0].id
+        new_mentee.save()
+        return JsonResponse({"message": "data added successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
 
