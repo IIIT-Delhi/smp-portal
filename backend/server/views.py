@@ -135,5 +135,56 @@ def get_mentee_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+def delete_all_admins(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "GET":
+        deleted = Admin.objects.all().delete()
+        return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+def delete_admin_by_id(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "GET":
+        id_to_search = json.loads(request.body.decode('utf-8')).get('id')
+        deleted = Admin.objects.filter(id=id_to_search).delete()
+        return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+def delete_all_mentors(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "GET":
+        deleted = Candidate.objects.filter(status="Approved").delete()
+        return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+    
+def delete_mentor_by_id(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "GET":
+        id_to_search = json.loads(request.body.decode('utf-8')).get('id')
+        deleted = Candidate.objects.filter(status="Approved", id=id_to_search).delete()
+        return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+    
+def delete_all_mentees(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "GET":
+        deleted = Mentee.objects.all().delete()
+        return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+def delete_mentee_by_id(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "GET":
+        id_to_search = json.loads(request.body.decode('utf-8')).get('id')
+        deleted = Mentee.objects.filter(id=id_to_search).delete()
+        return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
 def index(request):
     return HttpResponse("home")
