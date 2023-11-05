@@ -9,7 +9,7 @@ const Confirmation = ({
   departmentOptions,
 
 }) => {
-  const { name, id, email, department, year, size } = inputValues;
+  const { name, id, email, department, year, size,imgSrc } = inputValues;
 
   const back = (e) => {
     e.preventDefault();
@@ -31,12 +31,22 @@ const Confirmation = ({
       <p>Department: {departmentOptions[department]}</p>
       <p>Year: {yearOptions[year]}</p>
       <p>Size: {sizeOptions[size]}</p>
-      <button className="btn btn-secondary" onClick={back}>
-        Back
-      </button>{" "}
-      <button className="btn btn-primary" onClick={saveAndContinue}>
-        Confirm
-      </button>
+      <div>
+        <p>Image:</p>
+        <img
+          src={imgSrc}
+          alt="User Profile"
+          style={{ maxWidth: "150px", maxHeight: "auto" }}
+        />
+      </div>
+      <div className="my-2">
+        <button className="btn btn-secondary" onClick={back}>
+          Back
+        </button>{" "}
+        <button className="btn btn-primary" onClick={saveAndContinue}>
+          Confirm
+        </button>
+      </div>
     </div>
   );
 };

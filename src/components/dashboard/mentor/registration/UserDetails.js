@@ -4,6 +4,7 @@ function UserDetails(props) {
   const {
     inputValues,
     handleChange,
+    handleImageChange,
     prevStep,
     nextStep,
     sizeOptions,
@@ -26,7 +27,8 @@ function UserDetails(props) {
       inputValues.email === "" ||
       inputValues.department === "" ||
       inputValues.year === "" ||
-      inputValues.size === ""
+      inputValues.size === "" ||
+      inputValues.imgSrc === ""
     ) {
       alert("Please fill in all required fields.");
       return;
@@ -35,6 +37,8 @@ function UserDetails(props) {
     // Proceed to the next step
     nextStep();
   };
+  
+
 
   return (
     <div className="container">
@@ -91,7 +95,9 @@ function UserDetails(props) {
             required // Make the select required
             onChange={handleChange}
           >
-            <option value="" disabled>Select Department</option>
+            <option value="" disabled>
+              Select Department
+            </option>
             {Object.entries(departmentOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
@@ -109,7 +115,9 @@ function UserDetails(props) {
             required // Make the select required
             onChange={handleChange}
           >
-            <option value="" disabled>Select Year</option>
+            <option value="" disabled>
+              Select Year
+            </option>
             {Object.entries(yearOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
@@ -127,13 +135,26 @@ function UserDetails(props) {
             required // Make the select required
             onChange={handleChange}
           >
-            <option value="" disabled>Select Size</option>
+            <option value="" disabled>
+              Select Size
+            </option>
             {Object.entries(sizeOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
             ))}
           </select>
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Passport-size Photo</label>
+          <input
+            type="file"
+            className="form-control"
+            name="imgSrc"
+            accept="image/*" // Allow only image files
+            required // Make the input required
+            onChange={handleImageChange} // Handle image selection
+          />
         </div>
 
         <button className="btn btn-primary mb-5" onClick={saveAndcontinue}>
