@@ -214,5 +214,97 @@ def add_mentee(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+@csrf_exempt
+def edit_admin_by_id(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        admin = Admin.objects.get(id=data.get('id'))
+        
+        if(data.get('fieldName')=="id"):
+            admin.id = data.get('newValue')
+        elif(data.get('fieldName')=="name"):
+            admin.name = data.get('newValue')
+        elif(data.get('fieldName')=="email"):
+            admin.email = data.get('newValue')
+        elif(data.get('fieldName')=="department"):
+            admin.department = data.get('newValue')
+        elif(data.get('fieldName')=="phone"):
+            admin.phone = data.get('newValue')
+        elif(data.get('fieldName')=="address"):
+            admin.address = data.get('newValue')
+        elif(data.get('fieldName')=="imgSrc"):
+            admin.imgSrc = data.get('newValue')
+
+        admin.save()
+        return JsonResponse({"message": "data added successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+@csrf_exempt
+def edit_mentor_by_id(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        candidate = Candidate.objects.get(id=data.get('id'))
+        mentor = Mentor.objects.get(id=data.get('id'))
+
+        if(data.get('fieldName')=="id"):
+            candidate.id = data.get('newValue')
+            mentor.id = data.get('newValue')
+        elif(data.get('fieldName')=="name"):
+            candidate.name = data.get('newValue')
+        elif(data.get('fieldName')=="email"):
+            candidate.email = data.get('newValue')
+        elif(data.get('fieldName')=="department"):
+            candidate.department = data.get('newValue')
+        elif(data.get('fieldName')=="imgSrc"):
+            candidate.imgSrc = data.get('newValue')
+        elif(data.get('fieldName')=="year"):
+            candidate.year = data.get('newValue')
+        elif(data.get('fieldName')=="size"):
+            candidate.size = data.get('newValue')
+        elif(data.get('fieldName')=="score"):
+            candidate.score = data.get('newValue')
+        elif(data.get('fieldName')=="goodiesStatus"):
+            mentor.goodiesStatus = data.get('newValue')
+        elif(data.get('fieldName')=="reimbursement"):
+            mentor.reimbursement = data.get('newValue')
+        elif(data.get('fieldName')=="menteesToMentors"):
+            for mentee_id in data.get('newValue'):
+                mentee = Mentee.objects.get(id=mentee_id)
+                mentee.mentor_id = data.get('id')
+
+        candidate.save()
+        mentor.save()
+        return JsonResponse({"message": "data added successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+@csrf_exempt
+def edit_mentee_by_id(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        mentee = Mentee.objects.get(id=data.get('id'))
+
+        if(data.get('fieldName')=="id"):
+            mentee.id = data.get('newValue')
+        elif(data.get('fieldName')=="name"):
+            mentee.name = data.get('newValue')
+        elif(data.get('fieldName')=="email"):
+            mentee.email = data.get('newValue')
+        elif(data.get('fieldName')=="department"):
+            mentee.department = data.get('newValue')
+        elif(data.get('fieldName')=="imgSrc"):
+            mentee.imgSrc = data.get('newValue')
+        elif(data.get('fieldName')=="mentorId"):
+            mentee.mentor_id = data.get('newValue')            
+
+        mentee.save()
+        return JsonResponse({"message": "data added successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
 def index(request):
     return HttpResponse("home")
