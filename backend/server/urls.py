@@ -19,4 +19,12 @@ urlpatterns = [
     path('deleteMentorById/', views.delete_mentor_by_id, name='deleteMentorById'),
     path('deleteAllMentees/', views.delete_all_mentees, name='deleteAllMentees'),
     path('deleteMenteeById/', views.delete_mentee_by_id, name='deleteMenteeById'),
+    # add apis
+    path('addAdmin/', views.add_admin, name='addAdmin'),
+    path('addMentor/', views.add_mentor, name='addMentor'),
+    path('addMentee/', views.add_mentee, name='addMentee'),
+    # edit apis
+    path('editAdminById/', views.edit_admin_by_id, name='editAdminById'),
+    path('editMentorById/', views.edit_mentor_by_id, name='editMentorById'),
+    path('editMenteeById/', views.edit_mentee_by_id, name='editMenteeById'),
 ]

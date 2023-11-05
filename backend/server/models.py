@@ -28,7 +28,7 @@ class Mentee(models.Model):
         return self.roll_no
     
 class Mentor(models.Model):
-    id = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    id = models.CharField(primary_key=True)
     goodiesStatus = models.CharField()
     reimbursement = models.CharField()
 
