@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
+import { Link, useNavigate} from 'react-router-dom';
+import { useAuth,  } from '../../../context/AuthContext';
 import iiitdLogo from '../../../images/iiitd_logo.png';
 
 const Navbar = () => {
-  const { userDetails } = useAuth();
+  const { userDetails, logout } = useAuth();
   const role = userDetails?.role;
   const navStyle = {
     backgroundColor: "#3fada8",
@@ -21,6 +21,16 @@ const Navbar = () => {
     gap: "20px",
   };
 
+  // const history = useHistory();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('Are you sure you want to log out?');
+    if (confirmLogout) {
+      logout();
+      navigate('/login');
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand navbar-dark" style={navStyle}>
       <img
@@ -30,36 +40,40 @@ const Navbar = () => {
         style={{ height: "60px", marginRight: "10px" }}
       />
       <ul className="navbar-nav ml-autp">
-        <li className="nav-item" style={listStyle}>
-          <Link
-            to={`/dashboard/${role}/profile`}
-            className="nav-link"
-            style={{ color: "white" }}
-            onMouseEnter={(e) =>
-              (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-            }
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = "transparent")
-            }
-          >
-            Profile
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link
-            to={`/dashboard/${role}/meetings`}
-            className="nav-link"
-            style={{ color: "white" }}
-            onMouseEnter={(e) =>
-              (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-            }
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = "transparent")
-            }
-          >
-            Meetings
-          </Link>
-        </li>
+        {(role === "mentee" || role === "mentor" || role === "admin") && (
+          <>
+            <li className="nav-item" style={listStyle}>
+              <Link
+                to={`/dashboard/${role}/profile`}
+                className="nav-link"
+                style={{ color: "white" }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "transparent")
+                }
+              >
+                Profile
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to={`/dashboard/${role}/meetings`}
+                className="nav-link"
+                style={{ color: "white" }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "transparent")
+                }
+              >
+                Meetings
+              </Link>
+            </li>
+          </>
+        )}
         {role === "mentee" && (
           <>
             <li className="nav-item">
@@ -131,9 +145,20 @@ const Navbar = () => {
             {/* Add more admin-specific tabs here */}
           </>
         )}
+        {role && (
+          <li className="nav-item">
+            <button
+              className="btn btn-link nav-link"
+              style={{ color: "white", textDecoration: "none" }}
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </li>
+        )}
       </ul>
     </nav>
   );
 };
 
-export default Navbar;
+export default  Navbar;

@@ -115,7 +115,7 @@ const MentorsList = () => {
 
   return (
     <div>
-      <Navbar userDetails={userDetails} />
+      <Navbar className="fixed-top" />
       <div className="container">
         <div className="text-center my-3">
           <h4>Mentors List</h4>
@@ -214,7 +214,9 @@ const MentorsList = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Mentees Assigned (comma separated roll numbers)</label>
+                    <label>
+                      Mentees Assigned (comma separated roll numbers)
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -222,12 +224,15 @@ const MentorsList = () => {
                       onChange={(e) =>
                         setMentorForm({
                           ...mentorForm,
-                          menteesToMentors: e.target.value.split(",").map((item) => item.trim()).filter((item) => item.length > 0),
+                          menteesToMentors: e.target.value
+                            .split(",")
+                            .map((item) => item.trim())
+                            .filter((item) => item.length > 0),
                         })
                       }
                     />
                   </div>
-                  
+
                   {/* Add other form fields (Roll Number, Department, Email, Mentor Name, Mentor Email) here */}
 
                   <button type="submit" className="btn btn-primary">

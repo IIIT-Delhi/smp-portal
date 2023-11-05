@@ -1,12 +1,19 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const AuthButton = ({handleLogin}) => {
-  const { user,userDetails, login, logout } = useAuth();
+const AuthButton = () => {
+  const {userDetails, login, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleGoogleLogin = (role) => {
+    navigate(`/google-login?role=${role}`);
+  };
+
 
   return (
     <div>
-      {user ? (
+      {userDetails ? (
         <button className="btn btn-danger" onClick={logout}>
           Logout
         </button>
@@ -16,10 +23,7 @@ const AuthButton = ({handleLogin}) => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              onClick={() => {
-                login({ role: "mentee" });
-                handleLogin("mentee");
-              }}
+              onClick={() => handleGoogleLogin('mentee')}
             >
               Login as Mentee
             </button>
@@ -28,10 +32,7 @@ const AuthButton = ({handleLogin}) => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              onClick={() => {
-                login({ role: "mentor" });
-                handleLogin("mentor");
-              }}
+              onClick={() => handleGoogleLogin('mentor')}
             >
               Login as Mentor
             </button>
@@ -40,10 +41,9 @@ const AuthButton = ({handleLogin}) => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              onClick={() => {
-                login({ role: "admin" });
-                handleLogin("admin");
-              }}
+              onClick={
+                () => handleGoogleLogin('admin')
+              }
             >
               Login as Admin
             </button>

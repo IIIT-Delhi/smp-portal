@@ -107,7 +107,7 @@ const MenteesList = () => {
 
   return (
     <div>
-      <Navbar userDetails={userDetails} />
+      <Navbar className="fixed-top" />
       <div className="container">
         <div className="text-center my-3">
           <h4>Mentees List</h4>
@@ -197,7 +197,10 @@ const MenteesList = () => {
                       className="form-control"
                       value={menteeForm.department}
                       onChange={(e) =>
-                        setMenteeForm({ ...menteeForm, department: e.target.value })
+                        setMenteeForm({
+                          ...menteeForm,
+                          department: e.target.value,
+                        })
                       }
                       required
                     />
@@ -209,7 +212,10 @@ const MenteesList = () => {
                       className="form-control"
                       value={menteeForm.mentorName}
                       onChange={(e) =>
-                        setMenteeForm({ ...menteeForm, mentorName: e.target.value })
+                        setMenteeForm({
+                          ...menteeForm,
+                          mentorName: e.target.value,
+                        })
                       }
                     />
                   </div>
@@ -220,7 +226,10 @@ const MenteesList = () => {
                       className="form-control"
                       value={menteeForm.mentorEmail}
                       onChange={(e) =>
-                        setMenteeForm({ ...menteeForm, mentorEmail: e.target.value })
+                        setMenteeForm({
+                          ...menteeForm,
+                          mentorEmail: e.target.value,
+                        })
                       }
                     />
                   </div>
