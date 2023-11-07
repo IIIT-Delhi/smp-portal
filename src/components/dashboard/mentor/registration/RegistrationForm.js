@@ -4,10 +4,49 @@ import Confirmation from "./Confirmation";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 import Navbar from "../../common/Navbar";
+import Questions from "./Questions";
+import axios from "axios";
 
 export default function RegistrationForm() {
   const { userDetails } = useAuth();
   const [step, setStep] = useState(1);
+  // const [score, setScore] = useState(0);
+
+  const [selectedOptions, setSelectedOptions] = useState({});
+    // const [score, setScore] = useState(0);
+
+  const handleCheckboxChange = (questionIndex, optionIndex) => {
+      setSelectedOptions(prevSelectedOptions => ({
+      ...prevSelectedOptions,
+      [questionIndex]: optionIndex
+      }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    let newScore = 0;
+    for (const questionIndex in selectedOptions) {
+      const selectedOption = selectedOptions[questionIndex];
+      const correctOption = questions[questionIndex].correctAnswer - 1;
+
+      // console.log(selectedOption)
+      // console.log(correctOption)
+
+      if (selectedOption === correctOption) {
+        newScore += 4; // Award 4 points for correct answer
+      }
+    }
+
+    // console.log(newScore)
+    // setScore(newScore);
+    setFormData({
+      ...formData,
+      score: newScore,
+    });
+    nextStep();
+  };
+
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -16,7 +55,22 @@ export default function RegistrationForm() {
     year: "",
     size: "",
     imgSrc: "",
+    score: 0,
   });
+
+  const questions = [
+    {
+      "question" : "Question 1",
+      "options" : ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 1
+    },
+    {
+      "question" : "Question 2",
+      "options" : ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 1
+    }
+  ]
+
   const departmentOptions = {
     "B-CSB": "CSB (B.Tech.)",
     "B-CSSS": "CSSS (B.Tech.)",
@@ -60,6 +114,7 @@ export default function RegistrationForm() {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
     if (file) {
@@ -88,7 +143,35 @@ export default function RegistrationForm() {
 
     // code for writing to the file or database
 
-    navigate("/login");
+    // variable -> score
+
+    // console.log(score)
+    // console.log(selectedOptions)
+    // Create a JSON object from the formData
+    const formDataJSON = {
+      id: formData.id,
+      name: formData.name,
+      email: formData.email,
+      department: formData.department,
+      year: formData.year,
+      size: formData.size,
+      imgSrc: formData.imgSrc,
+      score: formData.score,
+    };
+
+    // Make a POST request to your backend
+    axios
+      .post("http://127.0.0.1:8000/addMentor", formDataJSON)
+      .then((response) => {
+        console.log("Data sent to the backend:", response.data);
+        // Redirect to the next step or do any other necessary actions
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error sending data to the backend:", error);
+        // Handle the error as needed
+      });
+
   };
 
   return (
@@ -105,7 +188,16 @@ export default function RegistrationForm() {
           departmentOptions={departmentOptions}
         />
       )}
-      {step === 2 && (
+      { step === 2 &&(
+
+        <Questions nextStep = {nextStep}
+          handleCheckboxChange = {handleCheckboxChange}
+          handleSubmit = {handleSubmit}
+          questions={questions}
+        />
+
+      )}
+      {step === 3 && (
         <Confirmation
           nextStep={nextStep}
           prevStep={prevStep}
