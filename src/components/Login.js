@@ -68,13 +68,17 @@ const Login = () => {
     <div className='Login-Button'>
         {validuser === null && 
           (<GoogleOAuthProvider clientId="768207836010-qau8258pg290qg54havis7u8srfp9b1l.apps.googleusercontent.com">
-            <GoogleLogin
-                // buttonText='Login with Google'
-                onSuccess={handleLogin}
-                onFailure={handleFaliure}
-                cookiePolicy={'single_host_origin'}
-            />
-          </GoogleOAuthProvider>)}
+            <div>
+              <GoogleLogin
+                  // buttonText='Login with Google'
+                  onSuccess={handleLogin}
+                  onFailure={handleFaliure}
+                  cookiePolicy={'single_host_origin'}
+              />
+              {/* <span>Login as Admin</span> */}
+            </div>
+          </GoogleOAuthProvider>
+          )}
         {validuser === false && (
           <div>
               <p>Unauthorized user. Redirecting in {timer} seconds...</p>
