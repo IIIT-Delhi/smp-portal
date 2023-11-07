@@ -36,7 +36,7 @@ const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
     try {
       // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
       await axios
-        .put("http://127.0.0.1:8000/addMeeting/", meeting)
+        .post("http://127.0.0.1:8000/addMeeting/", meeting)
         .then((response) => {
           // If the backend successfully updates the meeting, update your local state
           if (response.status === 200) {

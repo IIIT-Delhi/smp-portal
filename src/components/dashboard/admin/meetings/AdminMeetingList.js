@@ -12,7 +12,7 @@ export default function AdminMeetingList() {
   const deleteMeeting = (meetingId) => {
     // Send a request to delete the meeting on the backend
     axios
-      .put("http://127.0.0.1:8000/editMeetings/", meetingId)
+      .post("http://127.0.0.1:8000/deleteMeetingById/", meetingId)
       .then((response) => {
         // If the backend successfully deletes the meeting, update your local state
         if (response.status === 200) {
@@ -29,7 +29,7 @@ export default function AdminMeetingList() {
     try {
       // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
       await axios
-        .put("http://127.0.0.1:8000/editMeetingById/", meeting)
+        .post("http://127.0.0.1:8000/editMeetingById/", meeting)
         .then((response) => {
           // If the backend successfully updates the meeting, update your local state
           if (response.status === 200) {
