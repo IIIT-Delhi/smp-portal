@@ -15,6 +15,7 @@ export default function RegistrationForm() {
     department: "",
     year: "",
     size: "",
+    imgSrc: "",
   });
   const departmentOptions = {
     "B-CSB": "CSB (B.Tech.)",
@@ -59,6 +60,26 @@ export default function RegistrationForm() {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (file) {
+      if (file.size > 200000) {
+        alert("Image size exceeds 200KB. Please select a smaller image.");
+        e.target.value = null; // Clear the selected file
+      } else {
+        // Handle the selected image, e.g., store it in component state
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageBase64 = event.target.result; // Base64-encoded image
+          setFormData({
+            ...formData,
+            imgSrc: imageBase64,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -77,6 +98,7 @@ export default function RegistrationForm() {
         <UserDetails
           nextStep={nextStep}
           handleChange={handleChange}
+          handleImageChange={handleImageChange}
           inputValues={formData}
           sizeOptions={sizeOptions}
           yearOptions={yearOptions}

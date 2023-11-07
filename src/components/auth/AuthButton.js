@@ -1,10 +1,12 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const AuthButton = () => {
-  const {userDetails, login, logout } = useAuth();
+  const {userDetails, logout } = useAuth();
   const navigate = useNavigate();
+  
 
   const handleGoogleLogin = (role) => {
     navigate(`/google-login?role=${role}`);
