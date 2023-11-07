@@ -12,11 +12,11 @@ export const AuthProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null); // Store user details
   const [validuser, setvaliduser] = useState(null);
   const [isNewMentor, setisNewMentor] = useState(false);
-  const fetchAttributeId = async (email) => {
+  const fetchAttributeId = async (email, role) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/getAdminByAttributes",
-        { key: "email", value: email }
+        "http://127.0.0.1:8000/getIdByEmail",
+        { email: email, role: role }
       );
       const id = response.data.id;
 
@@ -35,8 +35,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
       // Fetch the 'id' attribute for the user's email
-      if (userDetails && userDetails.email) {
-        fetchAttributeId(userDetails.email).then((id) => {
+      if (userDetails && userDetails.email && userDetails.role) {
+        fetchAttributeId(userDetails.email,userDetails.role).then((id) => {
           if (id) {
             // You can use the 'id' as needed
             console.log("Attribute ID:", id);
