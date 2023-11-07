@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import Axios
 import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
 import SinlgeMeeting from './SinlgeMeeting';
@@ -8,8 +9,20 @@ export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   const [meetings, setmeetings] = useState([]);
 
-  
+  const fetchAttributeId = async (email) => {
+    try {
+      const response = await axios.post(
+        'http://127.0.0.1:8000/getAdminByAttributes',
+        { key: 'email', value: email }
+      );
+      const id = response.data.id;
 
+      return id;
+    } catch (error) {
+      console.error('Error fetching attribute:', error);
+      return null;
+    }
+  };
 
   const deleteMeeting = (meetingId) => {
     // Implement your delete logic here
@@ -23,6 +36,18 @@ export default function AdminMeetingList() {
       )
     );
   };
+
+  useEffect(() => {
+    // Fetch the 'id' attribute for the user's email
+    if (userDetails && userDetails.email) {
+      fetchAttributeId(userDetails.email).then((id) => {
+        if (id) {
+          // You can use the 'id' as needed
+          console.log('Attribute ID:', id);
+        }
+      });
+    }
+  }, [userDetails]);
 
   return (
     <div>

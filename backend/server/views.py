@@ -1,9 +1,18 @@
+from io import StringIO
 from django.shortcuts import render, HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import csv
+from datetime import datetime
+from django.shortcuts import get_list_or_404
+
+
 # Create your views here.
 def get_all_admins(request):
     # returns list of json ; [{details},{details},...]
@@ -19,6 +28,22 @@ def get_admin_by_id(request):
     if request.method == "GET":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         admin = Admin.objects.filter(id=id_to_search)  # Fetch corresponding Admin object
+        serialized_data = serializers.serialize('json', admin)  # Serialize the queryset to JSON.
+        return JsonResponse(serialized_data, safe=False)
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+def get_admin_by_attribute(request):
+    # input {'key': columnname, 'value': valuetosearch}
+    # returns list of json with one element; [{details}]
+    if request.method == "GET":
+        column_to_search = request.GET.get('column')
+        value_to_search = request.GET.get('value')
+        if not column_to_search or not value_to_search:
+            return JsonResponse({"message": "Both 'column' and 'value' parameters are required."}, status=400)
+
+        admin = Admin.objects.filter(**{column_to_search: value_to_search}).values()
+        admin = admin[0]
         serialized_data = serializers.serialize('json', admin)  # Serialize the queryset to JSON.
         return JsonResponse(serialized_data, safe=False)
     else:
@@ -73,7 +98,42 @@ def get_mentor_by_id(request):
         return JsonResponse(serialized_data, safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
+
+def get_mentor_by_attribute(request):
+    if request.method == "GET":
+        column_to_search = request.GET.get('column')
+        value_to_search = request.GET.get('value')
+        
+        if not column_to_search or not value_to_search:
+            return JsonResponse({"message": "Both 'column' and 'value' parameters are required."}, status=400)
+
+        mentor = Candidate.objects.filter(status="Approved", **{column_to_search: value_to_search}).values()
+
+        if not mentor:
+            return JsonResponse({"message": "Mentor not found."}, status=404)
+
+        mentor = mentor[0]
+
+        # adding 'goodiesStatus' and 'reimbursement' details
+        other_details = Mentor.objects.filter(id=mentor['id']).values()
+        mentor[0].update({'goodiesStatus': other_details[0]['goodiesStatus'],
+                        'reimbursement': other_details[0]['reimbursement']})
+        
+        # adding menteesToMentors list
+        menteesToMentors = []
+        mentees = Mentee.objects.filter(mentor_id=mentor['id']).values()
+        for mentee in mentees:
+            menteesToMentors.append(mentee['id'])
+        mentor[0].update({'menteesToMentors': menteesToMentors})
+        
+        # removing unnecessary details
+        mentor[0].pop("status")
+        serialized_data = serializers.serialize('json', mentor)
+        return JsonResponse(serialized_data, safe=False)
+    else:
+        return 
     
+
 def get_all_mentees(request):
     # returns list of json ; [{details}, {details}, ...]
     if request.method == "GET":
@@ -105,6 +165,29 @@ def get_mentee_by_id(request):
             # removing unnecessary details
             mentee.pop("mentor_id")
         serialized_data = serializers.serialize('json', mentees)
+        return JsonResponse(serialized_data, safe=False)
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+def get_mentee_by_attribute(request):
+    # input {'key': columnname, 'value': valuetosearch}
+    # returns list of json with one element; [{details}]
+    if request.method == "GET":
+        column_to_search = request.GET.get('column')
+        value_to_search = request.GET.get('value')
+        if not column_to_search or not value_to_search:
+            return JsonResponse({"message": "Both 'column' and 'value' parameters are required."}, status=400)
+
+        mentees = Mentee.objects.filter(**{column_to_search: value_to_search}).values()
+        for mentee in mentees:
+            # adding other 'mentorName' and 'mentorEmail' details
+            mentor_id_to_search = mentee['mentor_id']
+            mentor = Mentor.objects.filter(id=mentor_id_to_search).values()
+            mentee.update({'mentorName': mentor[0]['name'],
+                           'mentorEmail': mentor[0]['email']})
+            # removing unnecessary details
+            mentee.pop("mentor_id")
+        serialized_data = serializers.serialize('json', mentees)  # Serialize the queryset to JSON.
         return JsonResponse(serialized_data, safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -306,5 +389,170 @@ def edit_mentee_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+@csrf_exempt
+def upload_CSV(request):
+    if request.method == 'POST':
+        # Check if a file was uploaded
+        if 'csvFile' in request.FILES:
+            
+            uploaded_file = request.FILES['csvFile']
+            file_contents = uploaded_file.read()
+            csv_data = file_contents.decode('iso-8859-1')
+            # Use StringIO to simulate a file-like object for csv.reader
+            csv_io = StringIO(csv_data)
+            # Parse the CSV data
+            csv_reader = csv.reader(csv_io)
+            csv_list = [row for row in csv_reader]
+            # Convert the CSV data to a list of dictionaries
+            header = csv_list[0]
+            csv_data_list = [dict(zip(header, row)) for row in csv_list[1:]]
+            Mentee.objects.all().delete()
+            for item in csv_data_list:
+                print(item)
+                mentee = Mentee(
+                    id=item['id'],
+                    email=item['email'],
+                    name=item['name'],
+                    department=item['department'],
+                    imgSrc="",  # Set the imgSrc and mentor_id as needed
+                    mentor_id=""  # Set the mentor_id as needed
+                )
+                mentee.save()
+
+            return JsonResponse({'message': 'File uploaded and processed successfully'})
+        else:
+            return JsonResponse({'message': 'No file was uploaded'}, status=400)
+    else:
+        return JsonResponse({'message': 'Unsupported HTTP method'}, status=405)
+    
+
 def index(request):
     return HttpResponse("home")
+
+
+
+@csrf_exempt
+def add_meeting(request):
+    # returns json ; {"message": "//message//"}
+    if request.method == "POST":
+        print("here")
+        data = json.loads(request.body.decode('utf-8'))
+        print(data)
+        scheduler_id = data.get('scheduler_id')
+        date = data.get('date')
+        time = data.get('time')
+        attendeelist=data.get('attendee')
+        attendeevalue = -1
+        if "Mentees" in attendeelist and "Mentors" in attendeelist:
+            attendeevalue = 3
+        elif "Mentors" in attendeelist:
+            attendeevalue = 1
+        elif "Mentees" in attendeelist:
+            attendeevalue = 2
+
+        # Check if a meeting with the same scheduler_id, date, and time already exists
+        existing_meeting = Meetings.objects.filter(
+            scheduler_id=scheduler_id,
+            date=date,
+            time=time
+        ).first()
+
+        if existing_meeting:
+            return JsonResponse({"message": "Meeting already scheduled at the same date and time"})
+        else:
+            new_meeting = Meetings(
+                scheduler_id=scheduler_id,
+                date=date,
+                time=time,
+                attendee=attendeevalue,
+                description=data.get('description')
+            )
+            new_meeting.save()
+            return JsonResponse({"message": "Data added successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+
+def get_meetings(request):
+    if request.method == "POST":
+        user_type = request.POST.get('user_type')  # You should provide the user type in the request
+        user_id = request.POST.get('user_id')  # You should provide the user's ID in the request
+
+        # Get the current date and time
+        current_datetime = datetime.now()
+
+        if user_type == "admin":
+            # Return all meetings
+            all_meetings = Meetings.objects.all()
+        elif user_type == "mentor":
+            # Return meetings organized by the mentor, and meetings where the mentor is an attendee (1 or 3)
+            organized_meetings = Meetings.objects.filter(scheduler_id=user_id)
+            attendee_meetings = Meetings.objects.filter(attendee__in=[1, 3])  # Include 1 (mentor) and 3 (both mentor and mentee)
+            all_meetings = organized_meetings | attendee_meetings
+        elif user_type == "mentee":
+            # Return meetings organized by the mentee's mentor and meetings where the mentee is an attendee
+            mentor = Mentee.objects.get(id=user_id).mentor_id
+            mentor_meetings = Meetings.objects.filter(scheduler_id=mentor)
+            attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3])  # Include 2 (mentee) and 3 (both mentor and mentee)
+            all_meetings = mentor_meetings | attendee_meetings
+        else:
+            return JsonResponse({"message": "Invalid user type"})
+
+        # Create lists for previous, next, and upcoming meetings
+        previous_meetings = []
+        next_meetings = []
+        upcoming_meetings = []
+
+        # Categorize meetings based on their date and time
+        for meeting in all_meetings:
+            meeting_date = datetime.strptime(f"{meeting.date} {meeting.time}", '%Y-%m-%d %I:%M %p')
+            if meeting_date < current_datetime:
+                previous_meetings.append(meeting)
+            elif meeting_date > current_datetime:
+                upcoming_meetings.append(meeting)
+            else:
+                next_meetings.append(meeting)
+
+        # Create a dictionary to store the categorized meetings
+        meetings_data = {
+            "previous_meetings": previous_meetings,
+            "next_meetings": next_meetings,
+            "upcoming_meetings": upcoming_meetings,
+        }
+
+        # Serialize the data
+        serialized_data = serializers.serialize("json", meetings_data)
+        return JsonResponse(serialized_data, safe=False)
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+
+# def mentor_mentee_mapping(request):
+#     # Initialize dictionaries to track mentors and their assigned mentees
+#     mentors = {}
+#     assigned_mentees = {}
+#     mentees_per_mentor = 5
+
+#     # Get a list of all candidates, sorted by department and score in descending order
+#     candidates = Candidate.objects.order_by('-department', '-score')
+
+#     for candidate in candidates:
+#         if candidate.department not in mentors:
+#             # If there are no mentors for this department, add one
+#             mentors[candidate.department] = [candidate]
+#             assigned_mentees[candidate.id] = candidate.department
+#         else:
+#             # Check if the mentor already has enough mentees
+#             mentor_department = assigned_mentees[candidate.id]
+#             if len(mentors[mentor_department]) < mentees_per_mentor:
+#                 mentors[mentor_department].append(candidate)
+#             else:
+#                 # If the mentor has enough mentees, assign the mentee to another mentor in the same department
+#                 for mentor_id in mentors[mentor_department]:
+#                     if len(mentors[mentor_department]) < mentees_per_mentor:
+#                         mentors[mentor_department].append(candidate)
+#                         assigned_mentees[candidate.id] = mentor_department
+#                         break
+
+#     # Return the mentor-mentee mapping
+#     return mentors
