@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from 'axios'; // Import Axios
 
 const AuthContext = createContext();
 
@@ -11,11 +12,46 @@ export const AuthProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null); // Store user details
   const [validuser, setvaliduser] = useState(null);
   const [isNewMentor, setisNewMentor] = useState(false);
+  const fetchAttributeId = async (email, role) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/getIdByEmail",
+        { email: email, role: role }
+      );
+      const id = response.data.id;
+
+      // Update the userDetails with the retrieved 'id'
+      setUserDetails((prevUserDetails) => ({
+        ...prevUserDetails,
+        id: id,
+      }));
+
+      return id;
+    } catch (error) {
+      console.error("Error fetching attribute:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+      // Fetch the 'id' attribute for the user's email
+      if (userDetails && userDetails.email && userDetails.role) {
+        fetchAttributeId(userDetails.email,userDetails.role).then((id) => {
+          if (id) {
+            // You can use the 'id' as needed
+            console.log("Attribute ID:", id);
+          }
+        });
+      }
+    }, [userDetails]);
+
 
   const login = (user) => {
     const email = user.email;
     // const id = `20${email.split('@')[0].slice(-5)}`; // Extract and format the id
     // console.log(id)
+    
+
     
     if (user.role === 'admin') {
       const adminList = require('../data/adminList.json'); // Assuming the path to the JSON file is correct
