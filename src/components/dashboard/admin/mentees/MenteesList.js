@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import deleteIcon from "../../../../images/delete_icon.png";
 import MenteeProfile from "./MenteeProfile";
 import menteeList from "../../../../data/menteeList.json";
+import MenteeUpload from "./MenteeUpload";
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
@@ -12,6 +13,7 @@ const MenteesList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [menteeToDelete, setMenteeToDelete] = useState(null);
   const [selectedMentee, setSelectedMentee] = useState(null);
+  const [menteeUploadCSV, setmenteeUploadCSV] = useState(false);
 
   // State for controlling the "Add Mentee" pop-up
   const [addMenteeModalVisible, setAddMenteeModalVisible] = useState(false);
@@ -105,6 +107,15 @@ const MenteesList = () => {
     setAddMenteeModalVisible(false);
   };
 
+  const handleOpenUploadCSV = () =>{
+    // console.log("here")
+    setmenteeUploadCSV(true)
+  }
+
+  const handleCloseUploadCSV = () => {
+    setmenteeUploadCSV(false)
+  }
+
   return (
     <div>
       <Navbar className="fixed-top" />
@@ -136,7 +147,7 @@ const MenteesList = () => {
           className={`modal ${addMenteeModalVisible ? "show" : ""}`}
           tabIndex="-1"
           role="dialog"
-          style={{ display: addMenteeModalVisible ? "block" : "none" }}
+          style={{ display: addMenteeModalVisible ? "block" : "none" ,backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
           aria-hidden="true"
         >
           <div className="modal-dialog">
@@ -243,7 +254,9 @@ const MenteesList = () => {
             </div>
           </div>
         </div>
-        <button className="btn btn-primary mx-2">Upload CSV</button>
+
+        <button className="btn btn-primary mx-2" onClick={handleOpenUploadCSV}>Upload CSV</button>
+
         <div className="table-container text-left">
           <div className="table-headers">
             <table className="table mt-4 mx-2" border="1">
@@ -387,6 +400,15 @@ const MenteesList = () => {
             </div>
           </div>
         </div>
+        
+        {menteeUploadCSV && (
+          <MenteeUpload 
+            isOpen = {menteeUploadCSV} 
+            closeModal = {handleCloseUploadCSV}
+            // onUpload = {onIpload}
+          />
+        )}
+
       </div>
     </div>
   );
