@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 import Navbar from "../../common/Navbar";
 import Questions from "./Questions";
+import axios from "axios";
 
 export default function RegistrationForm() {
   const { userDetails } = useAuth();
   const [step, setStep] = useState(1);
-  const [score, setScore] = useState(0);
+  // const [score, setScore] = useState(0);
 
   const [selectedOptions, setSelectedOptions] = useState({});
     // const [score, setScore] = useState(0);
@@ -22,24 +23,28 @@ export default function RegistrationForm() {
   };
 
   const handleSubmit = (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      let newScore = 0;
-      for (const questionIndex in selectedOptions) {
-          const selectedOption = selectedOptions[questionIndex];
-          const correctOption = questions[questionIndex].correctAnswer-1;
+    let newScore = 0;
+    for (const questionIndex in selectedOptions) {
+      const selectedOption = selectedOptions[questionIndex];
+      const correctOption = questions[questionIndex].correctAnswer - 1;
 
-          // console.log(selectedOption)
-          // console.log(correctOption)
+      // console.log(selectedOption)
+      // console.log(correctOption)
 
-          if (selectedOption === correctOption) {
-              newScore += 4; // Award 4 points for correct answer
-          }
+      if (selectedOption === correctOption) {
+        newScore += 4; // Award 4 points for correct answer
       }
+    }
 
-      // console.log(newScore)
-      setScore(newScore);
-      nextStep();
+    // console.log(newScore)
+    // setScore(newScore);
+    setFormData({
+      ...formData,
+      score: newScore,
+    });
+    nextStep();
   };
 
   const [formData, setFormData] = useState({
@@ -50,6 +55,7 @@ export default function RegistrationForm() {
     year: "",
     size: "",
     imgSrc: "",
+    score: 0,
   });
 
   const questions = [
@@ -139,11 +145,33 @@ export default function RegistrationForm() {
 
     // variable -> score
 
-    
     // console.log(score)
     // console.log(selectedOptions)
+    // Create a JSON object from the formData
+    const formDataJSON = {
+      id: formData.id,
+      name: formData.name,
+      email: formData.email,
+      department: formData.department,
+      year: formData.year,
+      size: formData.size,
+      imgSrc: formData.imgSrc,
+      score: formData.score,
+    };
 
-    navigate("/login");
+    // Make a POST request to your backend
+    axios
+      .post("http://127.0.0.1:8000/addMentor", formDataJSON)
+      .then((response) => {
+        console.log("Data sent to the backend:", response.data);
+        // Redirect to the next step or do any other necessary actions
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error sending data to the backend:", error);
+        // Handle the error as needed
+      });
+
   };
 
   return (
