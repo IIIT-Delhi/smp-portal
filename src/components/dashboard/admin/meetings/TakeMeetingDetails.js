@@ -10,6 +10,7 @@ export default function TakeMeetingDetails({
   handletitle,
   handletime,
   handledate,
+  userDetails,
   handleattendees,
   handleDescription,
 }) {
@@ -17,14 +18,15 @@ export default function TakeMeetingDetails({
 
   const handleButtonSave = (e) => {
     e.stopPropagation();
-    if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendees.length > 0 && currmeeting.Description) {
+    if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendees.length > 0 && currmeeting.description) {
       // If the form is valid, you can create the meeting object
       const newMeeting = {
-        scheduler_id: currmeeting.scheduler_id, // Provide the scheduler_id
+        id: currmeeting.id,
+        scheduler_id: userDetails.id, // Provide the scheduler_id
         date: currmeeting.date,
         time: currmeeting.time,
         attendee: currmeeting.attendees, // Assuming attendees is an array
-        description: currmeeting.Description,
+        description: currmeeting.description,
       };
       
       // Make a POST request to add the meeting

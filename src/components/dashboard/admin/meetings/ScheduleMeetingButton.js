@@ -7,7 +7,7 @@ const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
   const [showModal, setShowModal] = useState(false);
   const [currmeeting, setcurrmeeting] = useState({
     id: null,
-    schedulerId: userDetails.schedulerId,
+    schedulerId: userDetails.id,
     time: "",
     date: "",
     title: "",
@@ -19,7 +19,7 @@ const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
     setcurrmeeting({
       id: null,
       time: "",
-      schedulerId: userDetails.schedulerId,
+      schedulerId: userDetails.id,
       date: "",
       title: "",
       description: "",
@@ -32,29 +32,12 @@ const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
     setShowModal(false);
   };
 
-  const addMeetingOnBackend = async (meeting) => {
-    try {
-      // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
-      await axios
-        .post("http://127.0.0.1:8000/addMeeting/", meeting)
-        .then((response) => {
-          // If the backend successfully updates the meeting, update your local state
-          if (response.status === 200) {
-            setcurrmeeting(meeting); // Update the current meeting state
-            setmeetings((prevMeetings) => [...prevMeetings, meeting]); // Add the new meeting to meetings
-            setShowModal(false);
-            console.log("Meeting added successfully on the backend");
-          }
-        });
-    } catch (error) {
-      console.error("Error adding meeting on the backend:", error);
-      // Handle errors or display an error message to the user.
-    }
-  };
 
   const handleSaveModal = () => {
-    const newMeeting = { ...currmeeting, id: Date.now() };
-    addMeetingOnBackend(newMeeting);
+    const newMeeting = { ...currmeeting, id: Date.now()};
+    setcurrmeeting(newMeeting); // Update the current meeting state
+    setmeetings((prevMeetings) => [...prevMeetings, newMeeting]); // Add the new meeting to meetings
+    setShowModal(false);
   };
 
   const handletitle = (e) => {
@@ -117,7 +100,7 @@ const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
           width="30"
           height="30"
           fill="currentColor"
-          class="bi bi-plus-circle"
+          className="bi bi-plus-circle"
           viewBox="0 0 16 16"
         >
           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -134,6 +117,7 @@ const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
           handledate={handledate}
           handletime={handletime}
           handletitle={handletitle}
+          userDetails={userDetails}
           handleDescription={handleDescription}
         />
       )}

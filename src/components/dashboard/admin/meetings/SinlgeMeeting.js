@@ -156,6 +156,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handleSave={handleEditSave}
               handledate={handledate}
               handletime={handletime}
+              userDetails={userDetails}
               handletitle={handletitle}
               handleattendees={handleattendees}
               handleDescription={handleDescription}

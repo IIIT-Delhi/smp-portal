@@ -14,12 +14,11 @@ export const AuthProvider = ({ children }) => {
   const [isNewMentor, setisNewMentor] = useState(false);
   const fetchAttributeId = async (email, role) => {
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/getIdByEmail",
+      const response = await axios.get(
+        "http://127.0.0.1:8000/getIdByEmail/",
         { email: email, role: role }
       );
       const id = response.data.id;
-
       // Update the userDetails with the retrieved 'id'
       setUserDetails((prevUserDetails) => ({
         ...prevUserDetails,
