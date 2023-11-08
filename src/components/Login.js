@@ -3,22 +3,22 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import './style.css'
 import jwt_decode from "jwt-decode";
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from "react-router-dom";
-import { useEffect } from 'react';
+// import { useNavigate } from "react-router-dom";
+// import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 const Login = () => {
 
-    const {userDetails, login , validuser, isNewMentor} = useAuth();
-    const navigate = useNavigate();
+    const { login , validuser} = useAuth();
+    // const navigate = useNavigate();
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const currrole = params.get('role');
 
     // const [showTimer, setShowTimer] = useState(false);
-    const [timer, setTimer] = useState(3);
+    // const [timer, setTimer] = useState(3);
 
     // setvaliduser(null)
 
@@ -41,27 +41,27 @@ const Login = () => {
     }
 
 
-    useEffect(() => {
-        if (userDetails) {
-          navigate(`/dashboard/${userDetails.role}/profile`);
-        }
+    // useEffect(() => {
+    //     if (userDetails) {
+    //       navigate(`/dashboard/${userDetails.role}/profile`);
+    //     }
 
-        if (validuser === false) {
-          const interval = setInterval(() => {
-            setTimer(prevTimer => prevTimer - 1);
-          }, 1000);
+    //     if (validuser === false) {
+    //       const interval = setInterval(() => {
+    //         setTimer(prevTimer => prevTimer - 1);
+    //       }, 1000);
 
-          setTimeout(() => {
-              clearInterval(interval);
-              navigate('/login'); // Redirect to login page
-          }, 3000); // Wait for 3 seconds before redirecting
-        }
+    //       setTimeout(() => {
+    //           clearInterval(interval);
+    //           navigate('/login'); // Redirect to login page
+    //       }, 3000); // Wait for 3 seconds before redirecting
+    //     }
         
-        if(isNewMentor === true){
-          navigate('/registration');
-        } 
+    //     if(isNewMentor === true){
+    //       navigate('/registration');
+    //     } 
         
-    }, [userDetails, navigate, validuser,isNewMentor]);
+    // }, [userDetails, navigate, validuser,isNewMentor]);
 
 
   return (
