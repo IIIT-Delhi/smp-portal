@@ -183,26 +183,31 @@ def get_mentee_by_attribute(request):
         return JsonResponse(serialized_data, safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
-    
-def get_id_by_email(request):
-    if request.method == "GET":
-        data = json.loads(request.body.decode('utf-8'))
-        role = data.get('role')
-        if role == "admin":
-            entry = Admin.objects.get(email=data.get('email'))
-        elif role == "mentor":
-            entry = Candidate.objects.get(email=data.get('email'))
-        elif role == "mentee":
-            entry = Mentee.objects.get(email=data.get('email'))
 
-        data_dict = {
-            'id': entry.id,
-            'name': entry.name,
-            'email': entry.email
-        }
-        
-        serialized_data = json.dumps(data_dict)
-        return JsonResponse(serialized_data, safe=False)
+def get_id_by_email(request):
+    email = request.GET.get('email', None)
+    role = request.GET.get('role', None)
+    print(role)
+    if not email or not role:
+        return JsonResponse({'error': 'Invalid email or role'}, status=400)
+    
+    if role == "admin":
+        entry = Admin.objects.get(email=email)
+    elif role == "mentor":
+        entry = Candidate.objects.get(email=email)
+    elif role == "mentee":
+        entry = Mentee.objects.get(email=email)
+
+    data_dict = {
+        'id': entry.id,
+        'name': entry.name,
+        'email': entry.email
+    }
+    
+    serialized_data = json.dumps(data_dict)
+    return JsonResponse(serialized_data, safe=False)
+
+
 
 def delete_all_admins(request):
     # returns json ; {"message": "//message//"}

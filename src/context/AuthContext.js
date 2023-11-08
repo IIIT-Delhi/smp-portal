@@ -16,33 +16,35 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.get(
         "http://127.0.0.1:8000/getIdByEmail/",
-        { email: email, role: role }
+        { params: { email: email, role: role } }
       );
-      const id = response.data.id;
-      // Update the userDetails with the retrieved 'id'
-      setUserDetails((prevUserDetails) => ({
-        ...prevUserDetails,
-        id: id,
-      }));
-
-      return id;
+  
+      let id;
+  
+      if (typeof response.data === "string") {
+        // If response.data is a string, parse it as JSON
+        const dataObject = JSON.parse(response.data);
+        id = dataObject.id;
+      } else if (typeof response.data === "object") {
+        // If response.data is already an object, access id directly
+        id = response.data.id;
+      }
+  
+      if (id) {
+        // console.log("Attribute ID:", id);
+        // Update the userDetails with the retrieved 'id'
+        return id;
+      } else {
+        console.error("User ID not found in response data");
+        return null;
+      }
     } catch (error) {
       console.error("Error fetching attribute:", error);
       return null;
     }
   };
+  
 
-  useEffect(() => {
-      // Fetch the 'id' attribute for the user's email
-      if (userDetails && userDetails.email && userDetails.role) {
-        fetchAttributeId(userDetails.email,userDetails.role).then((id) => {
-          if (id) {
-            // You can use the 'id' as needed
-            console.log("Attribute ID:", id);
-          }
-        });
-      }
-    }, [userDetails]);
 
 
   const login = (user) => {
@@ -101,6 +103,16 @@ export const AuthProvider = ({ children }) => {
     } else {
       console.error('Invalid user role');
     }
+    fetchAttributeId(email,user.role).then((id) => {
+      if (id) {
+        // You can use the 'id' as needed
+        console.log("Attribute ID:", id);
+        setUserDetails((prevUserDetails) => ({
+          ...prevUserDetails,
+          id: id,
+        }));
+      }
+    });
   };
 
   const logout = () => {
