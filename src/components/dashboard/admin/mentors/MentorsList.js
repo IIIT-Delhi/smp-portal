@@ -3,38 +3,33 @@ import { useAuth } from "../../../../context/AuthContext";
 import React, { useState, useEffect } from "react";
 import deleteIcon from "../../../../images/delete_icon.png";
 import MentorProfile from "./MentorProfile";
-import mentorList from "../../../../data/mentorList.json";
 
 const MentorsList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
   const [mentors, setMentors] = useState([]);
-  useEffect(() => {
-    async function fetchMentorsData() {
-      try {
-        setMentors(mentorList);
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    }
+  // Function to fetch Mentor list from Django endpoint
+  const fetchMentorList = async () => {
+    try {
+      // Make an HTTP GET request to your Django endpoint
+      const response = await axios.get("http://127.0.0.1:8000/getAllMentors/"); // Replace with your Django API endpoint
 
-    fetchMentorsData();
+      // Update the state with the fetched Mentor list
+      setMentors(response.data);
+      console.log(mentees);
+    } catch (error) {
+      console.error("Error fetching Mentor list:", error);
+    }
+  };
+
+  // Call the function to fetch the Mentor list when the component loads
+  useEffect(() => {
+    fetchMentorList();
   }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const [mentorToDelete, setMentorToDelete] = useState(null);
   const [selectedMentor, setSelectedMentor] = useState(null);
 
-  // State for controlling the "Add Mentor" pop-up
-  const [addMentorModalVisible, setAddMentorModalVisible] = useState(false);
-
-  // State for mentor form fields
-  const [mentorForm, setMentorForm] = useState({
-    name: "",
-    id: "",
-    department: "",
-    email: "",
-    menteesToMentors: [],
-  });
   // Define the fixed widths for the header columns
   const headerColumnWidths = {
     name: "30%",
@@ -68,10 +63,20 @@ const MentorsList = () => {
     if (mentorToDelete) {
       // Perform mentor deletion logic (API call or other)
       // Update the mentors list after successful deletion
-      setMentors((prevMentors) =>
-        prevMentors.filter((mentor) => mentor.id !== mentorToDelete.id)
-      );
-      setMentorToDelete(null); // Clear the mentor to delete
+      axios
+        .post("http://127.0.0.1:8000/deleteMentorById/", mentorToDelete.id)
+        .then((response) => {
+          // If the backend successfully deletes the meeting, update your local state
+          if (response.status === 200) {
+            setMentors((prevMentors) =>
+              prevMentors.filter((mentor) => mentor.id !== mentorToDelete.id)
+            );
+            setMentorToDelete(null); // Clear the mentor to delete
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting meeting:", error);
+        });
     }
   };
 
@@ -82,35 +87,6 @@ const MentorsList = () => {
 
   const editMentorProfile = () => {
     console.log(`Edit Clicked for ${selectedMentor.name}`);
-  };
-
-  // Function to handle the form submission when adding a mentor
-  const handleAddMentor = () => {
-    // Form validation
-    if (
-      !mentorForm.name || // Check if name is empty
-      !mentorForm.id || // Check if roll number is empty
-      !mentorForm.department || // Check if department is empty
-      !mentorForm.email || // Check if email is empty
-      !mentorForm.menteesToMentors // Check if menteesToMentors is empty
-    ) {
-      // You can display an error message or handle validation as needed
-      console.error("Please fill in all required fields.");
-      return;
-    }
-
-    // Add the mentor to the list
-    setMentors([...mentors, mentorForm]);
-
-    // Clear the form and close the modal
-    setMentorForm({
-      name: "",
-      id: "",
-      department: "",
-      email: "",
-      menteesToMentors: [],
-    });
-    setAddMentorModalVisible(false);
   };
 
   return (
@@ -134,116 +110,6 @@ const MentorsList = () => {
             </button>
           </div>
         </div>
-        <button
-          className="btn btn-primary mx-2"
-          onClick={() => setAddMentorModalVisible(true)}
-        >
-          Add Mentor
-        </button>
-        <div
-          className={`modal ${addMentorModalVisible ? "show" : ""}`}
-          tabIndex="-1"
-          role="dialog"
-          style={{ display: addMentorModalVisible ? "block" : "none" }}
-          aria-hidden="true"
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Add Mentor</h5>
-                <button
-                  type="button"
-                  className="close"
-                  onClick={() => setAddMentorModalVisible(false)}
-                >
-                  <span>&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                {/* Mentor Form */}
-                <form onSubmit={handleAddMentor}>
-                  <div className="form-group">
-                    <label>Name *</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={mentorForm.name}
-                      onChange={(e) =>
-                        setMentorForm({ ...mentorForm, name: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Roll Number *</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={mentorForm.id}
-                      onChange={(e) =>
-                        setMentorForm({ ...mentorForm, id: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Email *</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={mentorForm.email}
-                      onChange={(e) =>
-                        setMentorForm({ ...mentorForm, email: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Department *</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={mentorForm.department}
-                      onChange={(e) =>
-                        setMentorForm({
-                          ...mentorForm,
-                          department: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>
-                      Mentees Assigned (comma separated roll numbers)
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={mentorForm.menteesToMentors}
-                      onChange={(e) =>
-                        setMentorForm({
-                          ...mentorForm,
-                          menteesToMentors: e.target.value
-                            .split(",")
-                            .map((item) => item.trim())
-                            .filter((item) => item.length > 0),
-                        })
-                      }
-                    />
-                  </div>
-
-                  {/* Add other form fields (Roll Number, Department, Email, Mentor Name, Mentor Email) here */}
-
-                  <button type="submit" className="btn btn-primary">
-                    Add
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button className="btn btn-primary mx-2">Upload CSV</button>
         <div className="table-container text-left">
           <div className="table-headers">
             <table className="table mt-4 mx-2" border="1">

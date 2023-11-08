@@ -3,7 +3,6 @@ import { useAuth } from "../../../../context/AuthContext";
 import React, { useState, useEffect } from "react";
 import deleteIcon from "../../../../images/delete_icon.png";
 import MenteeProfile from "./MenteeProfile";
-import menteeList from "../../../../data/menteeList.json";
 import MenteeUpload from "./MenteeUpload";
 import axios from 'axios';
 
@@ -46,6 +45,7 @@ const MenteesList = () => {
     email: "",
     mentorName: "",
     mentorEmail: "",
+    mentorId: "",
   });
   // Define the fixed widths for the header columns
   const headerColumnWidths = {
@@ -76,16 +76,26 @@ const MenteesList = () => {
   };
 
   // Function to delete a mentee
-  const handleDeleteMentee = () => {
-    if (menteeToDelete) {
-      // Perform mentee deletion logic (API call or other)
-      // Update the mentees list after successful deletion
-      setMentees((prevMentees) =>
-        prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
-      );
-      setMenteeToDelete(null); // Clear the mentee to delete
-    }
-  };
+const handleDeleteMentee = () => {
+  if (menteeToDelete) {
+    // Perform mentee deletion logic (API call or other)
+    // Update the mentors list after successful deletion
+    axios
+      .post("http://127.0.0.1:8000/deleteMenteeById/", menteeToDelete.id)
+      .then((response) => {
+        // If the backend successfully deletes the meeting, update your local state
+        if (response.status === 200) {
+          setMentees((prevMentees) =>
+            prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
+          );
+          setMenteeToDelete(null); // Clear the mentee to delete
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting meeting:", error);
+      });
+  }
+};
 
   // Function to cancel the mentee deletion
   const handleCancelDelete = () => {
@@ -105,7 +115,8 @@ const MenteesList = () => {
       !menteeForm.department || // Check if department is empty
       !menteeForm.email || // Check if email is empty
       !menteeForm.mentorName || // Check if mentor name is empty
-      !menteeForm.mentorEmail // Check if mentor email is empty
+      !menteeForm.mentorEmail || // Check if mentor email is empty
+      !menteeForm.mentorId // Check if mentor id is empty
     ) {
       // You can display an error message or handle validation as needed
       console.error("Please fill in all required fields.");
@@ -123,6 +134,7 @@ const MenteesList = () => {
       email: "",
       mentorName: "",
       mentorEmail: "",
+      mentorId: "",
     });
     setAddMenteeModalVisible(false);
   };
@@ -167,7 +179,10 @@ const MenteesList = () => {
           className={`modal ${addMenteeModalVisible ? "show" : ""}`}
           tabIndex="-1"
           role="dialog"
-          style={{ display: addMenteeModalVisible ? "block" : "none" ,backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
+          style={{
+            display: addMenteeModalVisible ? "block" : "none",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
           aria-hidden="true"
         >
           <div className="modal-dialog">
@@ -237,6 +252,20 @@ const MenteesList = () => {
                     />
                   </div>
                   <div className="form-group">
+                    <label>Mentor Roll Number</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.mentorId}
+                      onChange={(e) =>
+                        setMenteeForm({
+                          ...menteeForm,
+                          mentorId: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
                     <label>Mentor Name</label>
                     <input
                       type="text"
@@ -275,7 +304,9 @@ const MenteesList = () => {
           </div>
         </div>
 
-        <button className="btn btn-primary mx-2" onClick={handleOpenUploadCSV}>Upload CSV</button>
+        <button className="btn btn-primary mx-2" onClick={handleOpenUploadCSV}>
+          Upload CSV
+        </button>
 
         <div className="table-container text-left">
           <div className="table-headers">
@@ -420,15 +451,14 @@ const MenteesList = () => {
             </div>
           </div>
         </div>
-        
+
         {menteeUploadCSV && (
-          <MenteeUpload 
-            isOpen = {menteeUploadCSV} 
-            closeModal = {handleCloseUploadCSV}
+          <MenteeUpload
+            isOpen={menteeUploadCSV}
+            closeModal={handleCloseUploadCSV}
             // onUpload = {onIpload}
           />
         )}
-
       </div>
     </div>
   );
