@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from 'axios'; // Import Axios
+import { useSyncExternalStore } from "react";
 
 const AuthContext = createContext();
 
@@ -12,6 +13,8 @@ export const AuthProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null); // Store user details
   const [validuser, setvaliduser] = useState(null);
   const [isNewMentor, setisNewMentor] = useState(false);
+  const [tempUser, settempUser] = useState(null);
+
   const fetchAttributeId = async (email, role) => {
     try {
       const response = await axios.get(
@@ -44,37 +47,91 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
+  const fetchMentorStatus = async (Mentorid) => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/getMentorById/",
+        { params: { id : Mentorid} }
+      );
+  
+      let status;
+  
+      if (typeof response.data === "string") {
+        // If response.data is a string, parse it as JSON
+        const dataObject = JSON.parse(response.data);
+
+        status = dataObject.status;
+      } else if (typeof response.data === "object") {
+        // If response.data is already an object, access id directly
+        status = response.data.status;
+      }
+  
+      if (status) {
+        // console.log("Attribute ID:", id);
+        // Update the userDetails with the retrieved 'id'
+        return status;
+      } else {
+        console.error("User status not found in response data");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching status attribute:", error);
+      return null;
+    }
+  };
 
 
 
   const login = (user) => {
-    const email = user.email;
     // const id = `20${email.split('@')[0].slice(-5)}`; // Extract and format the id
     // console.log(id)
-    
+
+    fetchAttributeId(user.email,user.role).then((id) => {
+      if (id) {
+        // You can use the 'id' as needed
+        console.log("Attribute ID:", id);
+        settempUser((prevUserDetails) => ({
+          ...prevUserDetails,
+          id: id,
+        }));
+      }
+    });
 
     
     if (user.role === 'admin') {
-      const adminList = require('../data/adminList.json'); // Assuming the path to the JSON file is correct
-      const isAdmin = adminList.some((admin) => admin.email === email);
+      // const adminList = require('../data/adminList.json'); // Assuming the path to the JSON file is correct
+      // const isAdmin = adminList.some((admin) => admin.email === email);
+      const isAdmin = true;
+      if(tempUser.id === -1){
+        isAdmin = false;
+      }
 
       if (isAdmin) {
-        setUserDetails({ role: 'admin', email: user.email });
+        setUserDetails({ role: 'admin', email: user.email ,id:tempUser.id});
         setvaliduser(true)
         // Additional logic for admin login if needed
       } else {
         setvaliduser(false)
         console.error('User is not authorized as an admin');
       }
-    } else if (user.role === 'mentor') {
-      const mentorList = require('../data/mentorList.json');
-      const isMentor = mentorList.some((mentor) => mentor.email === email);
-
+    }
+    else if (user.role === 'mentor') {
+      // const mentorList = require('../data/mentorList.json');
+      // const isMentor = mentorList.some((mentor) => mentor.email === email);
+      const isMentor = true;
+      if(tempUser.id === -1){
+        isMentor = false
+      }
 
       if (isMentor) {
         // check for the status i.e.
         // If Rejected or Waiting -> simply show the equivalent message and then redirect to the login page
         // else Accepted then set the user details and vaild = true
+
+        const currstatus = fetchMentorStatus(tempUser.id);
+        // check for status
+
+
         setvaliduser(true)
         setUserDetails({ role: 'mentor', email: user.email });
         // Additional logic for mentor login if needed
@@ -82,37 +139,32 @@ export const AuthProvider = ({ children }) => {
 
         // make the user fill out the entry form. And check for third or fourth year
 
-
         // setvaliduser(false)
         setisNewMentor(true)
         setUserDetails({ role: "newUser", email: user.email });
         console.error('New User for Mentor');
       }
-    } else if (user.role === 'mentee') {
-      const menteeList = require('../data/menteeList.json');
-      const isMentee = menteeList.some((mentee) => mentee.email === email);
+    }
+    else if (user.role === 'mentee') {
+      // const menteeList = require('../data/menteeList.json');
+      // const isMentee = menteeList.some((mentee) => mentee.email === email);
+      const isMentee = true;
+      if(tempUser.id === -1){
+        isMentee = false
+      }
 
       if (isMentee) {
         setvaliduser(true)
-        setUserDetails({ role: 'mentee', email: user.email });
+        setUserDetails({ role: 'mentee', email: user.email ,id : tempUser.id});
         // Additional logic for mentee login if needed
       } else {
         setvaliduser(false)
         console.error('User is not authorized as a mentee');
       }
-    } else {
+    }
+    else {
       console.error('Invalid user role');
     }
-    fetchAttributeId(email,user.role).then((id) => {
-      if (id) {
-        // You can use the 'id' as needed
-        console.log("Attribute ID:", id);
-        setUserDetails((prevUserDetails) => ({
-          ...prevUserDetails,
-          id: id,
-        }));
-      }
-    });
   };
 
   const logout = () => {
