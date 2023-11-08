@@ -20,7 +20,7 @@ class Candidate(models.Model):
     imgSrc = models.TextField()
 
     def __str__(self):
-        return self.roll_no
+        return self.id
 
 class Mentee(models.Model):
     id = models.CharField(primary_key=True)

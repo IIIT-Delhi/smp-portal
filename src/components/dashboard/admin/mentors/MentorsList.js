@@ -65,7 +65,8 @@ const MentorsList = () => {
       // Perform mentor deletion logic (API call or other)
       // Update the mentors list after successful deletion
       axios
-        .post("http://127.0.0.1:8000/deleteMentorById/", mentorToDelete.id)
+        .post("http://127.0.0.1:8000/deleteMentorById/",
+        JSON.stringify({ id : mentorToDelete.id}))
         .then((response) => {
           // If the backend successfully deletes the meeting, update your local state
           if (response.status === 200) {
