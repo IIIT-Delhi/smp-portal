@@ -24,6 +24,7 @@ const MenteeProfile = ({ mentee, onClose, onEdit }) => {
               <p>Department: {mentee.department}</p>
               <p>Mentor Name: {mentee.mentorName}</p>
               <p>Mentor Email: {mentee.mentorEmail}</p>
+              <p>Mentor Roll Number: {mentee.mentorId}</p>
               {/* Add more mentee profile details here */}
             </div>
           </div>
@@ -35,9 +36,9 @@ const MenteeProfile = ({ mentee, onClose, onEdit }) => {
             >
               Close
             </button>
-            <button type="button" className="btn btn-primary" onClick={onEdit}>
+            {/* <button type="button" className="btn btn-primary" onClick={onEdit}>
               Edit
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
