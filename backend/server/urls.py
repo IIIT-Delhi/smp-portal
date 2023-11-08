@@ -36,5 +36,6 @@ urlpatterns = [
 
     path('uploadCSV/', views.upload_CSV, name='uploadCSV'),
     path('addMeeting/', views.add_meeting, name='addMeeting'),
-    path('editMettingById/', views.edit_metting_by_id, name='editMettingById'),
+    path('editMeetingById/', views.edit_meeting_by_id, name='editMeetingById'),
+    path('getMeetings/', views.get_meetings, name='getMeetings'),
 ]

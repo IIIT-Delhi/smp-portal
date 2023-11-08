@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState(null); // Store user details
   const [validuser, setvaliduser] = useState(null);
   const [isNewMentor, setisNewMentor] = useState(false);
-  const [tempUser, settempUser] = useState(null);
 
   const fetchAttributeId = async (email, role) => {
     try {
@@ -82,32 +81,22 @@ export const AuthProvider = ({ children }) => {
 
 
 
-  const login = (user) => {
+  const login = async (user) => {
     // const id = `20${email.split('@')[0].slice(-5)}`; // Extract and format the id
     // console.log(id)
 
-    fetchAttributeId(user.email,user.role).then((id) => {
-      if (id) {
-        // You can use the 'id' as needed
-        console.log("Attribute ID:", id);
-        settempUser((prevUserDetails) => ({
-          ...prevUserDetails,
-          id: id,
-        }));
-      }
-    });
+    const id = await fetchAttributeId(user.email, user.role);
 
-    
+  
     if (user.role === 'admin') {
       // const adminList = require('../data/adminList.json'); // Assuming the path to the JSON file is correct
       // const isAdmin = adminList.some((admin) => admin.email === email);
-      const isAdmin = true;
-      if(tempUser.id === -1){
+      let isAdmin = true;
+      if(id === '-1'){
         isAdmin = false;
       }
-
       if (isAdmin) {
-        setUserDetails({ role: 'admin', email: user.email ,id:tempUser.id});
+        setUserDetails({ role: 'admin', email: user.email ,id:id});
         setvaliduser(true)
         // Additional logic for admin login if needed
       } else {
@@ -118,17 +107,18 @@ export const AuthProvider = ({ children }) => {
     else if (user.role === 'mentor') {
       // const mentorList = require('../data/mentorList.json');
       // const isMentor = mentorList.some((mentor) => mentor.email === email);
-      const isMentor = true;
-      if(tempUser.id === -1){
-        isMentor = false
+      let isMentor = true;
+      console.log("here")
+      if(id === -1){
+        isMentor = false;
       }
 
       if (isMentor) {
         // check for the status i.e.
         // If Rejected or Waiting -> simply show the equivalent message and then redirect to the login page
         // else Accepted then set the user details and vaild = true
-
-        const currstatus = fetchMentorStatus(tempUser.id);
+        console.log("mei gdha hu")
+        const currstatus = fetchMentorStatus(id);
         // check for status
 
 
@@ -138,24 +128,23 @@ export const AuthProvider = ({ children }) => {
       } else {
 
         // make the user fill out the entry form. And check for third or fourth year
-
+        console.log('New User for Mentor');
         // setvaliduser(false)
         setisNewMentor(true)
-        setUserDetails({ role: "newUser", email: user.email });
-        console.error('New User for Mentor');
+        // setUserDetails({ role: "newUser", email: user.email });
       }
     }
     else if (user.role === 'mentee') {
       // const menteeList = require('../data/menteeList.json');
       // const isMentee = menteeList.some((mentee) => mentee.email === email);
-      const isMentee = true;
-      if(tempUser.id === -1){
+      let isMentee = true;
+      if(id === '-1'){
         isMentee = false
       }
 
       if (isMentee) {
         setvaliduser(true)
-        setUserDetails({ role: 'mentee', email: user.email ,id : tempUser.id});
+        setUserDetails({ role: 'mentee', email: user.email ,id : id});
         // Additional logic for mentee login if needed
       } else {
         setvaliduser(false)
