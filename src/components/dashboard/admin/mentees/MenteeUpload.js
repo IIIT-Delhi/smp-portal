@@ -5,7 +5,7 @@ import axios from 'axios';
 
 Modal.setAppElement('#root');
 
-const MenteeUpload = ({closeModal }) => {
+const MenteeUpload = ({closeModal,fetchMenteeList }) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -28,6 +28,7 @@ const MenteeUpload = ({closeModal }) => {
                 },
             });
             alert('File uploaded successfully');
+            fetchMenteeList();
         } catch (error) {
             console.error('Error uploading file', error);
         }

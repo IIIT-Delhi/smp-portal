@@ -1,28 +1,24 @@
 import React from "react";
-import menteesData from "../../../../data/menteeList.json";
 
 const MentorProfile = ({ mentor, onClose, onEdit }) => {
   if (!mentor) {
     return null;
   }
   // Function to find mentee details by ID
-  const findMenteeById = (id) => {
-    return menteesData.find((mentee) => mentee.id === id);
-  };
   // Create a table row for each mentee
-  const menteeRows = mentor.menteesToMentors.map((menteeId) => {
-    const mentee = findMenteeById(menteeId);
-    if (mentee) {
-      return (
-        <tr key={menteeId}>
-          <td>{mentee.name}</td>
-          <td>{mentee.id}</td>
-          <td>{mentee.email}</td>
-        </tr>
-      );
-    }
-    return null;
-  });
+const menteeRows = mentor.menteesToMentors.map((mentee) => {
+  // mentee should be an array with id, name, and email
+  const [id, name, email] = mentee;
+  
+  return (
+    <tr key={id}>
+      <td>{name}</td>
+      <td>{id}</td>
+      <td>{email}</td>
+    </tr>
+  );
+});
+
 
   return (
     <div className="modal fade show" style={{ display: "block" }}>
