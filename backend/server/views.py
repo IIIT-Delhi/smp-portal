@@ -187,26 +187,31 @@ def get_mentee_by_attribute(request):
 def get_id_by_email(request):
     email = request.GET.get('email', None)
     role = request.GET.get('role', None)
-    print(role)
-    if not email or not role:
-        return JsonResponse({'error': 'Invalid email or role'}, status=400)
-    
-    if role == "admin":
-        entry = Admin.objects.get(email=email)
-    elif role == "mentor":
-        entry = Candidate.objects.get(email=email)
-    elif role == "mentee":
-        entry = Mentee.objects.get(email=email)
+    try: 
+        if not email or not role:
+            return JsonResponse({'error': 'Invalid email or role'}, status=400)
+        
+        if role == "admin":
+            entry = Admin.objects.get(email=email)
+        elif role == "mentor":
+            entry = Candidate.objects.get(email=email)
+        elif role == "mentee":
+            entry = Mentee.objects.get(email=email)
 
-    data_dict = {
-        'id': entry.id,
-        'name': entry.name,
-        'email': entry.email
-    }
-    
-    serialized_data = json.dumps(data_dict)
-    return JsonResponse(serialized_data, safe=False)
-
+        data_dict = {
+            'id': entry.id,
+            'name': entry.name,
+            'email': entry.email
+        }
+        
+        serialized_data = json.dumps(data_dict)
+        return JsonResponse(serialized_data, safe=False)
+    except: 
+        data_dict = {
+            'id': -1
+        }
+        serialized_data = json.dumps(data_dict)
+        return JsonResponse(serialized_data, safe=False)
 
 
 def delete_all_admins(request):
@@ -463,7 +468,7 @@ def add_meeting(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         print(data)
-        scheduler_id = data.get('schedulerId')
+        scheduler_id = data.get('scheduler_id')
         date = data.get('date')
         time = data.get('time')
         attendeelist=data.get('attendee')
@@ -498,10 +503,12 @@ def add_meeting(request):
         return JsonResponse({"message": "Invalid request method"})
 
 @csrf_exempt
-def edit_metting_by_id(request):
+def edit_meeting_by_id(request):
     # returns json ; {"message": "//message//"}
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        data = data[0]
+        print(data.get('id'))
         meeting = Meetings.objects.get(meeting_id=data.get('id'))
         meeting.scheduler_id = data.get('scheduler_id')
         meeting.date = data.get('date')
@@ -514,18 +521,15 @@ def edit_metting_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-
 def get_meetings(request):
-    if request.method == "POST":
-        user_type = request.POST.get('user_type')  # You should provide the user type in the request
-        user_id = request.POST.get('user_id')  # You should provide the user's ID in the request
-
-        # Get the current date and time
+    if request.method == "GET":
+        user_type = request.GET.get("role")
+        email = request.GET.get('email')
+        user_id = request.GET.get('id')
         current_datetime = datetime.now()
-
+        
         if user_type == "admin":
-            # Return all meetings
-            all_meetings = Meetings.objects.all()
+            all_meetings = Meetings.objects.all().values()
         elif user_type == "mentor":
             # Return meetings organized by the mentor, and meetings where the mentor is an attendee (1 or 3)
             organized_meetings = Meetings.objects.filter(scheduler_id=user_id)
@@ -547,24 +551,18 @@ def get_meetings(request):
 
         # Categorize meetings based on their date and time
         for meeting in all_meetings:
-            meeting_date = datetime.strptime(f"{meeting.date} {meeting.time}", '%Y-%m-%d %I:%M %p')
+            meeting_date = datetime.strptime(f"{meeting['date']} {meeting['time']}", '%Y-%m-%d %H:%M')
             if meeting_date < current_datetime:
                 previous_meetings.append(meeting)
             elif meeting_date > current_datetime:
                 upcoming_meetings.append(meeting)
-            else:
-                next_meetings.append(meeting)
 
-        # Create a dictionary to store the categorized meetings
         meetings_data = {
             "previous_meetings": previous_meetings,
-            "next_meetings": next_meetings,
-            "upcoming_meetings": upcoming_meetings,
+            "next_meetings": upcoming_meetings[0],
+            "upcoming_meetings": upcoming_meetings
         }
-
-        # Serialize the data
-        serialized_data = serializers.serialize("json", meetings_data)
-        return JsonResponse(serialized_data, safe=False)
+        return JsonResponse(meetings_data, safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
