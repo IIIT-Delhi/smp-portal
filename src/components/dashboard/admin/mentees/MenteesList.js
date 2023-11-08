@@ -5,11 +5,31 @@ import deleteIcon from "../../../../images/delete_icon.png";
 import MenteeProfile from "./MenteeProfile";
 import menteeList from "../../../../data/menteeList.json";
 import MenteeUpload from "./MenteeUpload";
+import axios from 'axios';
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
-  const [mentees, setMentees] = useState(menteeList);
+  const [mentees, setMentees] = useState([]);
+
+  // Function to fetch Mentee list from Django endpoint
+  const fetchMenteeList = async () => {
+    try {
+      // Make an HTTP GET request to your Django endpoint
+      const response = await axios.get('http://127.0.0.1:8000/getAllMentees/'); // Replace with your Django API endpoint
+
+      // Update the state with the fetched Mentee list
+      setMentees(response.data);
+      console.log(mentees);
+    } catch (error) {
+      console.error('Error fetching Mentee list:', error);
+    }
+  };
+
+  // Call the function to fetch the Mentee list when the component loads
+  useEffect(() => {
+    fetchMenteeList();
+  }, []);
   const [searchTerm, setSearchTerm] = useState("");
   const [menteeToDelete, setMenteeToDelete] = useState(null);
   const [selectedMentee, setSelectedMentee] = useState(null);
@@ -413,5 +433,6 @@ const MenteesList = () => {
     </div>
   );
 };
+
 
 export default MenteesList;

@@ -161,7 +161,7 @@ export default function RegistrationForm() {
 
     // Make a POST request to your backend
     axios
-      .post("http://127.0.0.1:8000/addMentor", formDataJSON)
+      .post("http://127.0.0.1:8000/addCandidate/", formDataJSON)
       .then((response) => {
         console.log("Data sent to the backend:", response.data);
         // Redirect to the next step or do any other necessary actions

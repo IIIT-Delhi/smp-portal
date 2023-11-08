@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import Navbar from "../../common/Navbar";
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Import Axios
+import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
 import SinlgeMeeting from "./SinlgeMeeting";
 import ScheduleMeetingButton from "./ScheduleMeetingButton";
@@ -8,6 +8,30 @@ import ScheduleMeetingButton from "./ScheduleMeetingButton";
 export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   const [meetings, setmeetings] = useState([]);
+  const fetchMeetings = async () => {
+    try {
+      console.log(userDetails)
+      const response = await axios.get("http://127.0.0.1:8000/getMeetings/", {
+        params: userDetails,
+      });
+      console.log("respnse : " + response.data)
+      if (response.status === 200) {
+        console.log("response : " + response.data)
+        if (typeof response.data === "string") {
+          const dataObject = JSON.parse(response.data);
+          setmeetings(dataObject)
+        } else if (typeof response.data === "object") {
+          setmeetings(response.data)
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching meetings:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMeetings();
+  }, []);
 
   const deleteMeeting = (meetingId) => {
     // Send a request to delete the meeting on the backend
