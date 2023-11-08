@@ -442,6 +442,7 @@ const MenteesList = () => {
           <MenteeUpload
             isOpen={menteeUploadCSV}
             closeModal={handleCloseUploadCSV}
+            fetchMenteeList={fetchMenteeList}
             // onUpload = {onIpload}
           />
         )}

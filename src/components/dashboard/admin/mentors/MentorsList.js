@@ -2,6 +2,7 @@ import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
 import React, { useState, useEffect } from "react";
 import deleteIcon from "../../../../images/delete_icon.png";
+import axios from 'axios'; // Import Axios
 import MentorProfile from "./MentorProfile";
 
 const MentorsList = () => {
@@ -16,7 +17,7 @@ const MentorsList = () => {
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
-      console.log(mentees);
+      console.log(mentors);
     } catch (error) {
       console.error("Error fetching Mentor list:", error);
     }

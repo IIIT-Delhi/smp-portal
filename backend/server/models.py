@@ -71,7 +71,7 @@ class Meetings(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.meeting_id
+        return str(self.meeting_id)
 
 class Attendance(models.Model):
     attendee_id = models.CharField(primary_key=True)
