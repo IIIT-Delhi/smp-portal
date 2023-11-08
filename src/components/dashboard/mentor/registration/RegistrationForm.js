@@ -50,7 +50,7 @@ export default function RegistrationForm() {
   const [formData, setFormData] = useState({
     id: "",
     name: "",
-    email: userDetails.email,
+    email: "",
     department: "",
     year: "",
     size: "",

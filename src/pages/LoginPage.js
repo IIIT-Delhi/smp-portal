@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
   // const navigate = useNavigate();
-  const { setvaliduser , setisNewMentor} = useAuth();
+  // const {setvaliduser , setisNewMentor} = useAuth();
   // const { login } = useAuth(); // Get the login function from the AuthContext
 
   // const handleLogin = (userDetails) => {
@@ -16,8 +16,8 @@ const LoginPage = () => {
   //   // Redirect to the role-specific dashboard with the updated userDetails
   //   navigate(`/dashboard/${userDetails}/profile`);
   // };
-  setvaliduser(null)
-  setisNewMentor(false)
+  // setvaliduser(null)
+  // setisNewMentor(false)
 
   return (
     <div

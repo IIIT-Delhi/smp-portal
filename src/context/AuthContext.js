@@ -3,7 +3,6 @@ import React, {
   useContext,
   useEffect,
   useState,
-  useNavigate,
 } from "react";
 import axios from 'axios'; // Import Axios
 // import { useSyncExternalStore } from "react";
@@ -16,9 +15,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   // const [user, setUser] = useState(null); // Store user information
-  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(null); // Store user details
-  const [validuser, setvaliduser] = useState(null);
 
   const fetchAttributeId = async (email, role) => {
     try {
@@ -54,32 +51,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (user) => {
     const userData = await fetchAttributeId(user.email, user.role);
-    const id = userData.id;
-    if (id === "-1") {
-      if (user.role === "admin" || user.role === "mentee") {
-        // Show "Invalid User" message and redirect to the login page
-        setvaliduser(false);
-      } else if (user.role === "mentor") {
-        // Redirect to RegistrationForm.js
-        navigate("/registration");
-      }
-    } else {
-      setvaliduser(true);
-      if(user.role === "mentor"){
-        const status = userData.status;
-        if (status === "1" || status === "2") {
-          // Redirect to RegistrationForm.js
-          navigate("/registration");
-        } else if (status === "3") {
-          // Redirect to the profile based on the role
-          navigate(`/dashboard/${user.role}/profile`);
-        }
-      }else{
-        // Redirect to the profile based on the role
-        navigate(`/dashboard/${user.role}/profile`);
-      }
-    }
+  
+    const updatedUserData = { ...userData, role: user.role };
 
+    setUserDetails(updatedUserData);
     // Additional logic for different scenarios if needed
   };
 
@@ -102,8 +77,6 @@ export const AuthProvider = ({ children }) => {
     userDetails,
     login,
     logout,
-    validuser,
-    setvaliduser
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -125,20 +125,19 @@ def get_id_by_email(request):
             return JsonResponse({'error': 'Invalid email or role'}, status=400)
         
         if role == "admin":
-            entry = Admin.objects.get(email=email)
+            entry = Admin.objects.filter(email=email).values()
         elif role == "mentor":
-            entry = Candidate.objects.get(email=email)
+            entry = Candidate.objects.filter(email=email).values()
         elif role == "mentee":
-            entry = Mentee.objects.get(email=email)
+            entry = Mentee.objects.filter(email=email).values()
 
-        data_dict = {
-            'id': entry.id,
-            'name': entry.name,
-            'email': entry.email
-        }
-        
-        serialized_data = json.dumps(data_dict)
-        return JsonResponse(serialized_data, safe=False)
+        if(len(entry) == 0):
+            data_dict = {
+                'id': -1
+            }
+            serialized_data = json.dumps(data_dict)
+            return JsonResponse(serialized_data, safe=False)
+        return JsonResponse(entry[0], safe=False)
     except: 
         data_dict = {
             'id': -1
@@ -200,7 +199,6 @@ def delete_mentor_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-    
 # Done
 def delete_all_mentees(request):
     # returns json ; {"message": "//message//"}
@@ -220,7 +218,6 @@ def delete_mentee_by_id(request):
         return JsonResponse({"message": "deleted "+str(deleted[0])+" database entries"})
     else:
         return JsonResponse({"message": "Invalid request method"})
-
 
 @csrf_exempt
 def add_admin(request):
