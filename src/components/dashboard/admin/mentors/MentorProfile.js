@@ -66,9 +66,9 @@ const MentorProfile = ({ mentor, onClose, onEdit }) => {
             >
               Close
             </button>
-            <button type="button" className="btn btn-primary" onClick={onEdit}>
+            {/* <button type="button" className="btn btn-primary" onClick={onEdit}>
               Edit
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
