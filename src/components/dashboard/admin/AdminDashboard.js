@@ -1,7 +1,7 @@
 import Navbar from "../common/Navbar";
 import { useAuth } from "../../../context/AuthContext";
 import React, { useState, useEffect } from "react";
-import adminList from "../../../data/adminList.json";
+// import adminList from "../../../data/adminList.json";
 
 const AdminDashboard = () => {
   const { userDetails } = useAuth();
@@ -11,21 +11,23 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         // Find the admin with the matching email
-        const matchingAdmin = adminList.find((admin) => admin.email === userDetails.email);
+        // const matchingAdmin = adminList.find((admin) => admin.email === userDetails.email);
+        
+        setAdminData(userDetails)
 
-        if (matchingAdmin) {
-          // Set the matching admin's data to the state
-          setAdminData(matchingAdmin);
-        } else {
-          console.error("Admin not found for email: ", userDetails.email);
-        }
+        // if (matchingAdmin) {
+        //   // Set the matching admin's data to the state
+        //   setAdminData(matchingAdmin);
+        // } else {
+        //   console.error("Admin not found for email: ", userDetails.email);
+        // }
       } catch (error) {
         console.error("Error fetching admin data:", error);
       }
     };
 
     fetchData();
-  }, [userDetails.email]);
+  });
 
   return (
     <div>
