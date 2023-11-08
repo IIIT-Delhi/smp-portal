@@ -8,6 +8,11 @@ import ScheduleMeetingButton from "./ScheduleMeetingButton";
 export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   const [meetings, setmeetings] = useState([]);
+
+  const [previousMeetings, setPreviousMeetings] = useState([]);
+  const [upcomingMeetings, setUpcomingMeetings] = useState([]);
+  const [nextMeetings, setNextMeetings] = useState([]);
+  
   const fetchMeetings = async () => {
     try {
       console.log(userDetails)

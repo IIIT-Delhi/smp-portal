@@ -109,7 +109,7 @@ export const AuthProvider = ({ children }) => {
       // const isMentor = mentorList.some((mentor) => mentor.email === email);
       let isMentor = true;
       console.log("here")
-      if(id === -1){
+      if(id === '-1'){
         isMentor = false;
       }
 
@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }) => {
         console.log('New User for Mentor');
         // setvaliduser(false)
         setisNewMentor(true)
-        // setUserDetails({ role: "newUser", email: user.email });
+        setUserDetails({ role: "newUser", email: user.email });
       }
     }
     else if (user.role === 'mentee') {

@@ -29,7 +29,7 @@ const Login = () => {
 
     function handleLogin(result){
         var decoded = jwt_decode(result.credential);
-        console.log("Login Succesful")
+        // console.log("Login Succesful")
         console.log(decoded)
         
         const userObject = {
@@ -42,7 +42,7 @@ const Login = () => {
 
 
     useEffect(() => {
-        if (userDetails) {
+        if (userDetails && !isNewMentor) {
           navigate(`/dashboard/${userDetails.role}/profile`);
         }
 
