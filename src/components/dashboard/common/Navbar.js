@@ -40,7 +40,7 @@ const Navbar = () => {
         style={{ height: "60px", marginRight: "10px" }}
       />
       <ul className="navbar-nav ml-autp">
-        {(role === "mentee" || role === "mentor" || role === "admin") && (
+        {(role === "mentee" || role === "mentor" || role === "admin") && (userDetails.id!==-1 && role==="mentor" && userDetails.status === 3) &&(
           <>
             <li className="nav-item" style={listStyle}>
               <Link

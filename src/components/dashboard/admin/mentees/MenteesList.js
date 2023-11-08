@@ -15,13 +15,13 @@ const MenteesList = () => {
   const fetchMenteeList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get('http://127.0.0.1:8000/getAllMentees/'); // Replace with your Django API endpoint
+      const response = await axios.get("http://127.0.0.1:8000/getAllMentees/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
       console.log(mentees);
     } catch (error) {
-      console.error('Error fetching Mentee list:', error);
+      console.error("Error fetching Mentee list:", error);
     }
   };
 
@@ -75,27 +75,56 @@ const MenteesList = () => {
     setMenteeToDelete(mentee);
   };
 
+  const addMenteeOnBackend = async (mentee) => {
+    try {
+      // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
+      await axios
+        .post("http://127.0.0.1:8000/addMentee/", mentee)
+        .then((response) => {
+          // If the backend successfully updates the meeting, update your local state
+          if (response.status === 200) {
+            setMentees([...mentees, mentee]);
+
+            // Clear the form and close the modal
+            setMenteeForm({
+              name: "",
+              id: "",
+              department: "",
+              email: "",
+              mentorId: "",
+            });
+            setAddMenteeModalVisible(false);
+            console.log("Mentee added successfully on the backend");
+          }
+        });
+    } catch (error) {
+      console.error("Error updating meeting on the backend:", error);
+      // Handle errors or display an error message to the user.
+    }
+  };
+
   // Function to delete a mentee
-const handleDeleteMentee = () => {
-  if (menteeToDelete) {
-    // Perform mentee deletion logic (API call or other)
-    // Update the mentors list after successful deletion
-    axios
-      .post("http://127.0.0.1:8000/deleteMenteeById/", menteeToDelete.id)
-      .then((response) => {
-        // If the backend successfully deletes the meeting, update your local state
+  const handleDeleteMentee = async () => {
+    if (menteeToDelete) {
+      // Perform mentee deletion logic (API call or other)
+      // Update the mentors list after successful deletion
+
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/deleteMenteeById/",
+          JSON.stringify({ id: menteeToDelete.id })
+        );
         if (response.status === 200) {
           setMentees((prevMentees) =>
             prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
           );
           setMenteeToDelete(null); // Clear the mentee to delete
         }
-      })
-      .catch((error) => {
-        console.error("Error deleting meeting:", error);
-      });
-  }
-};
+      } catch (error) {
+        console.error("Error deleting mentee:", error);
+      }
+    }
+  };
 
   // Function to cancel the mentee deletion
   const handleCancelDelete = () => {
@@ -114,39 +143,24 @@ const handleDeleteMentee = () => {
       !menteeForm.id || // Check if roll number is empty
       !menteeForm.department || // Check if department is empty
       !menteeForm.email || // Check if email is empty
-      !menteeForm.mentorName || // Check if mentor name is empty
-      !menteeForm.mentorEmail || // Check if mentor email is empty
       !menteeForm.mentorId // Check if mentor id is empty
     ) {
       // You can display an error message or handle validation as needed
       console.error("Please fill in all required fields.");
       return;
     }
-
     // Add the mentee to the list
-    setMentees([...mentees, menteeForm]);
-
-    // Clear the form and close the modal
-    setMenteeForm({
-      name: "",
-      id: "",
-      department: "",
-      email: "",
-      mentorName: "",
-      mentorEmail: "",
-      mentorId: "",
-    });
-    setAddMenteeModalVisible(false);
+    addMenteeOnBackend(menteeForm);
   };
 
-  const handleOpenUploadCSV = () =>{
+  const handleOpenUploadCSV = () => {
     // console.log("here")
-    setmenteeUploadCSV(true)
-  }
+    setmenteeUploadCSV(true);
+  };
 
   const handleCloseUploadCSV = () => {
-    setmenteeUploadCSV(false)
-  }
+    setmenteeUploadCSV(false);
+  };
 
   return (
     <div>
@@ -261,34 +275,6 @@ const handleDeleteMentee = () => {
                         setMenteeForm({
                           ...menteeForm,
                           mentorId: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Mentor Name</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={menteeForm.mentorName}
-                      onChange={(e) =>
-                        setMenteeForm({
-                          ...menteeForm,
-                          mentorName: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Mentor Email</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={menteeForm.mentorEmail}
-                      onChange={(e) =>
-                        setMenteeForm({
-                          ...menteeForm,
-                          mentorEmail: e.target.value,
                         })
                       }
                     />
@@ -456,6 +442,7 @@ const handleDeleteMentee = () => {
           <MenteeUpload
             isOpen={menteeUploadCSV}
             closeModal={handleCloseUploadCSV}
+            fetchMenteeList={fetchMenteeList}
             // onUpload = {onIpload}
           />
         )}

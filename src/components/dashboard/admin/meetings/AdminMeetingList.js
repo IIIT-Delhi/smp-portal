@@ -9,10 +9,6 @@ export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   const [meetings, setmeetings] = useState([]);
 
-  const [previousMeetings, setPreviousMeetings] = useState([]);
-  const [upcomingMeetings, setUpcomingMeetings] = useState([]);
-  const [nextMeetings, setNextMeetings] = useState([]);
-  
   const fetchMeetings = async () => {
     try {
       console.log(userDetails)
@@ -41,7 +37,7 @@ export default function AdminMeetingList() {
   const deleteMeeting = (meetingId) => {
     // Send a request to delete the meeting on the backend
     axios
-      .post("http://127.0.0.1:8000/deleteMeetingById/", meetingId)
+      .get("http://127.0.0.1:8000/deleteMeetingById/", meetingId)
       .then((response) => {
         // If the backend successfully deletes the meeting, update your local state
         if (response.status === 200) {

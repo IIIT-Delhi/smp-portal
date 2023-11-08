@@ -2,6 +2,7 @@ import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
 import React, { useState, useEffect } from "react";
 import deleteIcon from "../../../../images/delete_icon.png";
+import axios from 'axios'; // Import Axios
 import MentorProfile from "./MentorProfile";
 
 const MentorsList = () => {
@@ -16,7 +17,7 @@ const MentorsList = () => {
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
-      console.log(mentees);
+      console.log(mentors);
     } catch (error) {
       console.error("Error fetching Mentor list:", error);
     }
@@ -64,7 +65,8 @@ const MentorsList = () => {
       // Perform mentor deletion logic (API call or other)
       // Update the mentors list after successful deletion
       axios
-        .post("http://127.0.0.1:8000/deleteMentorById/", mentorToDelete.id)
+        .post("http://127.0.0.1:8000/deleteMentorById/",
+        JSON.stringify({ id : mentorToDelete.id}))
         .then((response) => {
           // If the backend successfully deletes the meeting, update your local state
           if (response.status === 200) {
