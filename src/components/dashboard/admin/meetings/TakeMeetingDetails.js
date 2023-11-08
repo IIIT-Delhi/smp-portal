@@ -37,8 +37,10 @@ export default function TakeMeetingDetails({
           },
         })
         .then((response) => {
-          alert('Meeting added successfully');
+          if (response.status === 200){
+            alert('Meeting added successfully');
           handleSave();
+          }
         })
         .catch((error) => {
           console.error('Error adding meeting', error);
