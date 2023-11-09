@@ -1,4 +1,6 @@
 from io import StringIO
+import math
+import random
 from django.shortcuts import render, HttpResponse
 from django.core import serializers
 from django.http import JsonResponse
@@ -34,7 +36,7 @@ def get_admin_by_id(request):
 def get_all_mentors(request):
     # returns list of json ; [{details}, {details}, ...]
     if request.method == "GET":
-        mentors_from_candidates = Candidate.objects.filter(status=3).values()
+        mentors_from_candidates = Candidate.objects.filter(status=5).values()
         for mentor in mentors_from_candidates:
             # adding other 'goodiesStatus' and 'reimbursement' details
             id_to_search = mentor['id']
@@ -59,7 +61,7 @@ def get_mentor_by_id(request):
     # returns list of json with one element; [{details}]
     if request.method == "POST":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
-        mentor = Candidate.objects.filter(status=3, id=id_to_search).values()
+        mentor = Candidate.objects.filter(status=5, id=id_to_search).values()
 
         # adding 'goodiesStatus' and 'reimbursement' details
         other_details = Mentor.objects.filter(id=id_to_search).values()
@@ -189,7 +191,7 @@ def delete_admin_by_id(request):
 def delete_all_mentors(request):
     # returns json ; {"message": "//message//"}
     if request.method == "GET":
-        deleted = Candidate.objects.filter(status=3).delete()
+        deleted = Candidate.objects.filter(status=5).delete()
         deleted = Mentor.objects.all().delete()
         return JsonResponse({"message": "deleted "+str(deleted[0])+" database entries"})
     else:
@@ -204,10 +206,9 @@ def delete_mentor_by_id(request):
         try:
             mentor_department = Candidate.objects.get(id=mentor_id).department
             highest_score_mentor = Candidate.objects.filter(
-                status=1,
+                status=3,
                 department=mentor_department
             ).order_by('-score').values()
-            highest_score_mentor = Candidate.objects.filter(status=1).order_by('-score').values()
             if(len(highest_score_mentor) == 0):
                 return JsonResponse({"message": "No new mentor to replace"})
             highest_score_mentor = highest_score_mentor[0]
@@ -218,7 +219,7 @@ def delete_mentor_by_id(request):
             candidate.save()
             highest_score_mentor_id = highest_score_mentor["id"]
             candidate_new = Candidate.objects.get(id=highest_score_mentor_id)
-            candidate_new.status = 3
+            candidate_new.status = 5
             candidate_new.save()
             mentor = Mentor(id = highest_score_mentor["id"], goodiesStatus = 0, reimbursement = 0 )
             mentor.save()
@@ -269,7 +270,7 @@ def add_mentor(request):
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'),
                           size=data.get('size'), score=data.get('score'),
-                          status=3, imgSrc=data.get('imgSrc'))
+                          status=5, imgSrc=data.get('imgSrc'))
         new_candidate.save()
         
         new_mentor = Mentor(id=data.get('id'), goodiesStatus=data.get('goodiesStatus'),
@@ -480,7 +481,7 @@ def add_meeting(request):
         ).first()
 
         if existing_meeting:
-            return JsonResponse({"message": "Meeting already scheduled at the same date and time"})
+            return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
         else:
             new_meeting = Meetings(
                 title = data.get('title'),
@@ -493,7 +494,7 @@ def add_meeting(request):
             new_meeting.save()
             return JsonResponse({"message": "Data added successfully"})
     else:
-        return JsonResponse({"message": "Invalid request method"})
+        return JsonResponse({"error": "Invalid request method"})
 
 @csrf_exempt
 def edit_meeting_by_id(request):
@@ -505,9 +506,24 @@ def edit_meeting_by_id(request):
         meeting.schedulerId = data.get('schedulerId')
         meeting.date = data.get('date')
         meeting.time = data.get('time')
-        meeting.attendee = data.get('attendee')
+        attendeevalue = -1
+        attendeelist = data.get('attendee')
+        if "Mentees" in attendeelist and "Mentors" in attendeelist:
+            attendeevalue = 3
+        elif "Mentors" in attendeelist:
+            attendeevalue = 1
+        elif "Mentees" in attendeelist:
+            attendeevalue = 2
+        meeting.attendee = attendeevalue
         meeting.description = data.get('description')
-        
+        existing_meeting = Meetings.objects.filter(
+            schedulerId=data.get('schedulerId'),
+            date=data.get('date'),
+            time=data.get('time')
+        ).first()
+        if existing_meeting and existing_meeting.meetingId != data.get('meetingId'):
+            print('here')
+            return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
         meeting.save()
         return JsonResponse({"message": "data added successfully"})
     else:
@@ -575,46 +591,38 @@ def get_meetings(request):
     
 '''
 Mentor mentee mapping karni hai
-create a list of dep - then get mentees of each dep in loop - divide total mentees by 5 - then get n candidates based on score with status 2 and same department - then do random matching between mentor and mentee each mentor gets 5 mentee - update mentors status to 3
-repeat 
-mentor delete and add mei department check krna h 
+create a list of dep - then get mentees of each dep in loop - divide total mentees by 5 - then get n candidates based on score with status 2 and same department - then do random matching between mentor and mentee each mentor gets 5 mentee - update mentors status to 5
+repeat 2
 form wala check krna h 
 mentor ke details ke sath login pr form status bhi add kr de 
-iiitd id check kr lo 
+
 '''
 
-@csrf_exempt
-def match_mentors_mentees(request):
+def create_mentor_mentee_pairs(request):
     try:
-        departments = Mentee.objects.values('department').distinct()
+        departments = Mentee.objects.values_list('department', flat=True).distinct()
+
         for department in departments:
-            department_name = department['department']
-            mentees = Candidate.objects.filter(department=department_name, status=1).order_by('-score')[:5]
+            mentees = Mentee.objects.filter(department=department)
+            mentee_batch_size = math.ceil(len(mentees) / 5.0)
+            candidates = Candidate.objects.filter(status=3, department=department).order_by('-score')[:mentee_batch_size]
+    
+            candidates_dict = {candidate.id: 0 for candidate in candidates}
+            for mentee in mentees:
+                candidate_id = random.choice([key for key, value in candidates_dict.items() if value < 5])
+                mentor = Mentor.objects.get(id=candidate_id)
+                mentee.mentorId = candidate_id
+                mentee.save()
+                candidates_dict[candidate_id] += 1
             
-            # Divide total mentees by 5
-            num_mentees_per_mentor = len(mentees) // 5
-            
-            # Get mentors for the department
-            mentors = Candidate.objects.filter(department=department_name, status=2).order_by('-score')[:num_mentees_per_mentor]
-            
-            for mentor in mentors:
-                # Get n candidates based on score with status 2 and same department
-                mentor_mentees = random.sample(list(mentees), 5)
-                
-                # Do random matching between mentor and mentee
-                for mentee in mentor_mentees:
-                    mentee.mentorId = mentor.id
-                    mentee.status = 3
-                    mentee.save()
-                    
-                # Update mentor's status to 3
-                mentor.status = 3
+            for candidate in candidates:
+                mentor = Mentor(id=candidate.id, goodiesStatus = 0, reimbursement = 0)
                 mentor.save()
+                candidate.status = 5
+                candidate.save()
 
-                # Add this data to the Mentor table
-                Mentor.objects.create(id=mentor.id, goodiesStatus=0, reimbursement=0)
-
-        return JsonResponse({"message": "Matching successful"}, status=200)
-
+        return JsonResponse({'message': 'Matching successful'})
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({'message': str(e)})
+    
+
