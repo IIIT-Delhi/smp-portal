@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 
-export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails }) {
+export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails, isPreviousMeeting}) {
   const handleButtonClick = (e) => {
     e.stopPropagation();
   };
@@ -132,20 +132,23 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 <br />
                 {meet.description}
               </p>
-              <div className="mt-2">
-                <button
-                  className="btn btn-danger mx-2"
-                  onClick={handleDeleteClick}
-                >
-                  Delete
-                </button>
-                <button
-                  className="btn btn-primary mx-2"
-                  onClick={handleEditClick}
-                >
-                  Edit
-                </button>
-              </div>
+
+              {!isPreviousMeeting && 
+                (<div className="mt-2">
+                  <button
+                    className="btn btn-danger mx-2"
+                    onClick={handleDeleteClick}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="btn btn-primary mx-2"
+                    onClick={handleEditClick}
+                  >
+                    Edit
+                  </button>
+                </div>
+                )}
             </div>
           </div>
 
