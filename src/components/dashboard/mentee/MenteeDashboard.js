@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../common/Navbar";
 import { useAuth } from "../../../context/AuthContext";
-import menteeList from "../../../data/menteeList.json";
+// import menteeList from "../../../data/menteeList.json";
 
 const MenteeDashboard = () => {
   const { userDetails } = useAuth();
@@ -11,23 +11,23 @@ const MenteeDashboard = () => {
     const fetchData = async () => {
       try {
         // Find the admin with the matching email
-        const matchingMentee = menteeList.find(
-          (mentee) => mentee.email === "vishesh20550@iiitd.ac.in"
-        );
-
-        if (matchingMentee) {
-          // Set the matching admin's data to the state
-          setMenteeData(matchingMentee);
-        } else {
-          console.error("Mentee not found for email: vishesh20550@iiitd.ac.in");
-        }
+        // const matchingMentee = menteeList.find(
+        //   (mentee) => mentee.email === "vishesh20550@iiitd.ac.in"
+        // );
+        setMenteeData(userDetails)
+        // if (matchingMentee) {
+        //   // Set the matching admin's data to the state
+        //   setMenteeData(matchingMentee);
+        // } else {
+        //   console.error("Mentee not found for email: vishesh20550@iiitd.ac.in");
+        // }
       } catch (error) {
         console.error("Error fetching mentee data:", error);
       }
     };
 
     fetchData();
-  }, ["vishesh20550@iiitd.ac.in"]);
+  });
 
   return (
     <div>

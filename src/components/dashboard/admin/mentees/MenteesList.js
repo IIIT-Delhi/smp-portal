@@ -115,10 +115,11 @@ const MenteesList = () => {
           JSON.stringify({ id: menteeToDelete.id })
         );
         if (response.status === 200) {
-          setMentees((prevMentees) =>
-            prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
-          );
+          // setMentees((prevMentees) =>
+          //   prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
+          // );
           setMenteeToDelete(null); // Clear the mentee to delete
+          fetchMenteeList();
         }
       } catch (error) {
         console.error("Error deleting mentee:", error);
