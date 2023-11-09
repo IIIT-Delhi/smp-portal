@@ -39,45 +39,44 @@ const Navbar = () => {
         alt="IIITD Logo"
         style={{ height: "60px", marginRight: "10px" }}
       />
-      <ul className="navbar-nav ml-autp">
-        {((userDetails.id !== -1 &&
-          role === "mentor" &&
-          userDetails.status === 3) ||
-          (userDetails.id !== -1 && role === "admin") ||
-          (userDetails.id !== -1 && role === "mentee")) && (
-          <>
-            <li className="nav-item" style={listStyle}>
-              <Link
-                to={`/dashboard/${role}/profile`}
-                className="nav-link"
-                style={{ color: "white" }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
-                }
-              >
-                Profile
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link
-                to={`/dashboard/${role}/meetings`}
-                className="nav-link"
-                style={{ color: "white" }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
-                }
-              >
-                Meetings
-              </Link>
-            </li>
-          </>
-        )}
+      <ul className="navbar-nav ml-auto">
+        {userDetails?.id !== -1 &&
+          ((role === "mentor" && userDetails?.status === 3) ||
+            role === "admin" ||
+            role === "mentee") && (
+            <>
+              <li className="nav-item" style={listStyle}>
+                <Link
+                  to={`/dashboard/${role}/profile`}
+                  className="nav-link"
+                  style={{ color: "white" }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.backgroundColor = "transparent")
+                  }
+                >
+                  Profile
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  to={`/dashboard/${role}/meetings`}
+                  className="nav-link"
+                  style={{ color: "white" }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.backgroundColor = "transparent")
+                  }
+                >
+                  Meetings
+                </Link>
+              </li>
+            </>
+          )}
         {role === "mentee" && (
           <>
             <li className="nav-item">
