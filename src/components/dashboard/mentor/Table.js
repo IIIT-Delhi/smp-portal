@@ -47,10 +47,11 @@ const TableBody = (props) => {
 
   return (
     <tbody>
-      {rows &&
+      {rows}
+      {/* {rows &&
         rows.map((value) => {
           return buildRow(value, headers);
-        })}
+        })} */}
     </tbody>
   );
 };

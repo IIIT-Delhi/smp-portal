@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../common/Navbar";
 import { useAuth } from "../../../context/AuthContext";
 import Table from "./Table";
+import axios from "axios";
 // import mentorList from "../../../data/mentorList.json"; 
 // import menteeList from "../../../data/menteeList.json";
 
@@ -17,9 +18,9 @@ const MentorDashboard = () => {
 
   const fetchAttributeId = async (id) => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         "http://127.0.0.1:8000/getMentorById/",
-        { params: {id : id} }
+        JSON.stringify({ id: id })
       );
   
       let userData;
@@ -58,7 +59,7 @@ const MentorDashboard = () => {
         //  );
 
         const userData = await fetchAttributeId(userDetails.id);
-
+        // console.log(userData);
 
          if (userData) {
            // Set the matching admin's data to the state
@@ -69,18 +70,30 @@ const MentorDashboard = () => {
             //    menteeList.find((mentee) => mentee.id === menteeId)
             //  )
             //  .filter((mentee) => mentee); // Filter out null mentees
+            // console.log(menteeDetails);
 
            if (menteeDetails.length > 0) {
              // Check if there are mentees in the array
              // Set the extracted mentee details to the state
-             setAssignedMentees(
-               menteeDetails.map((mentee) => ({
-                 name: mentee.name,
-                 id: mentee.id,
-                 email: mentee.email,
-               }))
-             );
+              // console.log(menteeDetails[0]);
+             const menteeRows = menteeDetails.map((mentee) => {
+              // mentee should be an array with id, name, and email
+              const [id, name, email] = mentee;
+              
+              return (
+                <tr key={id}>
+                  <td>{id}</td>
+                  <td>{name}</td>
+                  <td>{email}</td>
+                </tr>
+              );
+            });
+            // console.log(menteeRows)
+
+            setAssignedMentees(menteeRows)
+
            }
+          //  console.log(assignedMentees)
          } else {
            console.error("Mentor not found for email:", userDetails.email);
          }
