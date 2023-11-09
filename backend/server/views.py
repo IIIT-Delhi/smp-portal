@@ -53,9 +53,10 @@ def get_all_mentors(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
     
+@csrf_exempt 
 def get_mentor_by_id(request):
     # returns list of json with one element; [{details}]
-    if request.method == "GET":
+    if request.method == "POST":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         mentor = Candidate.objects.filter(status=3, id=id_to_search).values()
 
@@ -72,7 +73,7 @@ def get_mentor_by_id(request):
         for mentee in mentees:
             menteesToMentors.append([mentee['id'], mentee['name'], mentee['email']])
         mentor[0].update({'menteesToMentors': menteesToMentors})
-        return JsonResponse(list(mentor), safe=False)
+        return JsonResponse(mentor[0], safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
@@ -179,25 +180,29 @@ def delete_mentor_by_id(request):
         data = json.loads(request.body.decode('utf-8'))
         mentor_id = data.get('id')
         try:
+            """
+            mentor same department ka hona cahiye
+            """
             highest_score_mentor = Candidate.objects.filter(status=1).order_by('-score').values()
             if(len(highest_score_mentor) == 0):
-                return JsonResponse({"message": "No Such Mentor Found"})
+                return JsonResponse({"message": "No new mentor to replace"})
             highest_score_mentor = highest_score_mentor[0]
-            print(highest_score_mentor["id"])
             Mentee.objects.filter(mentor_id=mentor_id).update(mentor_id=highest_score_mentor["id"])
             deleted = Mentor.objects.filter(id=mentor_id).delete()
             candidate = Candidate.objects.get(id=mentor_id)
             candidate.status = -1
             candidate.save()
-            candidate_new = Candidate.objects.get(id=highest_score_mentor["id"])
+            highest_score_mentor_id = highest_score_mentor["id"]
+            candidate_new = Candidate.objects.get(id=highest_score_mentor_id)
             candidate_new.status = 3
             candidate_new.save()
-
-            return JsonResponse({"message": f"Deleted {deleted} database entries"})
+            mentor = Mentor(id = highest_score_mentor["id"], goodiesStatus = 0, reimbursement = 0 )
+            mentor.save()
+            return JsonResponse({"message": f"Repalced Mentor ID: {highest_score_mentor_id}"})
         except Mentor.DoesNotExist:
             return JsonResponse({"message": "Mentor not found"})
     else:
-        return JsonResponse({"message": "Invalid request method"})
+        return JsonResponse({"message": "No new mentor to replace"})
 
 # Done
 def delete_all_mentees(request):
@@ -533,7 +538,11 @@ def get_meetings(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
     
-
+'''
+Mentor mentee mapping karni hai
+list of dep - then get mentees - then btta 5 - then top n candidates with status 1 - send consent form - then do the matching - update status
+repeat 
+'''
 # def mentor_mentee_mapping(request):
 #     # Initialize dictionaries to track mentors and their assigned mentees
 #     mentors = {}

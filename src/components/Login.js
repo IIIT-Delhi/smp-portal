@@ -73,11 +73,11 @@ const Login = () => {
             navigate("/registration");
           } else if (status === 3) {
             // Redirect to the profile based on the role
-            navigate(/dashboard/${currRole}/profile);
+            navigate(`/dashboard/${currRole}/profile`);
           }
         } else {
           // Redirect to the profile based on the role
-          navigate(/dashboard/${currRole}/profile);
+          navigate(`/dashboard/${currRole}/profile`);
         }
       }
     }
