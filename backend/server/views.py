@@ -483,6 +483,7 @@ def add_meeting(request):
             return JsonResponse({"message": "Meeting already scheduled at the same date and time"})
         else:
             new_meeting = Meetings(
+                title = data.get('title'),
                 schedulerId=scheduler_id,
                 date=date,
                 time=time,
@@ -499,8 +500,8 @@ def edit_meeting_by_id(request):
     # returns json ; {"message": "//message//"}
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        data = data[0]
-        meeting = Meetings.objects.get(meetingId=data.get('id'))
+        meeting = Meetings.objects.get(meetingId=data.get('meetingId'))
+        meeting.title = data.get('title')
         meeting.schedulerId = data.get('schedulerId')
         meeting.date = data.get('date')
         meeting.time = data.get('time')
@@ -585,13 +586,9 @@ iiitd id check kr lo
 @csrf_exempt
 def match_mentors_mentees(request):
     try:
-        # Get unique departments
-        departments = Candidate.objects.values('department').distinct()
-
+        departments = Mentee.objects.values('department').distinct()
         for department in departments:
             department_name = department['department']
-            
-            # Get mentees for the department
             mentees = Candidate.objects.filter(department=department_name, status=1).order_by('-score')[:5]
             
             # Divide total mentees by 5

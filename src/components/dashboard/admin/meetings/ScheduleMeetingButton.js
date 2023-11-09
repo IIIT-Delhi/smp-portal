@@ -36,6 +36,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     const newMeeting = { ...currmeeting, id: Date.now() };
     setcurrmeeting(newMeeting); // Update the current meeting state
     const meetingData = {
+      title: newMeeting.title,
       schedulerId: newMeeting.schedulerId,
       date: newMeeting.date,
       time: newMeeting.time,

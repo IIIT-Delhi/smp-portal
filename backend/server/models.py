@@ -73,6 +73,7 @@ class Admin(models.Model):
 class Meetings(models.Model):
     meetingId = models.AutoField(primary_key=True)  
     schedulerId = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     date = models.CharField(max_length=255)
     time = models.CharField(max_length=255)
     attendee = models.IntegerField()
