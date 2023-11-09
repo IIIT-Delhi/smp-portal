@@ -31,7 +31,7 @@ class Mentee(models.Model):
     mentor_id = models.CharField() # id of the mentor
 
     def __str__(self):
-        return self.roll_no
+        return self.id
     
 class Mentor(models.Model):
     id = models.CharField(primary_key=True)
@@ -43,7 +43,7 @@ class Mentor(models.Model):
     reimbursement = models.IntegerField()
 
     def __str__(self):
-        return self.roll_no
+        return self.id
 
 class Admin(models.Model):
     id = models.CharField(primary_key=True)
