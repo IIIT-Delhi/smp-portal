@@ -23,6 +23,9 @@ class Candidate(models.Model):
     def __str__(self):
         return self.id
 
+    class Meta:
+        app_label = 'server'
+
 class Mentee(models.Model):
     id = models.CharField(primary_key=True)
     email = models.CharField()
@@ -34,6 +37,9 @@ class Mentee(models.Model):
     def __str__(self):
         return self.id
     
+    class Meta:
+        app_label = 'server'
+
 class Mentor(models.Model):
     id = models.CharField(primary_key=True)
     goodiesStatus = models.IntegerField()
@@ -45,6 +51,9 @@ class Mentor(models.Model):
 
     def __str__(self):
         return self.id
+    
+    class Meta:
+        app_label = 'server'
 
 class Admin(models.Model):
     id = models.CharField(primary_key=True)
@@ -57,6 +66,9 @@ class Admin(models.Model):
 
     def __str__(self):
         return self.id
+    
+    class Meta:
+        app_label = 'server'
 
 class Meetings(models.Model):
     meetingId = models.AutoField(primary_key=True)  
@@ -73,6 +85,9 @@ class Meetings(models.Model):
 
     def __str__(self):
         return str(self.meeting_id)
+    
+    class Meta:
+        app_label = 'server'
 
 class Attendance(models.Model):
     attendeeId = models.CharField(primary_key=True)
@@ -80,6 +95,9 @@ class Attendance(models.Model):
 
     def __str__(self):
         return self.attendee_id
+    
+    class Meta:
+        app_label = 'server'
 
 class FormResponses(models.Model):
     formId = models.CharField(primary_key=True)
@@ -88,5 +106,6 @@ class FormResponses(models.Model):
 
     def __str__(self):
         return self.form_id
-
-   
+    
+    class Meta:
+        app_label = 'server'
