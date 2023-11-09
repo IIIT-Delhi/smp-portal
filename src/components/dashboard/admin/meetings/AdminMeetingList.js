@@ -133,7 +133,7 @@ const MeetingSection = ({ title, meetings, deleteMeeting, editMeeting, isPreviou
   return (
     <div className="row">
       <h2>{title}</h2>
-      <div className="container mt-4" style={{ marginLeft: "5px", marginRight: "0", width: "95%", overflowY: "auto" }}>
+      <div className="container mt-4" style={{ marginLeft: "5px", marginRight: "0", width: "85%", overflowY: "auto" }}>
         {meetings && meetings.length > 0 ? (
           meetings.map((meet) => (
             <SinlgeMeeting
