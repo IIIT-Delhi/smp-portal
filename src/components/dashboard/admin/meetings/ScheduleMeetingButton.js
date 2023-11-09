@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 import axios from 'axios'; // Import Axios
 
-const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
+const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
   const [showModal, setShowModal] = useState(false);
   const [currmeeting, setcurrmeeting] = useState({
     id: null,
@@ -36,8 +36,25 @@ const ScheduleMeetingButton = ({ setmeetings, userDetails }) => {
   const handleSaveModal = () => {
     const newMeeting = { ...currmeeting, id: Date.now()};
     setcurrmeeting(newMeeting); // Update the current meeting state
-    setmeetings((prevMeetings) => [...prevMeetings, newMeeting]); // Add the new meeting to meetings
+    // setmeetings((prevMeetings) => [...prevMeetings, newMeeting]); // Add the new meeting to meetings
+
+    axios
+        .post('http://127.0.0.1:8000/addMeeting/', newMeeting, {
+          headers: {
+            'Content-Type': 'application/json', // Set the content type to JSON
+          },
+        })
+        .then((response) => {
+          if (response.status === 200){
+            alert('Meeting added successfully');
+          }
+        })
+        .catch((error) => {
+          console.error('Error adding meeting', error);
+        });
+
     setShowModal(false);
+    fetchMeetings();
   };
 
   const handletitle = (e) => {

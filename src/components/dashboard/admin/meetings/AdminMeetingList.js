@@ -8,21 +8,31 @@ import ScheduleMeetingButton from "./ScheduleMeetingButton";
 export default function AdminMeetingList() {
   const { userDetails } = useAuth();
   const [meetings, setmeetings] = useState([]);
+  const [previousMeeting, setpreviousMeeting] = useState([]);
+  const [upcomingMeeting, setupcomingMeeting] = useState([]);
 
   const fetchMeetings = async () => {
     try {
       console.log(userDetails)
-      const response = await axios.get("http://127.0.0.1:8000/getMeetings/", {
-        params: userDetails,
-      });
+      const response = await axios.post("http://127.0.0.1:8000/getMeetings/",
+      JSON.stringify({
+        id: userDetails.id,
+        role: userDetails.role
+      }));
       console.log("respnse : " + response.data)
       if (response.status === 200) {
         console.log("response : " + response.data)
         if (typeof response.data === "string") {
           const dataObject = JSON.parse(response.data);
-          setmeetings(dataObject)
+          
+          // setmeetings(dataObject)
+          setpreviousMeeting(dataObject.previousMeeting);
+          setupcomingMeeting(dataObject.upcomingMeeting);
+
         } else if (typeof response.data === "object") {
-          setmeetings(response.data)
+          // setmeetings(response.data)
+          setpreviousMeeting(response.data.previousMeeting);
+          setupcomingMeeting(response.data.upcomingMeeting);
         }
       }
     } catch (error) {
@@ -90,6 +100,7 @@ export default function AdminMeetingList() {
           position: "relative",
         }}
       >
+        <h2>Upcoming Meetings</h2>
         <div
           className="container"
           style={{
@@ -98,14 +109,39 @@ export default function AdminMeetingList() {
             width: "85%",
             overflowY: "auto",
           }}
-        >
-          {meetings.map((meet) => (
+        > 
+
+          {upcomingMeeting.map((meet) => (
             <SinlgeMeeting
               userDetails={userDetails}
               meet={meet}
               key={meet.id}
               ondelete={deleteMeeting}
               editMeeting={editMeeting}
+              isPreviousMeeting={false}
+            />
+          ))}
+        </div>
+
+        <h2>Previous Meetings</h2>
+        <div
+          className="container"
+          style={{
+            marginLeft: "5px",
+            marginRight: "0",
+            width: "85%",
+            overflowY: "auto",
+          }}
+        > 
+
+          {previousMeeting.map((meet) => (
+            <SinlgeMeeting
+              userDetails={userDetails}
+              meet={meet}
+              key={meet.id}
+              ondelete={deleteMeeting}
+              editMeeting={editMeeting}
+              isPreviousMeeting={true}
             />
           ))}
         </div>
@@ -120,8 +156,9 @@ export default function AdminMeetingList() {
           }}
         >
           <ScheduleMeetingButton
-            setmeetings={setmeetings}
+            // setmeetings={setmeetings}
             userDetails={userDetails}
+            fetchMeetings={fetchMeetings}
           />
         </div>
 
