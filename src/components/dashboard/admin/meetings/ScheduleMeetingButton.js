@@ -32,26 +32,31 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     setShowModal(false);
   };
 
-
   const handleSaveModal = () => {
-    const newMeeting = { ...currmeeting, id: Date.now()};
+    const newMeeting = { ...currmeeting, id: Date.now() };
     setcurrmeeting(newMeeting); // Update the current meeting state
-    // setmeetings((prevMeetings) => [...prevMeetings, newMeeting]); // Add the new meeting to meetings
+    const meetingData = {
+      schedulerId: newMeeting.schedulerId,
+      date: newMeeting.date,
+      time: newMeeting.time,
+      attendee: newMeeting.attendees,
+      description: newMeeting.description,
+    };
 
     axios
-        .post('http://127.0.0.1:8000/addMeeting/', newMeeting, {
-          headers: {
-            'Content-Type': 'application/json', // Set the content type to JSON
-          },
-        })
-        .then((response) => {
-          if (response.status === 200){
-            alert('Meeting added successfully');
-          }
-        })
-        .catch((error) => {
-          console.error('Error adding meeting', error);
-        });
+      .post('http://127.0.0.1:8000/addMeeting/', meetingData, {
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          alert('Meeting added successfully');
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding meeting', error);
+      });
 
     setShowModal(false);
     fetchMeetings();

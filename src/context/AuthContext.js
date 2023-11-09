@@ -15,7 +15,12 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   // const [user, setUser] = useState(null); // Store user information
-  const [userDetails, setUserDetails] = useState(null); // Store user details
+  // const [userDetails, setUserDetails] = useState(null); // Store user details
+  const [userDetails, setUserDetails] = useState(() => {
+    // Try to get user details from localStorage on component mount
+    const storedUserDetails = localStorage.getItem("userDetails");
+    return storedUserDetails ? JSON.parse(storedUserDetails) : null;
+  });
 
   const fetchAttributeId = async (email, role) => {
     try {
@@ -49,14 +54,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (user) => {
-    const userData = await fetchAttributeId(user.email, user.role);
-  
-    const updatedUserData = { ...userData, role: user.role };
+   const login = async (user) => {
+     const userData = await fetchAttributeId(user.email, user.role);
+     const updatedUserData = { ...userData, role: user.role };
 
-    setUserDetails(updatedUserData);
-    // Additional logic for different scenarios if needed
-  };
+     setUserDetails(updatedUserData);
+
+     // Save user details to localStorage on successful login
+     localStorage.setItem("userDetails", JSON.stringify(updatedUserData));
+
+     // Additional logic for different scenarios if needed
+   };
 
 
   const logout = () => {
@@ -65,12 +73,15 @@ export const AuthProvider = ({ children }) => {
     // setUser(null);
     // Clear user details on logout
     setUserDetails(null);
+    localStorage.removeItem("userDetails");
   };
 
   useEffect(() => {
-    // Check if the user is already authenticated (e.g., from a previous session)
-    // You can perform this check here and set the user state accordingly.
-    // For simplicity, this example doesn't include this check.
+    // Check if the user is already authenticated from localStorage
+    const storedUserDetails = localStorage.getItem("userDetails");
+    if (storedUserDetails) {
+      setUserDetails(JSON.parse(storedUserDetails));
+    }
   }, []);
 
   const value = {

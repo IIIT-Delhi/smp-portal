@@ -44,7 +44,7 @@ def get_all_mentors(request):
             mentor.pop("imgSrc")
             # adding menteesToMentors list
             menteesToMentors = []
-            mentees = Mentee.objects.filter(mentor_id=str(id_to_search)).values()
+            mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
             
             for mentee in mentees:
                 menteesToMentors.append([mentee['id'], mentee['name'], mentee['email']])
@@ -70,7 +70,7 @@ def get_mentor_by_id(request):
         mentor[0].pop("imgSrc")
         # adding menteesToMentors list
         menteesToMentors = []
-        mentees = Mentee.objects.filter(mentor_id=str(id_to_search)).values()
+        mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
         for mentee in mentees:
             menteesToMentors.append([mentee['id'], mentee['name'], mentee['email']])
         mentor[0].update({'menteesToMentors': menteesToMentors})
@@ -136,6 +136,20 @@ def get_id_by_email(request):
                 entry = Candidate.objects.filter(email=email).values()
             elif role == "mentee":
                 entry = Mentee.objects.filter(email=email).values()
+                for mentee in entry:
+            # adding other 'mentorName' and 'mentorEmail' details
+                    mentor_id_to_search = mentee['mentorId']
+                    mentor = Candidate.objects.filter(id=mentor_id_to_search).values()
+                    if len(mentor): 
+                        mentee.update({'mentorId': mentor[0]['id'],
+                                    'mentorName': mentor[0]['name'],
+                                    'mentorEmail': mentor[0]['email']})
+                    else: 
+                        mentee.update({'mentorId': 'NULL',
+                                'mentorName': 'NULL',
+                                'mentorEmail': 'NULL'})
+
+                print(entry)
 
             if(len(entry) == 0):
                 data_dict = {
@@ -195,7 +209,7 @@ def delete_mentor_by_id(request):
             if(len(highest_score_mentor) == 0):
                 return JsonResponse({"message": "No new mentor to replace"})
             highest_score_mentor = highest_score_mentor[0]
-            Mentee.objects.filter(mentor_id=mentor_id).update(mentor_id=highest_score_mentor["id"])
+            Mentee.objects.filter(mentorId=mentor_id).update(mentorId=highest_score_mentor["id"])
             deleted = Mentor.objects.filter(id=mentor_id).delete()
             candidate = Candidate.objects.get(id=mentor_id)
             candidate.status = -1
@@ -262,7 +276,7 @@ def add_mentor(request):
         
         for mentee_id in data.get('menteesToMentors'):
             mentee = Mentee.objects.get(id=mentee_id)
-            mentee.mentor_id = data.get('id')
+            mentee.mentorId = data.get('id')
             mentee.save()
         
         return JsonResponse({"message": "data added successfully"})
@@ -290,7 +304,7 @@ def add_mentee(request):
             new_mentee.imgSrc = data.get('imgSrc')
         if len(mentor) == 0: 
             return JsonResponse({"message": "Mentor Not Found"})
-        new_mentee.mentor_id = mentor[0].id
+        new_mentee.mentorId = mentor[0].id
         new_mentee.save()
         return JsonResponse({"message": "data added successfully"})
     else:
@@ -370,7 +384,7 @@ def edit_mentor_by_id(request):
         elif(data.get('fieldName')=="menteesToMentors"):
             for mentee_id in data.get('newValue'):
                 mentee = Mentee.objects.get(id=mentee_id)
-                mentee.mentor_id = data.get('id')
+                mentee.mentorId = data.get('id')
 
         candidate.save()
         mentor.save()
@@ -394,7 +408,7 @@ def edit_mentee_by_id(request):
         elif(data.get('fieldName')=="imgSrc"):
             mentee.imgSrc = data.get('newValue')
         elif(data.get('fieldName')=="mentorId"):
-            mentee.mentor_id = data.get('newValue')            
+            mentee.mentorId = data.get('newValue')            
 
         mentee.save()
         return JsonResponse({"message": "data added successfully"})
@@ -458,7 +472,7 @@ def add_meeting(request):
 
         # Check if a meeting with the same scheduler_id, date, and time already exists
         existing_meeting = Meetings.objects.filter(
-            schedulerId=schedulerId,
+            schedulerId=scheduler_id,
             date=date,
             time=time
         ).first()
@@ -467,7 +481,7 @@ def add_meeting(request):
             return JsonResponse({"message": "Meeting already scheduled at the same date and time"})
         else:
             new_meeting = Meetings(
-                schedulerId=schedulerId,
+                schedulerId=scheduler_id,
                 date=date,
                 time=time,
                 attendee=attendeevalue,
@@ -484,7 +498,7 @@ def edit_meeting_by_id(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         data = data[0]
-        meeting = Meetings.objects.get(meeting_id=data.get('id'))
+        meeting = Meetings.objects.get(meetingId=data.get('id'))
         meeting.schedulerId = data.get('schedulerId')
         meeting.date = data.get('date')
         meeting.time = data.get('time')
@@ -496,12 +510,12 @@ def edit_meeting_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
     
-
+@csrf_exempt
 def delete_meeting_by_id(request):
-    if request.method == "GET":
-        id_to_search = json.loads(request.body.decode('utf-8')).get('id')
-        deleted = Meetings.objects.filter(id=id_to_search).delete()
-        return JsonResponse({"message": "deleted "+str(deleted[0]+" database entries")})
+    if request.method == "POST":
+        id_to_search = json.loads(request.body.decode('utf-8')).get('meetingId')
+        deleted = Meetings.objects.filter(meetingId=id_to_search).delete()
+        return JsonResponse({"message": "deleted "+str(deleted[0])+" database entries"})
     else:
         return JsonResponse({"message": "Invalid request method"})
 
@@ -522,7 +536,7 @@ def get_meetings(request):
             all_meetings = organized_meetings | attendee_meetings
         elif user_type == "mentee":
             # Return meetings organized by the mentee's mentor and meetings where the mentee is an attendee
-            mentor = Mentee.objects.get(id=user_id).mentor_id
+            mentor = Mentee.objects.get(id=user_id).mentorId
             mentor_meetings = Meetings.objects.filter(schedulerId=mentor)
             attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3])  # Include 2 (mentee) and 3 (both mentor and mentee)
             all_meetings = mentor_meetings | attendee_meetings
@@ -541,14 +555,10 @@ def get_meetings(request):
             elif meeting_date > current_datetime:
                 upcoming_meetings.append(meeting)
 
-        
-
         meetings_data = {
-            "previousMeetings":  previous_meetings,
-            "upcomingMeetings": upcoming_meetings
+            "previousMeeting":  previous_meetings,
+            "upcomingMeeting": upcoming_meetings
         }
-        # meetings_json = serializers.serialize('json', meetings_data)
-        print(meetings_data)
         return JsonResponse(meetings_data)
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -558,6 +568,9 @@ Mentor mentee mapping karni hai
 list of dep - then get mentees - then btta 5 - then top n candidates with status 1 - send consent form - then do the matching - update status
 repeat 
 mentor delete and add mei department check krna h 
+form wala check krna h 
+mentor ke details ke sath login pr form status bhi add kr de 
+iiitd id check kr lo 
 '''
 # def mentor_mentee_mapping(request):
 #     # Initialize dictionaries to track mentors and their assigned mentees
