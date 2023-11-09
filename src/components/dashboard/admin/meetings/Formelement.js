@@ -33,13 +33,13 @@ export default function Formelement({currmeeting, handletitle,handledate, handle
             <div id="collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
               <div className="accordion-body" >
                 <div className="form-check">
-                  <input className="form-check-input" onChange = {handleattendees} checked = {currmeeting.attendees.includes('Mentors')} type="checkbox" value="Mentors" id="mentorCheck" />
+                  <input className="form-check-input" onChange = {handleattendees} checked = {currmeeting.attendee.includes('Mentors')} type="checkbox" value="Mentors" id="mentorCheck" />
                   <label className="form-check-label" htmlFor="mentorCheck">
                     Mentors
                   </label>
                 </div>
                 <div className="form-check">
-                  <input className="form-check-input" onChange={handleattendees} checked = {currmeeting.attendees.includes('Mentees')} type="checkbox" value="Mentees" id="menteeCheck" />
+                  <input className="form-check-input" onChange={handleattendees} checked = {currmeeting.attendee.includes('Mentees')} type="checkbox" value="Mentees" id="menteeCheck" />
                   <label className="form-check-label" htmlFor="menteeCheck">
                     Mentees
                   </label>

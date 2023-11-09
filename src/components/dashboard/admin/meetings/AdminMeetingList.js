@@ -62,11 +62,20 @@ export default function AdminMeetingList() {
         console.error("Error deleting meeting:", error);
       });
   };
+  
   const updateMeetingOnBackend = async (meeting) => {
     try {
+      console.log(meeting.meetingId)
       // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
       await axios
-        .post("http://127.0.0.1:8000/editMeetingById/", meeting)
+        .post("http://127.0.0.1:8000/editMeetingById/", JSON.stringify({
+          meetingId: meeting.meetingId, 
+          tile: meeting.title,
+          date: meeting.date,
+          time: meeting.time,
+          attendee: meeting.attendee,
+          description: meeting.description,
+        }))
         .then((response) => {
           // If the backend successfully updates the meeting, update your local state
           if (response.status === 200) {
@@ -133,7 +142,7 @@ const MeetingSection = ({ title, meetings, deleteMeeting, editMeeting, isPreviou
   return (
     <div className="row">
       <h2>{title}</h2>
-      <div className="container mt-4" style={{ marginLeft: "5px", marginRight: "0", width: "95%", overflowY: "auto" }}>
+      <div className="container mt-4" style={{ marginLeft: "5px", marginRight: "0", width: "85%", overflowY: "auto" }}>
         {meetings && meetings.length > 0 ? (
           meetings.map((meet) => (
             <SinlgeMeeting

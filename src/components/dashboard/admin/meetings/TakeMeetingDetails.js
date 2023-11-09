@@ -18,7 +18,7 @@ export default function TakeMeetingDetails({
 
   const handleButtonSave = (e) => {
     e.stopPropagation();
-    if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendees.length > 0 && currmeeting.description) {
+    if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendee.length > 0 && currmeeting.description) {
       // If the form is valid, you can create the meeting object
 
       handleSave()

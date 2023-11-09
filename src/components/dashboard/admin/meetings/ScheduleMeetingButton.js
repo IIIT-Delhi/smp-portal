@@ -12,7 +12,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     date: "",
     title: "",
     description: "",
-    attendees: [],
+    attendee: [],
   });
 
   const handleScheduleClick = () => {
@@ -23,7 +23,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
       date: "",
       title: "",
       description: "",
-      attendees: [],
+      attendee: [],
     });
     setShowModal(true);
   };
@@ -36,10 +36,11 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     const newMeeting = { ...currmeeting, id: Date.now() };
     setcurrmeeting(newMeeting); // Update the current meeting state
     const meetingData = {
+      title: newMeeting.title,
       schedulerId: newMeeting.schedulerId,
       date: newMeeting.date,
       time: newMeeting.time,
-      attendee: newMeeting.attendees,
+      attendee: newMeeting.attendee,
       description: newMeeting.description,
     };
 
@@ -91,12 +92,12 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
       if (isChecked) {
         return {
           ...prevDetails,
-          attendees: [...prevDetails.attendees, value],
+          attendee: [...prevDetails.attendee, value],
         };
       } else {
         return {
           ...prevDetails,
-          attendees: prevDetails.attendees.filter(
+          attendee: prevDetails.attendee.filter(
             (attendee) => attendee !== value
           ),
         };

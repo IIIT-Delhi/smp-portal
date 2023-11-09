@@ -13,13 +13,13 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
 
   const [confirmdelete, setconfirmdelete] = useState(false);
 
+  const [editedMeeting, setEditedMeeting] = useState(meet);
+
   const handleEditClick = () => {
     // Add your edit functionality here
     setIsEditing(true);
     console.log("Edit clicked for meeting ID:", meet.meetingId);
   };
-
-  const [editedMeeting, setEditedMeeting] = useState(meet);
 
   const handleEditSave = () => {
     editMeeting(meet.meetingId, editedMeeting);
@@ -93,11 +93,11 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
   const getAttendeeLabel = (attendee) => {
     switch (attendee) {
       case 1:
-        return 'Mentor';
+        return 'Mentors';
       case 2:
-        return 'Mentee';
+        return 'Mentees';
       case 3:
-        return 'Mentor and Mentee';
+        return 'Mentors and Mentees';
       default:
         return 'Unknown';
     }
