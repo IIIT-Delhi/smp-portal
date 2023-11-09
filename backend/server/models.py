@@ -12,8 +12,9 @@ class Candidate(models.Model):
     """
     1 - Form filled 
     2 - mentor selected and consent form mail send 
-    3 - mentees assigned 
+    3 - Consent form filled
     4 - rejected
+    5 - mentee assigned 
     -1 - anyother 
     """
     size = models.CharField()

@@ -7,10 +7,10 @@ import ScheduleMeetingButton from "./ScheduleMeetingButton";
 
 export default function AdminMeetingList() {
   const { userDetails } = useAuth();
-  const [meetings, setmeetings] = useState([]);
+  // const [meetings, setmeetings] = useState([]);
   const [previousMeeting, setpreviousMeeting] = useState([]);
   const [upcomingMeeting, setupcomingMeeting] = useState([]);
-  const[isFirstTime,setisFirstTime] = useState(true);
+  // const[isFirstTime,setisFirstTime] = useState(true);
   const fetchMeetings = async () => {
     try {
       console.log(userDetails)
@@ -39,8 +39,9 @@ export default function AdminMeetingList() {
     }
   };
   useEffect(() => {
-    if(isFirstTime){setisFirstTime(false);fetchMeetings();}
-  }, [isFirstTime]);
+    // if(isFirstTime){setisFirstTime(false);fetchMeetings();}
+    fetchMeetings();
+  }, []);
 
   const deleteMeeting = (meetingId) => {
     // Send a request to delete the meeting on the backend
@@ -70,7 +71,8 @@ export default function AdminMeetingList() {
       await axios
         .post("http://127.0.0.1:8000/editMeetingById/", JSON.stringify({
           meetingId: meeting.meetingId, 
-          tile: meeting.title,
+          schedulerId: meeting.schedulerId,
+          title: meeting.title,
           date: meeting.date,
           time: meeting.time,
           attendee: meeting.attendee,
@@ -79,7 +81,7 @@ export default function AdminMeetingList() {
         .then((response) => {
           // If the backend successfully updates the meeting, update your local state
           if (response.status === 200) {
-            setmeetings(meeting);
+            // setmeetings(meeting);
             console.log("Meeting updated successfully on the backend");
           }
         });
@@ -113,10 +115,10 @@ export default function AdminMeetingList() {
   //   });
 
   const editMeeting = (meetingId, newValues) => {
-    const updatedMeetings = meetings.map((meet) =>
-      meet.meetingId === meetingId ? { ...meet, ...newValues } : meet
-    );
-    updateMeetingOnBackend(updatedMeetings);
+    // const updatedMeetings = meetings.map((meet) =>
+    //   meet.meetingId === meetingId ? { ...meet, ...newValues } : meet
+    // );
+    updateMeetingOnBackend(newValues);
   };
 
   return (
