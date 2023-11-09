@@ -81,7 +81,7 @@ function UserDetails(props) {
             defaultValue={inputValues.email}
             name="email"
             required // Make the input required
-            disabled // Disable the input
+            // disabled // Disable the input
             onChange={handleChange}
           />
         </div>

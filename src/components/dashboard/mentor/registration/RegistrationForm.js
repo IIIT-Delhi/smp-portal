@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UserDetails from "./UserDetails";
 import Confirmation from "./Confirmation";
+import ConsentForm from "./ConsentForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 import Navbar from "../../common/Navbar";
@@ -10,6 +11,7 @@ import axios from "axios";
 export default function RegistrationForm() {
   const { userDetails } = useAuth();
   const [step, setStep] = useState(1);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   // const [score, setScore] = useState(0);
 
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -50,7 +52,7 @@ export default function RegistrationForm() {
   const [formData, setFormData] = useState({
     id: "",
     name: "",
-    email: userDetails.email,
+    email: "",
     department: "",
     year: "",
     size: "",
@@ -177,7 +179,8 @@ export default function RegistrationForm() {
   return (
     <div>
       <Navbar className="fixed-top" />
-      {step === 1 && (
+      {userDetails.id === -1 && step === 1 && (
+        // If userDetails.id is -1 and step is 1, show UserDetails
         <UserDetails
           nextStep={nextStep}
           handleChange={handleChange}
@@ -188,16 +191,17 @@ export default function RegistrationForm() {
           departmentOptions={departmentOptions}
         />
       )}
-      { step === 2 &&(
 
-        <Questions nextStep = {nextStep}
-          handleCheckboxChange = {handleCheckboxChange}
-          handleSubmit = {handleSubmit}
+      {userDetails.id === -1 && step === 2 && (
+        <Questions
+          nextStep={nextStep}
+          handleCheckboxChange={handleCheckboxChange}
+          handleSubmit={handleSubmit}
           questions={questions}
         />
-
       )}
-      {step === 3 && (
+
+      {userDetails.id === -1 && step === 3 && (
         <Confirmation
           nextStep={nextStep}
           prevStep={prevStep}
@@ -207,6 +211,29 @@ export default function RegistrationForm() {
           departmentOptions={departmentOptions}
           saveAndContinue={saveAndContinue}
         />
+      )}
+
+      {userDetails.id !== -1 && userDetails.status === 1 && (
+        // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            Form submitted. Please wait for approval.
+          </div>
+        </div>
+      )}
+
+      {userDetails.id !== -1 && userDetails.status === 2 && (
+        // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
+        <ConsentForm userDetails={userDetails} />
+      )}
+      {userDetails.id !== -1 && userDetails.status === 4 && (
+        // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            We are sorry to inform you that you are not selected for Student
+            Mentorship Programme.
+          </div>
+        </div>
       )}
     </div>
   );
