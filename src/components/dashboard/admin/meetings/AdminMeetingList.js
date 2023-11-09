@@ -12,9 +12,11 @@ export default function AdminMeetingList() {
   const fetchMeetings = async () => {
     try {
       console.log(userDetails)
-      const response = await axios.get("http://127.0.0.1:8000/getMeetings/", {
-        params: userDetails,
-      });
+      const response = await axios.post("http://127.0.0.1:8000/getMeetings/",
+      JSON.stringify({
+        id: userDetails.id,
+        role: userDetails.role
+      }));
       console.log("respnse : " + response.data)
       if (response.status === 200) {
         console.log("response : " + response.data)

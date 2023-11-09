@@ -19,9 +19,9 @@ export const AuthProvider = ({ children }) => {
 
   const fetchAttributeId = async (email, role) => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         "http://127.0.0.1:8000/getIdByEmail/",
-        { params: { email: email, role: role } }
+        JSON.stringify({ email: email, role: role })
       );
   
       let userData;
