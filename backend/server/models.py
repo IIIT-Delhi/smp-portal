@@ -15,8 +15,8 @@ class Candidate(models.Model):
     3 - Consent form filled
     4 - rejected
     5 - mentee assigned 
-    -1 - anyother 
-    """
+    -1 - anyother
+    """
     size = models.CharField()
     score = models.CharField()
     imgSrc = models.TextField()
