@@ -6,6 +6,19 @@ import { useAuth } from "../../../context/AuthContext";
 const MenteeDashboard = () => {
   const { userDetails } = useAuth();
   const [menteeData, setMenteeData] = useState(null);
+  const departmentOptions = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +65,7 @@ const MenteeDashboard = () => {
                           src={menteeData.imgSrc}
                           alt="Profile"
                           className="img-fluid img-thumbnail mt-4 mb-2"
-                          style={{ width: "150px", borderRadius: "10%" }}
+                          style={{ width: "50%", borderRadius: "10%" }}
                         />
                       </div>
                       <div className="mt-2 text-center">
@@ -88,7 +101,7 @@ const MenteeDashboard = () => {
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {menteeData.department}
+                              {departmentOptions[menteeData.department]}
                             </p>
                           </div>
                         </div>

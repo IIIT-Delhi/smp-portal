@@ -1,6 +1,6 @@
 import React from "react";
 
-const MenteeProfile = ({ mentee, onClose, onEdit }) => {
+const MenteeProfile = ({ mentee, onClose, onEdit, departmentOptions }) => {
   if (!mentee) {
     return null;
   }
@@ -21,7 +21,7 @@ const MenteeProfile = ({ mentee, onClose, onEdit }) => {
               <p>Name: {mentee.name}</p>
               <p>Roll Number: {mentee.id}</p>
               <p>Email: {mentee.email}</p>
-              <p>Department: {mentee.department}</p>
+              <p>Department: {departmentOptions[mentee.department]}</p>
               <p>Mentor Name: {mentee.mentorName}</p>
               <p>Mentor Email: {mentee.mentorEmail}</p>
               <p>Mentor Roll Number: {mentee.mentorId}</p>

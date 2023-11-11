@@ -1,24 +1,23 @@
 import React from "react";
 
-const MentorProfile = ({ mentor, onClose, onEdit }) => {
+const MentorProfile = ({ mentor, onClose, onEdit, departmentOptions }) => {
   if (!mentor) {
     return null;
   }
   // Function to find mentee details by ID
   // Create a table row for each mentee
-const menteeRows = mentor.menteesToMentors.map((mentee) => {
-  // mentee should be an array with id, name, and email
-  const [id, name, email] = mentee;
-  
-  return (
-    <tr key={id}>
-      <td>{name}</td>
-      <td>{id}</td>
-      <td>{email}</td>
-    </tr>
-  );
-});
+  const menteeRows = mentor.menteesToMentors.map((mentee) => {
+    // mentee should be an array with id, name, and email
+    const [id, name, email] = mentee;
 
+    return (
+      <tr key={id}>
+        <td>{name}</td>
+        <td>{id}</td>
+        <td>{email}</td>
+      </tr>
+    );
+  });
 
   return (
     <div className="modal fade show" style={{ display: "block" }}>
@@ -39,7 +38,7 @@ const menteeRows = mentor.menteesToMentors.map((mentee) => {
               <p>Name: {mentor.name}</p>
               <p>Roll Number: {mentor.id}</p>
               <p>Email: {mentor.email}</p>
-              <p>Department: {mentor.department}</p>
+              <p>Department: {departmentOptions[mentor.department]}</p>
               {/* Add more mentor profile details here */}
             </div>
             <h5>Mentees:</h5>

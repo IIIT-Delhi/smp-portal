@@ -356,9 +356,19 @@ const MenteesList = () => {
             <table className="table table-hover mb-4 mx-2" border="1">
               <tbody>
                 {mentees
-                  .filter((mentee) =>
-                    mentee.name.toLowerCase().includes(searchTerm.toLowerCase())
-                  )
+                  .filter((mentee) => {
+                    const lowerSearchTerm = searchTerm.toLowerCase();
+                    const lowerName = mentee.name.toLowerCase();
+                    const lowerId = mentee.id.toLowerCase();
+                    const departmentLabel =
+                      departmentOptions[mentee.department] || "";
+                    const lowerDepartment = departmentLabel.toLowerCase();
+                    return (
+                      lowerName.includes(lowerSearchTerm) ||
+                      lowerId.includes(lowerSearchTerm) ||
+                      lowerDepartment.includes(lowerSearchTerm)
+                    );
+                  })
                   .map((mentee) => (
                     <tr
                       className=""
@@ -390,7 +400,7 @@ const MenteesList = () => {
                           width: headerColumnWidths["department"],
                         }}
                       >
-                        {mentee.department}
+                        {departmentOptions[mentee.department]}
                       </td>
                       <td
                         style={{
@@ -427,6 +437,7 @@ const MenteesList = () => {
                     mentee={selectedMentee}
                     onClose={closeMenteeProfile}
                     onEdit={editMenteeProfile}
+                    departmentOptions={departmentOptions}
                   />
                 </div>
               </div>
