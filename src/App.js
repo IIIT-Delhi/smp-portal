@@ -15,6 +15,7 @@ import FormList from "./components/dashboard/admin/forms/FormList";
 import MenteeForm from "./components/dashboard/mentee/forms/MenteeForm";
 import Login from "./components/Login";
 import RegistrationForm from "./components/dashboard/mentor/registration/RegistrationForm";
+import PrivateRoute from "./routes/PrivateRoute";
 // import MenteeProfile from "./components/dashboard/admin/mentees/MenteeProfile";
 // import MentorProfile from "./components/dashboard/admin/mentors/MentorProfile";
 
@@ -26,36 +27,130 @@ function App() {
           <Routes>
             <Route path="/login" Component={LoginPage} />
             <Route path="/google-login" element={<Login />} />
-            {/* <Route path="/dashboard/*" Component={DashboardPage} /> */}
+            {/* <Route path="/dashboard/*" element={DashboardPage} /> */}
             {/*------------------- Mentor BELOW--------------------------------*/}
             <Route
               path="/dashboard/mentor/profile"
-              Component={MentorDashboard}
+              element={
+                <PrivateRoute
+                  path="/dashboard/mentor/profile"
+                  allowedRole={"mentor"}
+                  requiredStatus={5}
+                >
+                  <MentorDashboard/>
+                </PrivateRoute>
+              }
             />
             <Route
               path="/dashboard/mentor/meetings"
-              Component={MentorMeetingList}
+              element={
+                <PrivateRoute
+                  path="/dashboard/mentor/meetings"
+                  allowedRole={"mentor"}
+                  requiredStatus={5}
+                >
+                  <MentorMeetingList/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/registration"
+              element={
+                <PrivateRoute path="/registration" allowedRole={"mentor"}>
+                  <RegistrationForm/>
+                </PrivateRoute>
+              }
             />
             {/*------------------- Mentee BELOW--------------------------------*/}
             <Route
               path="/dashboard/mentee/profile"
-              Component={MenteeDashboard}
+              element={
+                <PrivateRoute
+                  path="/dashboard/mentee/profile"
+                  allowedRole={"mentee"}
+                >
+                  <MenteeDashboard/>
+                </PrivateRoute>
+              }
             />
             <Route
               path="/dashboard/mentee/meetings"
-              Component={MenteeMeetingList}
+              element={
+                <PrivateRoute
+                  path="/dashboard/mentee/meetings"
+                  allowedRole={"mentee"}
+                >
+                  <MenteeMeetingList/>
+                </PrivateRoute>
+              }
             />
-            <Route path="/dashboard/mentee/form" Component={MenteeForm} />
+            <Route
+              path="/dashboard/mentee/form"
+              element={
+                <PrivateRoute
+                  path="/dashboard/mentee/form"
+                  allowedRole={"mentee"}
+                >
+                  <MenteeForm/>
+                </PrivateRoute>
+              }
+            />
             {/*------------------- ADMIN BELOW--------------------------------*/}
-            <Route path="/dashboard/admin/profile" Component={AdminDashboard} />
+            <Route
+              path="/dashboard/admin/profile"
+              element={
+                <PrivateRoute
+                  path="/dashboard/admin/profile"
+                  allowedRole={"admin"}
+                >
+                  <AdminDashboard />
+                </PrivateRoute>
+              }
+            />
             <Route
               path="/dashboard/admin/meetings"
-              Component={AdminMeetingList}
+              element={
+                <PrivateRoute
+                  path="/dashboard/admin/meetings"
+                  allowedRole={"admin"}
+                >
+                  <AdminMeetingList/>
+                </PrivateRoute>
+              }
             />
-            <Route path="/dashboard/admin/mentors" Component={MentorsList} />
-            <Route path="/dashboard/admin/mentees" Component={MenteesList} />
-            <Route path="/dashboard/admin/form" Component={FormList} />
-            <Route path="/registration" Component={RegistrationForm} />
+            <Route
+              path="/dashboard/admin/mentors"
+              element={
+                <PrivateRoute
+                  path="/dashboard/admin/mentors"
+                  allowedRole={"admin"}
+                >
+                  <MentorsList/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/mentees"
+              element={
+                <PrivateRoute
+                  path="/dashboard/admin/mentees"
+                  allowedRole={"admin"}
+                >
+                  <MenteesList/>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/form"
+              element={
+                <PrivateRoute
+                  path="/dashboard/admin/form"
+                  allowedRole={"admin"}
+                >
+                  <FormList/>
+                </PrivateRoute>
+              }
+            />
             {/* <Route
               path="/dashboard/admin/mentors/:mentorId"
               component={MentorProfile}
