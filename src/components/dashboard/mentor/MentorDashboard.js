@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../common/Navbar";
 import { useAuth } from "../../../context/AuthContext";
 import Table from "./Table";
-import mentorList from "../../../data/mentorList.json"; 
-import menteeList from "../../../data/menteeList.json";
+import axios from "axios";
+// import mentorList from "../../../data/mentorList.json"; 
+// import menteeList from "../../../data/menteeList.json";
 
 const MentorDashboard = () => {
   const { userDetails } = useAuth();
@@ -13,38 +14,86 @@ const MentorDashboard = () => {
   "id": "",
   "name": "",
   "email": "",
-}
+  }
+
+  const fetchAttributeId = async (id) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/getMentorById/",
+        JSON.stringify({ id: id })
+      );
+  
+      let userData;
+  
+      if (typeof response.data === "string") {
+        // If response.data is a string, parse it as JSON
+        const dataObject = JSON.parse(response.data);
+        userData = dataObject;
+      } else if (typeof response.data === "object") {
+        // If response.data is already an object, access id directly
+        userData = response.data;
+      }
+  
+      if (userData) {
+        // console.log("Attribute ID:", id);
+        // Update the userDetails with the retrieved 'id'
+        return userData;
+      } else {
+        console.error("User ID not found in response data");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching attribute:", error);
+      return null;
+    }
+  };
+
+
 
    useEffect(() => {
      const fetchData = async () => {
        try {
          // Find the admin with the matching email
-         const matchingMentor = mentorList.find(
-           (mentor) => mentor.email === userDetails.email
-         );
+        //  const matchingMentor = mentorList.find(
+        //    (mentor) => mentor.email === userDetails.email
+        //  );
 
+        const userData = await fetchAttributeId(userDetails.id);
+        // console.log(userData);
 
-         if (matchingMentor) {
+         if (userData) {
            // Set the matching admin's data to the state
-           setMentorData(matchingMentor);
+           setMentorData(userData);
 
-           const menteeDetails = matchingMentor.menteesToMentors
-             .map((menteeId) =>
-               menteeList.find((mentee) => mentee.id === menteeId)
-             )
-             .filter((mentee) => mentee); // Filter out null mentees
+           const menteeDetails = userData.menteesToMentors;
+            //  .map((menteeId) =>
+            //    menteeList.find((mentee) => mentee.id === menteeId)
+            //  )
+            //  .filter((mentee) => mentee); // Filter out null mentees
+            // console.log(menteeDetails);
 
            if (menteeDetails.length > 0) {
              // Check if there are mentees in the array
              // Set the extracted mentee details to the state
-             setAssignedMentees(
-               menteeDetails.map((mentee) => ({
-                 name: mentee.name,
-                 id: mentee.id,
-                 email: mentee.email,
-               }))
-             );
+              // console.log(menteeDetails[0]);
+             const menteeRows = menteeDetails.map((mentee) => {
+              // mentee should be an array with id, name, and email
+              const [id, name, email] = mentee;
+              
+              return (
+                <tr key={id}>
+                  <td>{id}</td>
+                  <td>{name}</td>
+                  <td>{email}</td>
+                </tr>
+              );
+            });
+            // console.log(menteeRows)
+
+            setAssignedMentees(menteeRows)
+
            }
+          //  console.log(assignedMentees)
          } else {
            console.error("Mentor not found for email:", userDetails.email);
          }

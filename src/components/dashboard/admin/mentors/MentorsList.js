@@ -70,10 +70,12 @@ const MentorsList = () => {
         .then((response) => {
           // If the backend successfully deletes the meeting, update your local state
           if (response.status === 200) {
-            setMentors((prevMentors) =>
-              prevMentors.filter((mentor) => mentor.id !== mentorToDelete.id)
-            );
+            // setMentors((prevMentors) =>
+            //   prevMentors.filter((mentor) => mentor.id !== mentorToDelete.id)
+            // );
             setMentorToDelete(null); // Clear the mentor to delete
+            const confirmLogout = window.confirm(response.data.message);
+            fetchMentorList();
           }
         })
         .catch((error) => {

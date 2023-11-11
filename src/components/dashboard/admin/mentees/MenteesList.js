@@ -4,12 +4,13 @@ import React, { useState, useEffect } from "react";
 import deleteIcon from "../../../../images/delete_icon.png";
 import MenteeProfile from "./MenteeProfile";
 import MenteeUpload from "./MenteeUpload";
-import axios from 'axios';
+import axios from "axios";
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
   const [mentees, setMentees] = useState([]);
+  const[isFirstTime,setisFirstTime] = useState(true);
 
   // Function to fetch Mentee list from Django endpoint
   const fetchMenteeList = async () => {
@@ -27,8 +28,8 @@ const MenteesList = () => {
 
   // Call the function to fetch the Mentee list when the component loads
   useEffect(() => {
-    fetchMenteeList();
-  }, []);
+    if(isFirstTime){setisFirstTime(false);fetchMenteeList();}
+  }, [isFirstTime]);
   const [searchTerm, setSearchTerm] = useState("");
   const [menteeToDelete, setMenteeToDelete] = useState(null);
   const [selectedMentee, setSelectedMentee] = useState(null);
@@ -36,7 +37,19 @@ const MenteesList = () => {
 
   // State for controlling the "Add Mentee" pop-up
   const [addMenteeModalVisible, setAddMenteeModalVisible] = useState(false);
-
+  const departmentOptions = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
+  };
   // State for mentee form fields
   const [menteeForm, setMenteeForm] = useState({
     name: "",
@@ -77,14 +90,11 @@ const MenteesList = () => {
 
   const addMenteeOnBackend = async (mentee) => {
     try {
-      // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
       await axios
         .post("http://127.0.0.1:8000/addMentee/", mentee)
         .then((response) => {
-          // If the backend successfully updates the meeting, update your local state
+          // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
-            setMentees([...mentees, mentee]);
-
             // Clear the form and close the modal
             setMenteeForm({
               name: "",
@@ -94,6 +104,7 @@ const MenteesList = () => {
               mentorId: "",
             });
             setAddMenteeModalVisible(false);
+            setMentees((prevMentees) => [...prevMentees, mentee]); // Add the new mentee to the mentees list
             console.log("Mentee added successfully on the backend");
           }
         });
@@ -115,10 +126,11 @@ const MenteesList = () => {
           JSON.stringify({ id: menteeToDelete.id })
         );
         if (response.status === 200) {
-          setMentees((prevMentees) =>
-            prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
-          );
+          // setMentees((prevMentees) =>
+          //   prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
+          // );
           setMenteeToDelete(null); // Clear the mentee to delete
+          fetchMenteeList();
         }
       } catch (error) {
         console.error("Error deleting mentee:", error);
@@ -164,7 +176,7 @@ const MenteesList = () => {
 
   return (
     <div>
-      <Navbar className="fixed-top" />
+      <Navbar className="fixed-top" userDetails={userDetails} />
       <div className="container">
         <div className="text-center my-3">
           <h4>Mentees List</h4>
@@ -250,7 +262,33 @@ const MenteesList = () => {
                       required
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="mb-3">
+                    <label className="form-label">Department</label>
+                    <select
+                      className="form-select"
+                      name="department"
+                      value={menteeForm.department}
+                      required // Make the select required
+                      onChange={(e) =>
+                        setMenteeForm({
+                          ...menteeForm,
+                          department: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" disabled>
+                        Select Department
+                      </option>
+                      {Object.entries(departmentOptions).map(
+                        ([value, label]) => (
+                          <option key={value} value={value}>
+                            {label}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  </div>
+                  {/* <div className="form-group">
                     <label>Department *</label>
                     <input
                       type="text"
@@ -264,7 +302,7 @@ const MenteesList = () => {
                       }
                       required
                     />
-                  </div>
+                  </div> */}
                   <div className="form-group">
                     <label>Mentor Roll Number</label>
                     <input
@@ -450,6 +488,5 @@ const MenteesList = () => {
     </div>
   );
 };
-
 
 export default MenteesList;

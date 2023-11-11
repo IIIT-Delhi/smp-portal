@@ -2,27 +2,27 @@ import React from 'react'
 import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 
-export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails }) {
+export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails, isPreviousMeeting}) {
   const handleButtonClick = (e) => {
     e.stopPropagation();
   };
 
-  const meetingId = `meeting-${meet.id}`;
+  const meetingId = `meeting-${meet.meetingId}`;
 
   const [isEditing, setIsEditing] = useState(false);
 
   const [confirmdelete, setconfirmdelete] = useState(false);
 
+  const [editedMeeting, setEditedMeeting] = useState(meet);
+
   const handleEditClick = () => {
     // Add your edit functionality here
     setIsEditing(true);
-    console.log("Edit clicked for meeting ID:", meet.id);
+    console.log("Edit clicked for meeting ID:", meet.meetingId);
   };
 
-  const [editedMeeting, setEditedMeeting] = useState(meet);
-
   const handleEditSave = () => {
-    editMeeting(meet.id, editedMeeting);
+    editMeeting(meet.meetingId, editedMeeting);
     setIsEditing(false);
   };
 
@@ -34,7 +34,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
   const handleDeleteClick = () => {
     // Add your delete functionality here
     setconfirmdelete(true);
-    // console.log('Delete clicked for meeting ID:', meet.id);
+    // console.log('Delete clicked for meeting ID:', meet.meetingId);
   };
 
   const handletitle = (e) => {
@@ -58,18 +58,18 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     });
   };
 
-  const handleattendees = (e) => {
+  const handleattendee = (e) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
 
     setEditedMeeting((prevDetails) => {
-      const updatedAttendees = isChecked
-        ? [...prevDetails.attendees, value]
-        : prevDetails.attendees.filter((attendee) => attendee !== value);
+      const updatedattendee = isChecked
+        ? [...prevDetails.attendee, value]
+        : prevDetails.attendee.filter((attendee) => attendee !== value);
 
       return {
         ...prevDetails,
-        attendees: updatedAttendees,
+        attendee: updatedattendee,
       };
     });
   };
@@ -86,8 +86,21 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
   };
 
   const handleConfirmDelete = () => {
-    ondelete(meet.id);
+    ondelete(meet.meetingId);
     setconfirmdelete(false);
+  };
+
+  const getAttendeeLabel = (attendee) => {
+    switch (attendee) {
+      case 1:
+        return 'Mentors';
+      case 2:
+        return 'Mentees';
+      case 3:
+        return 'Mentors and Mentees';
+      default:
+        return 'Unknown';
+    }
   };
 
   return (
@@ -113,18 +126,22 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
             data-bs-parent="#accordionExample"
           >
             <div className="accordion-body">
-              {/* <strong>Meeting ID : {meet.id}, Meeting Title : {meet.title}</strong>  */}
+              {/* <strong>Meeting ID : {meet.meetingId}, Meeting Title : {meet.title}</strong>  */}
               <strong>
-                Meeting ID : {meet.id}, Meeting Title : {meet.title}
+                Meeting ID : {meet.meetingId}, Meeting Title : {meet.title}
               </strong>
               <p>Time: {meet.time}</p>
               <p>Date: {meet.date}</p>
               <p>
-                Attendees:
+                Attendee:
                 <br />
-                {meet.attendees.map((attendee, index) => (
-                  <li key={index}>{attendee}</li>
-                ))}
+                {Array.isArray(meet.attendee) ? (
+                  meet.attendee.map((attendee, index) => (
+                    <li key={index}>{getAttendeeLabel(attendee)}</li>
+                  ))
+                ) : (
+                  <li>{getAttendeeLabel(meet.attendee)}</li>
+                )}
               </p>
 
               <p>
@@ -132,6 +149,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 <br />
                 {meet.description}
               </p>
+
               <div className="mt-2">
                 <button
                   className="btn btn-danger mx-2"
@@ -139,13 +157,16 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 >
                   Delete
                 </button>
-                <button
-                  className="btn btn-primary mx-2"
-                  onClick={handleEditClick}
-                >
-                  Edit
-                </button>
+                {!isPreviousMeeting && (
+                  <button
+                    className="btn btn-primary mx-2"
+                    onClick={handleEditClick}
+                  >
+                    Edit
+                  </button>
+                )}
               </div>
+
             </div>
           </div>
 
@@ -158,7 +179,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handletime={handletime}
               userDetails={userDetails}
               handletitle={handletitle}
-              handleattendees={handleattendees}
+              handleattendee={handleattendee}
               handleDescription={handleDescription}
             />
           )}

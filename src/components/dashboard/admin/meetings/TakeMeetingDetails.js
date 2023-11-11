@@ -18,33 +18,11 @@ export default function TakeMeetingDetails({
 
   const handleButtonSave = (e) => {
     e.stopPropagation();
-    if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendees.length > 0 && currmeeting.description) {
+    if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendee.length > 0 && currmeeting.description) {
       // If the form is valid, you can create the meeting object
-      const newMeeting = {
-        id: currmeeting.id,
-        scheduler_id: userDetails.id, // Provide the scheduler_id
-        date: currmeeting.date,
-        time: currmeeting.time,
-        attendee: currmeeting.attendees, // Assuming attendees is an array
-        description: currmeeting.description,
-      };
+
+      handleSave()
       
-      // Make a POST request to add the meeting
-      axios
-        .post('http://127.0.0.1:8000/addMeeting/', newMeeting, {
-          headers: {
-            'Content-Type': 'application/json', // Set the content type to JSON
-          },
-        })
-        .then((response) => {
-          if (response.status === 200){
-            alert('Meeting added successfully');
-          handleSave();
-          }
-        })
-        .catch((error) => {
-          console.error('Error adding meeting', error);
-        });
     } else {
       setFormValid(false);
     }
