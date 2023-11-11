@@ -13,7 +13,7 @@ const AdminDashboard = () => {
         // Find the admin with the matching email
         // const matchingAdmin = adminList.find((admin) => admin.email === userDetails.email);
         
-        setAdminData(userDetails)
+        setAdminData(userDetails);
 
         // if (matchingAdmin) {
         //   // Set the matching admin's data to the state

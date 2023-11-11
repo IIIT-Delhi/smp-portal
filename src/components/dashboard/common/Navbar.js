@@ -41,7 +41,7 @@ const Navbar = () => {
       />
       <ul className="navbar-nav ml-auto">
         {userDetails?.id !== -1 &&
-          ((role === "mentor" && userDetails?.status === 3) ||
+          ((role === "mentor" && userDetails?.status === 5) ||
             role === "admin" ||
             role === "mentee") && (
             <>
