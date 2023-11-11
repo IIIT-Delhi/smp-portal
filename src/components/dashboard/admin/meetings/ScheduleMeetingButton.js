@@ -113,8 +113,8 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     <div>
       {/* <i class="bi bi-plus-circle"></i> */}
       <button
-        className="btn btn-primary btn-floating position-fixed d-flex justify-content-center align-items-center"
-        style={{ bottom: "10%", fontSize: "40px !important" }}
+        className="btn btn-primary btn-floating position-fixed"
+        style={{ bottom: "5%", right: '4%'}}
         onClick={handleScheduleClick}
       >
         {/* Schedule Meeting */}

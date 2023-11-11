@@ -1,0 +1,17 @@
+
+
+
+  .meeting-wrapper {
+    display: flex;
+    overflow-y: auto;
+    padding: 10px; /* Add padding as needed */
+    margin: 0 -10px; /* Add negative margin to offset the padding */
+  }
+  
+  /* You may also need to add a media query for responsiveness */
+  @media screen and (max-width: 768px) {
+    .meeting-wrapper {
+      flex-direction: column;
+      align-items: center;
+    }
+  }

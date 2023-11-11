@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 // import Formelement from './Formelement';
 import TakeMeetingDetails from './TakeMeetingDetails';
+import axios from 'axios';
 
 const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
     const [showModal, setShowModal] = useState(false);
@@ -116,15 +117,15 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
         <div>
             {/* <i class="bi bi-plus-circle"></i> */}
             <button
-                className="btn btn-primary btn-floating position-fixed d-flex justify-content-center align-items-center"
-                style={{ bottom: "10%" ,fontSize: "40px !important"}}
+                className="btn btn-primary btn-floating position-fixed"
+                style={{ bottom: "5%", right: '4%', width:'4%', height:'8%'}}
                 onClick={handleScheduleClick}
                 >
                 {/* Schedule Meeting */}
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="30"
-                    height="30"
+                    width="100%"
+                    height="100%"
                     fill="currentColor"
                     class="bi bi-plus-circle"
                     viewBox="0 0 16 16"

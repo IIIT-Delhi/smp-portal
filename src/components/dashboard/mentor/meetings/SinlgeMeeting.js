@@ -90,7 +90,7 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
   // };
 
   return (
-    <div className='mb-2' style={{width:'100%'}}>
+    <div className='mb-2'>
       <div className="accordion" id="accordionExample">
         <div className="accordion-item">
           <h2 className="accordion-header">
@@ -104,11 +104,23 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
               <strong>Meeting ID : {meet.meetingId}, Meeting Title : {meet.title}</strong>
               <p>Time: {meet.time}</p>
               <p>Date: {meet.date}</p>
-              <p>Attendees: All Assigned Mentees</p>
+              <p>
+                Attendee:
+                <br />
+                {Array.isArray(meet.attendee) ? (
+                  meet.attendee.map((attendee, index) => (
+                    <li key={index}>{attendee}</li>
+                  ))
+                ) : (
+                  <li>{meet.attendee}</li>
+                )}
+              </p>
               <p>Description:<br/>{meet.description}</p> 
               <div className='mt-2'>
-                <button className="btn btn-danger mx-2" onClick={handleDeleteClick}>Delete</button>
-                {!isPreviousMeeting && (
+                {userDetails.id === meet.schedulerId && (
+                  <button className="btn btn-danger mx-2" onClick={handleDeleteClick}>Delete</button>
+                )}
+                {!isPreviousMeeting && (userDetails.id === meet.schedulerId) && (
                   <button className="btn btn-primary mx-2" onClick={handleEditClick}>Edit</button>
                 )}
               </div>

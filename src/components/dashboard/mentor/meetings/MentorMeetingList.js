@@ -4,6 +4,8 @@ import { useAuth } from "../../../../context/AuthContext";
 import { useState } from "react";
 import SinlgeMeeting from './SinlgeMeeting';
 import ScheduleMeetingButton from './ScheduleMeetingButton';
+import axios from "axios";
+import { useEffect } from "react";
 
 export default function MentorMeetingList() {
   const { userDetails } = useAuth();
@@ -97,12 +99,9 @@ export default function MentorMeetingList() {
   };
 
   const editMeeting = (meetingId, newValues) => {
-    // setusermeetings(prevMeetings => 
-    //   prevMeetings.map(meet => 
-    //     meet.id === meetingId ? { ...meet, ...newValues } : meet
-    //   )
-    // );
     updateMeetingOnBackend(newValues);
+    fetchMeetings();
+
   };
 
   return (
@@ -112,11 +111,11 @@ export default function MentorMeetingList() {
         <h1 className="font-weight-bold mb-4">Meeting Schedule</h1>
       </div>
 
-      <div style={{ display: "flex", height: "70px", justifyContent: "center", position: "relative" }}>
+      <div className="row d-flex">
         <MeetingSection title="Upcoming Meetings" meetings={upcomingMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={false} userDetails={userDetails} />
         <MeetingSection title="Previous Meetings" meetings={previousMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={true} userDetails={userDetails}/>
 
-        <div style={{ position: "relative", width: "15%", display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+        <div>
           <ScheduleMeetingButton userDetails={userDetails} fetchMeetings={fetchMeetings} />
         </div>
       </div>
@@ -126,9 +125,9 @@ export default function MentorMeetingList() {
 
 const MeetingSection = ({ title, meetings, deleteMeeting, editMeeting, isPreviousMeeting,userDetails }) => {
   return (
-    <div className="row">
-      <h2>{title}</h2>
-      <div className="container mt-4" style={{ marginLeft: "5px", marginRight: "0", width: "85%", overflowY: "auto" }}>
+    <div style={{width : '45%'}}>
+      <h3 className="text-center">{title}</h3>
+      <div className="container" style={{height : '60vh', overflowY:"auto" }}>
         {meetings && meetings.length > 0 ? (
           meetings.map((meet) => (
             <SinlgeMeeting
