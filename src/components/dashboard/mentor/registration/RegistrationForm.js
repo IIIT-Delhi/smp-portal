@@ -226,6 +226,14 @@ export default function RegistrationForm() {
         // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
         <ConsentForm userDetails={userDetails} />
       )}
+      {userDetails.id !== -1 && userDetails.status === 3 && (
+        // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            We have got your consent. You can use portal after mentee allocation. We appreciate your patience till then.
+          </div>
+        </div>
+      )}
       {userDetails.id !== -1 && userDetails.status === 4 && (
         // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
