@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 // import Formelement from './Formelement';
 import TakeMeetingDetails from './TakeMeetingDetails';
 
-const ScheduleMeetingButton = ({setmeetings}) => {
+const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
     const [showModal, setShowModal] = useState(false);
     const [currmeeting, setcurrmeeting] = useState({
         id : null,
+        schedulerId: userDetails.id,
         time : '',
         date : '',
         title : '',
-        Descriptoin : '',
+        descriptoin : '',
+        attendee: 'Mentees'
     });
 
 
@@ -17,10 +19,12 @@ const ScheduleMeetingButton = ({setmeetings}) => {
     const handleScheduleClick = () => {
         setcurrmeeting({
             id : null,
+            schedulerId: userDetails.id,
             time: '',
             date: '',
             title: '',
-            Descriptoin : '',
+            descriptoin : '',
+            attendee: 'Mentees'
           });
         setShowModal(true);
     };
@@ -32,8 +36,32 @@ const ScheduleMeetingButton = ({setmeetings}) => {
     const handleSaveModal = () => {
         const newMeeting = { ...currmeeting, id: Date.now() }
         setcurrmeeting(newMeeting); // Update the current meeting state
-        setmeetings(prevMeetings => [...prevMeetings, newMeeting]); // Add the new meeting to meetings
+        const meetingData = {
+            title: newMeeting.title,
+            schedulerId: newMeeting.schedulerId,
+            date: newMeeting.date,
+            time: newMeeting.time,
+            attendee: newMeeting.attendee,
+            description: newMeeting.description,
+        };
+
+        axios
+            .post('http://127.0.0.1:8000/addMeeting/', meetingData, {
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    alert('Meeting added successfully');
+                }
+            })
+            .catch((error) => {
+                console.error('Error adding meeting', error);
+            });
+
         setShowModal(false);
+        fetchMeetings();
     }
 
     const handletitle = (e) => {
@@ -60,7 +88,7 @@ const ScheduleMeetingButton = ({setmeetings}) => {
     const handleDescription = (e) => {
         setcurrmeeting(
           {...currmeeting,
-          Description: e.target.value}
+          description: e.target.value}
         )
       }
 

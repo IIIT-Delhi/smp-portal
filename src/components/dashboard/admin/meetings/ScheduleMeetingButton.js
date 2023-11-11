@@ -140,7 +140,6 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
           handledate={handledate}
           handletime={handletime}
           handletitle={handletitle}
-          userDetails={userDetails}
           handleDescription={handleDescription}
         />
       )}

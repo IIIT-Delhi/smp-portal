@@ -91,29 +91,6 @@ export default function AdminMeetingList() {
     }
   };
 
-  // const convertAttendeeToArr = (attendeeValue) => {
-  //   switch (attendeeValue) {
-  //     case 1:
-  //       return [1]; // Mentor
-  //     case 2:
-  //       return [2]; // Mentee
-  //     case 3:
-  //       return [1, 2]; // Mentor and Mentee
-  //     default:
-  //       return [];
-  //   }
-  // };
-
-  // const editMeeting = (meetingId, newValues) => {
-  //   const updatedMeetings = meetings.map((meet) => {
-  //     if (meet.meetingId === meetingId) {
-  //       const attendee = convertAttendeeToArr(newValues.attendee);
-  //       return { ...meet, ...newValues, attendee };
-  //     } else {
-  //       return meet;
-  //     }
-  //   });
-
   const editMeeting = (meetingId, newValues) => {
     // const updatedMeetings = meetings.map((meet) =>
     //   meet.meetingId === meetingId ? { ...meet, ...newValues } : meet

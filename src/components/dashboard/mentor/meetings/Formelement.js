@@ -21,7 +21,7 @@ export default function Formelement({currmeeting, handletitle,handledate, handle
 
         <div className="form-group">
             <label htmlFor="Description">Description</label>
-            <textarea type="text" style={{height: "100px"}} value = {currmeeting.Description} onChange = {handleDescription} className="form-control" id="meetDescription" placeholder="Enter meeting Details" />
+            <textarea type="text" style={{height: "100px"}} value = {currmeeting.description} onChange = {handleDescription} className="form-control" id="meetDescription" placeholder="Enter meeting Details" />
         </div>
 
       </div>
