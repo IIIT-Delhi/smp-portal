@@ -68,10 +68,10 @@ const Login = () => {
         if (currRole === "mentor") {
           const status = userDetails.status;
           console.log(status);
-          if (status === 1 || status === 2 || status === 4) {
+          if (status === 1 || status === 2 || status === 3 || status==4) {
             // Redirect to RegistrationForm.js
             navigate("/registration");
-          } else if (status === 3) {
+          } else if (status === 5) {
             // Redirect to the profile based on the role
             navigate(`/dashboard/${currRole}/profile`);
           }
