@@ -16,16 +16,36 @@ const AuthButton = () => {
   return (
     <div>
       {userDetails ? (
-        <button className="btn btn-danger" onClick={logout}>
-          Logout
-        </button>
+        <div>
+          <div className="my-1">
+            <button
+              className="btn btn-outline-light"
+              data-mdb-ripple-color="light"
+              style={{ width: "100%" }}
+              onClick={() => handleGoogleLogin(userDetails.role)}
+            >
+              Go To Profile
+            </button>
+          </div>
+          <div className="my-1">
+            <button
+              className="btn btn-outline-light"
+              data-mdb-ripple-color="light"
+              style={{ width: "100%" }}
+              onClick={() => logout()}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
       ) : (
         <>
           <div className="btn1 my-3">
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              onClick={() => handleGoogleLogin('mentee')}
+              style={{ width: "100%" }}
+              onClick={() => handleGoogleLogin("mentee")}
             >
               Login as Mentee
             </button>
@@ -34,7 +54,8 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              onClick={() => handleGoogleLogin('mentor')}
+              style={{ width: "100%" }}
+              onClick={() => handleGoogleLogin("mentor")}
             >
               Login as Mentor
             </button>
@@ -43,9 +64,8 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              onClick={
-                () => handleGoogleLogin('admin')
-              }
+              style={{ width: "100%" }}
+              onClick={() => handleGoogleLogin("admin")}
             >
               Login as Admin
             </button>

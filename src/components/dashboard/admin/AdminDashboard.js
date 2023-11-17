@@ -52,7 +52,7 @@ const AdminDashboard = () => {
                           src={adminData.imgSrc}
                           alt="Profile"
                           className="img-fluid img-thumbnail mt-4 mb-2"
-                          style={{ width: "150px", borderRadius: "10%" }}
+                          style={{ width: "50%", borderRadius: "10%" }}
                         />
                       </div>
                       <div className="mt-2 text-center">

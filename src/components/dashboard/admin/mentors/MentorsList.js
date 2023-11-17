@@ -9,6 +9,19 @@ const MentorsList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
   const [mentors, setMentors] = useState([]);
+  const departmentOptions = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
+  };
   // Function to fetch Mentor list from Django endpoint
   const fetchMentorList = async () => {
     try {
@@ -138,9 +151,19 @@ const MentorsList = () => {
             <table className="table table-hover mb-4 mx-2" border="1">
               <tbody>
                 {mentors
-                  .filter((mentor) =>
-                    mentor.name.toLowerCase().includes(searchTerm.toLowerCase())
-                  )
+                  .filter((mentor) => {
+                    const lowerSearchTerm = searchTerm.toLowerCase();
+                    const lowerName = mentor.name.toLowerCase();
+                    const lowerId = mentor.id.toLowerCase();
+                    const departmentLabel =
+                      departmentOptions[mentor.department] || "";
+                    const lowerDepartment = departmentLabel.toLowerCase();
+                    return (
+                      lowerName.includes(lowerSearchTerm) ||
+                      lowerId.includes(lowerSearchTerm) ||
+                      lowerDepartment.includes(lowerSearchTerm)
+                    );
+                  })
                   .map((mentor) => (
                     <tr
                       className=""
@@ -209,6 +232,7 @@ const MentorsList = () => {
                     mentor={selectedMentor}
                     onClose={closeMentorProfile}
                     onEdit={editMentorProfile}
+                    departmentOptions={departmentOptions}
                   />
                 </div>
               </div>
