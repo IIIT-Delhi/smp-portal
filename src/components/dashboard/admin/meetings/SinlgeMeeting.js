@@ -90,19 +90,6 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     setconfirmdelete(false);
   };
 
-  const getAttendeeLabel = (attendee) => {
-    switch (attendee) {
-      case 1:
-        return 'Mentors';
-      case 2:
-        return 'Mentees';
-      case 3:
-        return 'Mentors and Mentees';
-      default:
-        return 'Unknown';
-    }
-  };
-
   return (
     <div className="mb-2" style={{ width: "100%" }}>
       <div className="accordion" id="accordionExample">
@@ -137,10 +124,10 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 <br />
                 {Array.isArray(meet.attendee) ? (
                   meet.attendee.map((attendee, index) => (
-                    <li key={index}>{getAttendeeLabel(attendee)}</li>
+                    <li key={index}>{attendee}</li>
                   ))
                 ) : (
-                  <li>{getAttendeeLabel(meet.attendee)}</li>
+                  <li>{meet.attendee}</li>
                 )}
               </p>
 
@@ -157,7 +144,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 >
                   Delete
                 </button>
-                {!isPreviousMeeting && (
+                {!isPreviousMeeting && (userDetails.id === meet.schedulerId) && (
                   <button
                     className="btn btn-primary mx-2"
                     onClick={handleEditClick}

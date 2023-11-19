@@ -8,7 +8,7 @@ export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,h
 
     const handleButtonSave = (e) => {
         e.stopPropagation();
-        if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendees.length > 0 && currmeeting.Description) {
+        if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendee.length > 0 && currmeeting.description) {
           handleSave();
         } else {
           setFormValid(false);
@@ -28,7 +28,8 @@ export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,h
                         </button>
                     </div>
                     <div className="modal-body">
-                        <Formelement currmeeting = {currmeeting}  
+                        <Formelement 
+                            currmeeting = {currmeeting}  
                             handledate={handledate}
                             handletime={handletime}
                             handletitle={handletitle}
