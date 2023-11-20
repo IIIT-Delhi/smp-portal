@@ -38,12 +38,10 @@ def get_all_mentors(request):
     if request.method == "GET":
         mentors_from_candidates = Candidate.objects.filter(status=5).values()
         for mentor in mentors_from_candidates:
-            # adding other 'goodiesStatus' and 'reimbursement' details
+            # adding other 'goodiesStatus' details
             id_to_search = mentor['id']
             other_details = Mentor.objects.filter(id=id_to_search).values()
-            mentor.update({'goodiesStatus': other_details[0]['goodiesStatus'],
-                           'reimbursement': other_details[0]['reimbursement']})
-            mentor.pop("imgSrc")
+            mentor.update({'goodiesStatus': other_details[0]['goodiesStatus']})
             # adding menteesToMentors list
             menteesToMentors = []
             mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
@@ -63,13 +61,11 @@ def get_mentor_by_id(request):
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         mentor = Candidate.objects.filter(status=5, id=id_to_search).values()
 
-        # adding 'goodiesStatus' and 'reimbursement' details
+        # adding 'goodiesStatus' details
         other_details = Mentor.objects.filter(id=id_to_search).values()
         if len(mentor) == 0: 
             return JsonResponse({"message": "Mentor Not Found"})
-        mentor[0].update({'goodiesStatus': other_details[0]['goodiesStatus'],
-                        'reimbursement': other_details[0]['reimbursement']})
-        mentor[0].pop("imgSrc")
+        mentor[0].update({'goodiesStatus': other_details[0]['goodiesStatus']})
         # adding menteesToMentors list
         menteesToMentors = []
         mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
@@ -92,11 +88,15 @@ def get_all_mentees(request):
             if len(mentor): 
                  mentee.update({'mentorId': mentor[0]['id'],
                             'mentorName': mentor[0]['name'],
-                            'mentorEmail': mentor[0]['email']})
+                            'mentorEmail': mentor[0]['email'],
+                            'mentorContact': mentor[0]['contact'],
+                            'mentorImage': mentor[0]['imgSrc']})
             else: 
                 mentee.update({'mentorId': 'NULL',
                            'mentorName': 'NULL',
-                           'mentorEmail': 'NULL'})
+                           'mentorEmail': 'NULL',
+                            'mentorContact': 'NULL',
+                            'mentorImage': 'NULL'})
         return JsonResponse(list(mentees), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -113,11 +113,15 @@ def get_mentee_by_id(request):
             if len(mentor): 
                  mentee.update({'mentorId': mentor[0]['id'],
                             'mentorName': mentor[0]['name'],
-                            'mentorEmail': mentor[0]['email']})
+                            'mentorEmail': mentor[0]['email'],
+                            'mentorContact': mentor[0]['contact'],
+                            'mentorImage': mentor[0]['imgSrc']})
             else: 
                 mentee.update({'mentorId': 'NULL',
                            'mentorName': 'NULL',
-                           'mentorEmail': 'NULL'})
+                           'mentorEmail': 'NULL',
+                            'mentorContact': 'NULL',
+                            'mentorImage': 'NULL'})
         return JsonResponse(list(mentees), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -145,11 +149,15 @@ def get_id_by_email(request):
                     if len(mentor): 
                         mentee.update({'mentorId': mentor[0]['id'],
                                     'mentorName': mentor[0]['name'],
-                                    'mentorEmail': mentor[0]['email']})
+                                    'mentorEmail': mentor[0]['email'],
+                                    'mentorContact': mentor[0]['contact'],
+                                    'mentorImage': mentor[0]['imgSrc']})
                     else: 
                         mentee.update({'mentorId': 'NULL',
                                 'mentorName': 'NULL',
-                                'mentorEmail': 'NULL'})
+                                'mentorEmail': 'NULL',
+                                'mentorContact': 'NULL',
+                                'mentorImage': 'NULL'})
 
                 print(entry)
 
@@ -221,7 +229,7 @@ def delete_mentor_by_id(request):
             candidate_new = Candidate.objects.get(id=highest_score_mentor_id)
             candidate_new.status = 5
             candidate_new.save()
-            mentor = Mentor(id = highest_score_mentor["id"], goodiesStatus = 0, reimbursement = 0 )
+            mentor = Mentor(id = highest_score_mentor["id"], goodiesStatus = 0)
             mentor.save()
             return JsonResponse({"message": f"Repalced Mentor ID: {highest_score_mentor_id}"})
         except Mentor.DoesNotExist:
@@ -269,12 +277,11 @@ def add_mentor(request):
         data = json.loads(request.body.decode('utf-8'))
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'),
-                          size=data.get('size'), score=data.get('score'),
+                          size=data.get('size'), score=data.get('score'),contact=data.get('contact'),
                           status=5, imgSrc=data.get('imgSrc'))
         new_candidate.save()
         
-        new_mentor = Mentor(id=data.get('id'), goodiesStatus=data.get('goodiesStatus'),
-                            reimbursement=data.get('reimbursement'))
+        new_mentor = Mentor(id=data.get('id'), goodiesStatus=data.get('goodiesStatus'))
         new_mentor.save()
         
         for mentee_id in data.get('menteesToMentors'):
@@ -321,7 +328,7 @@ def add_candidate(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
-                          department=data.get('department'), year=data.get('year'),
+                          department=data.get('department'), year=data.get('year'), contact=data.get('contact'),
                           size=data.get('size'), score=data.get('score'),
                           status=1)
         if(data.get('imgSrc')):
@@ -380,10 +387,10 @@ def edit_mentor_by_id(request):
             candidate.size = data.get('newValue')
         elif(data.get('fieldName')=="score"):
             candidate.score = data.get('newValue')
+        elif(data.get('fieldName')=="contact"):
+            candidate.contact = data.get('newValue')
         elif(data.get('fieldName')=="goodiesStatus"):
             mentor.goodiesStatus = data.get('newValue')
-        elif(data.get('fieldName')=="reimbursement"):
-            mentor.reimbursement = data.get('newValue')
         elif(data.get('fieldName')=="menteesToMentors"):
             for mentee_id in data.get('newValue'):
                 mentee = Mentee.objects.get(id=mentee_id)
@@ -616,7 +623,7 @@ def create_mentor_mentee_pairs(request):
                 candidates_dict[candidate_id] += 1
             
             for candidate in candidates:
-                mentor = Mentor(id=candidate.id, goodiesStatus = 0, reimbursement = 0)
+                mentor = Mentor(id=candidate.id, goodiesStatus = 0)
                 mentor.save()
                 candidate.status = 5
                 candidate.save()
