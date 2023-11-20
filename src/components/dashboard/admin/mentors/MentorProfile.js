@@ -1,6 +1,6 @@
 import React from "react";
 
-const MentorProfile = ({ mentor, onClose, onEdit, departmentOptions }) => {
+const MentorProfile = ({ mentor, onClose }) => {
   if (!mentor) {
     return null;
   }
@@ -19,6 +19,25 @@ const MentorProfile = ({ mentor, onClose, onEdit, departmentOptions }) => {
     );
   });
 
+  const yearOptions = {
+    B3: "3",
+    B4: "4",
+    M2: "2",
+  };
+  const branchOptions = {
+    "B-CSB": "CSB",
+    "B-CSSS": "CSSS",
+    "B-CSD": "CSD",
+    "B-CSE": "CSE",
+    "B-CSAI": "CSAI",
+    "B-CSAM": "CSAM",
+    "B-ECE": "ECE",
+    "B-EVE": "EVE",
+    "M-CSE": "CSE",
+    "M-ECE": "ECE",
+    "M-CB": "CB",
+  };
+
   return (
     <div className="modal fade show" style={{ display: "block" }}>
       <div className="modal-dialog">
@@ -35,10 +54,25 @@ const MentorProfile = ({ mentor, onClose, onEdit, departmentOptions }) => {
           >
             {/* Display mentor's profile information here */}
             <div>
+              <img
+                src={mentor.imgSrc}
+                alt="Profile"
+                className="img-fluid img-thumbnail mt-4 mb-2"
+                style={{ width: "50%", borderRadius: "10%" }}
+              />
               <p>Name: {mentor.name}</p>
               <p>Roll Number: {mentor.id}</p>
               <p>Email: {mentor.email}</p>
-              <p>Department: {departmentOptions[mentor.department]}</p>
+              <p>Contact Number: {mentor.contact}</p>
+              <p>Year: {yearOptions[mentor.year]}</p>
+              <p>
+                Programme:{mentor.department.startsWith("B") ? "B.Tech" : "M.Tech"}
+              </p>
+              <p>
+                Branch:
+                {branchOptions[mentor.department]}
+              </p>
+              <p>Goodies Status: {mentor.goodiesStatus}</p>
               {/* Add more mentor profile details here */}
             </div>
             <h5>Mentees:</h5>

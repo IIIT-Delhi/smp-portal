@@ -1,43 +1,57 @@
 import React from 'react'
 import { useState } from 'react';
 
-export default function Questions({questions,prevStep,handleCheckboxChange,handleSubmit}) {
+export default function Questions({
+  questions,
+  prevStep,
+  handleSubmit,
+  handleChangeQuestionInMain,
+}) {
+  const [questionAns, setQuestionAns] = useState({});
+  const handleChangeQuestion = (questionId, value) => {
+    setQuestionAns({
+      ...questionAns,
+      [questionId]: value,
+    });
+    handleChangeQuestionInMain(questionId, value);
+  };
 
-    
-    return (
+  return (
     <div className="container">
-        <form>
-        {questions.map((question, questionIndex) => (
-            <div key={questionIndex} className="mb-3">
+      <form>
+        {questions.map((question) => (
+          <div key={question.id} className="mb-3">
             <label className="form-label">{question.question}</label>
-            {question.options.map((option, optionIndex) => (
-                <div key={optionIndex} className="form-check">
+            {question.options.map((option, index) => (
+              <div key={index} className="form-check">
                 <input
-                    type="radio"
-                    className="form-check-input"
-                    name={`question-${questionIndex}`} 
-                    id={`option-${questionIndex}-${optionIndex}`}
-                    onChange={() => handleCheckboxChange(questionIndex, optionIndex)}
+                  type="radio"
+                  className="form-check-input"
+                  id={`${question.id}-option-${index}`}
+                  value={option}
+                  checked={questionAns[question.id] === index}
+                  onChange={(e) => handleChangeQuestion(question.id, index)}
+                  name={`question${question.id}`}
                 />
                 <label
-                    className="form-check-label"
-                    htmlFor={`option-${questionIndex}-${optionIndex}`}
+                  className="form-check-label"
+                  htmlFor={`${question.id}-option-${index}`}
                 >
-                    {option}
+                  {option}
                 </label>
-                </div>
+              </div>
             ))}
-            </div>
+          </div>
         ))}
-        </form>
+      </form>
 
-        <button className="btn btn-secondary mb-5 mx-2" onClick={prevStep}>
-            Back
-        </button>
+      <button className="btn btn-secondary mb-5 mx-2" onClick={prevStep}>
+        Back
+      </button>
 
-        <button className="btn btn-primary mb-5" onClick={handleSubmit}>
-          Next
-        </button>
+      <button className="btn btn-primary mb-5" onClick={handleSubmit}>
+        Next
+      </button>
     </div>
-    );
+  );
 }
