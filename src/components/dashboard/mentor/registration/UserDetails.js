@@ -4,7 +4,6 @@ function UserDetails(props) {
   const {
     inputValues,
     handleChange,
-    handleImageChange,
     prevStep,
     nextStep,
     yearOptions,
@@ -26,8 +25,7 @@ function UserDetails(props) {
       inputValues.email === "" ||
       inputValues.department === "" ||
       inputValues.year === "" ||
-      inputValues.contact === "" ||
-      inputValues.imgSrc === ""
+      inputValues.contact === "" 
     ) {
       alert("Please fill in all required fields.");
       return;
@@ -42,7 +40,7 @@ function UserDetails(props) {
       <form>
         <div className="mb-3">
           <label className="form-label" htmlFor="formName">
-            Full Name
+            Full Name (as per records)
           </label>
           <input
             type="text"
@@ -137,18 +135,6 @@ function UserDetails(props) {
             onChange={handleChange}
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Passport-size Photo</label>
-          <input
-            type="file"
-            className="form-control"
-            name="imgSrc"
-            accept="image/*" // Allow only image files
-            required // Make the input required
-            onChange={handleImageChange} // Handle image selection
-          />
-        </div>
-
         <button className="btn btn-primary mb-5" onClick={saveAndcontinue}>
           Next
         </button>
