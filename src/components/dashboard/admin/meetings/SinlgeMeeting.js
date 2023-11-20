@@ -138,12 +138,14 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               </p>
 
               <div className="mt-2">
-                <button
-                  className="btn btn-danger mx-2"
-                  onClick={handleDeleteClick}
-                >
-                  Delete
-                </button>
+                {!isPreviousMeeting && (
+                  <button
+                    className="btn btn-danger mx-2"
+                    onClick={handleDeleteClick}
+                  >
+                    Delete
+                  </button>
+                )}
                 {!isPreviousMeeting && (userDetails.id === meet.schedulerId) && (
                   <button
                     className="btn btn-primary mx-2"
