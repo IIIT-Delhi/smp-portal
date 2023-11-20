@@ -7,6 +7,7 @@
     "year": "2024",
     "size": "L",
     "score":"90",
+    "reimbursement" : "900",
     "goodiesStatus": "Approved",
     "menteesToMentors": ["2023123","2023124","2023125","2023126","2023127"]
 }

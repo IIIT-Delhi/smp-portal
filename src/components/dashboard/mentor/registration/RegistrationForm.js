@@ -6,33 +6,74 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../context/AuthContext";
 import Navbar from "../../common/Navbar";
 import Questions from "./Questions";
-import registrationQuestions from "../../../../data/registrationQuestions.json";
 import axios from "axios";
 
 export default function RegistrationForm() {
   const { userDetails } = useAuth();
   const [step, setStep] = useState(1);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  // const [score, setScore] = useState(0);
+
+  const [selectedOptions, setSelectedOptions] = useState({});
+    // const [score, setScore] = useState(0);
+
+  const handleCheckboxChange = (questionIndex, optionIndex) => {
+      setSelectedOptions(prevSelectedOptions => ({
+      ...prevSelectedOptions,
+      [questionIndex]: optionIndex
+      }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    nextStep();
-  };
-  const handleChangeQuestionInMain = (questionId,value) => {
+
+    let newScore = 0;
+    for (const questionIndex in selectedOptions) {
+      const selectedOption = selectedOptions[questionIndex];
+      const correctOption = questions[questionIndex].correctAnswer - 1;
+
+      // console.log(selectedOption)
+      // console.log(correctOption)
+
+      if (selectedOption === correctOption) {
+        newScore += 4; // Award 4 points for correct answer
+      }
+    }
+
+    // console.log(newScore)
+    // setScore(newScore);
     setFormData({
       ...formData,
-      [questionId]: value,
+      score: newScore,
     });
+    nextStep();
   };
+
   const [formData, setFormData] = useState({
     id: "",
     name: "",
     email: "",
     department: "",
     year: "",
-    contact: "",
+    size: "",
+    imgSrc: "",
+    score: 0,
   });
 
-  const initialDepartmentOptions = {
+  const questions = [
+    {
+      "question" : "Question 1",
+      "options" : ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 1
+    },
+    {
+      "question" : "Question 2",
+      "options" : ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": 1
+    }
+  ]
+
+  const departmentOptions = {
     "B-CSB": "CSB (B.Tech.)",
     "B-CSSS": "CSSS (B.Tech.)",
     "B-CSD": "CSD (B.Tech.)",
@@ -45,16 +86,13 @@ export default function RegistrationForm() {
     "M-ECE": "ECE (M.Tech.)",
     "M-CB": "CB (M.Tech.)",
   };
-  const [departmentOptions, setDepartmentOptions] = useState(
-    initialDepartmentOptions
-  );
 
   const yearOptions = {
-    // B1: "B.Tech. 1st year",
-    // B2: "B.Tech. 2nd year",
+    B1: "B.Tech. 1st year",
+    B2: "B.Tech. 2nd year",
     B3: "B.Tech. 3rd year",
     B4: "B.Tech. 4th year",
-    // M1: "M.Tech. 1st year",
+    M1: "M.Tech. 1st year",
     M2: "M.Tech. 2nd year",
   };
 
@@ -74,40 +112,32 @@ export default function RegistrationForm() {
     setStep(step - 1);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "year") {
-      const selectedYear = e.target.value;
-      let updatedDepartments = { ...initialDepartmentOptions };
-
-      // Filtering departments based on selectedYear
-      if (selectedYear.startsWith("B3") || selectedYear.startsWith("B4")) {
-        updatedDepartments = Object.fromEntries(
-          Object.entries(updatedDepartments).filter(([key]) =>
-            key.startsWith("B")
-          )
-        );
-      } else if (selectedYear.startsWith("M2")) {
-        updatedDepartments = Object.fromEntries(
-          Object.entries(updatedDepartments).filter(([key]) =>
-            key.startsWith("M")
-          )
-        );
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (file) {
+      if (file.size > 200000) {
+        alert("Image size exceeds 200KB. Please select a smaller image.");
+        e.target.value = null; // Clear the selected file
+      } else {
+        // Handle the selected image, e.g., store it in component state
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageBase64 = event.target.result; // Base64-encoded image
+          setFormData({
+            ...formData,
+            imgSrc: imageBase64,
+          });
+        };
+        reader.readAsDataURL(file);
       }
-
-      setFormData({
-        ...formData,
-        [name]: value,
-        department: "", // Clear the selected department when year changes
-      });
-
-      // Update departmentOptions state with filtered departments
-      setDepartmentOptions(updatedDepartments);
-    } else {
-      setFormData({ ...formData, [name]: value });
     }
   };
+
   const navigate = useNavigate();
 
   const saveAndContinue = (e) => {
@@ -120,19 +150,20 @@ export default function RegistrationForm() {
     // console.log(score)
     // console.log(selectedOptions)
     // Create a JSON object from the formData
-    // const formDataJSON = {
-    //   id: formData.id,
-    //   name: formData.name,
-    //   email: formData.email,
-    //   department: formData.department,
-    //   year: formData.year,
-    //   contact: formData.contact,
-    //   size: "",
-    // };
+    const formDataJSON = {
+      id: formData.id,
+      name: formData.name,
+      email: formData.email,
+      department: formData.department,
+      year: formData.year,
+      size: formData.size,
+      imgSrc: formData.imgSrc,
+      score: formData.score,
+    };
 
     // Make a POST request to your backend
     axios
-      .post("http://127.0.0.1:8000/addCandidate/", JSON.stringify(formData))
+      .post("http://127.0.0.1:8000/addCandidate/", formDataJSON)
       .then((response) => {
         console.log("Data sent to the backend:", response.data);
         // Redirect to the next step or do any other necessary actions
@@ -142,6 +173,7 @@ export default function RegistrationForm() {
         console.error("Error sending data to the backend:", error);
         // Handle the error as needed
       });
+
   };
 
   return (
@@ -152,7 +184,9 @@ export default function RegistrationForm() {
         <UserDetails
           nextStep={nextStep}
           handleChange={handleChange}
+          handleImageChange={handleImageChange}
           inputValues={formData}
+          sizeOptions={sizeOptions}
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
         />
@@ -161,9 +195,9 @@ export default function RegistrationForm() {
       {userDetails.id === -1 && step === 2 && (
         <Questions
           nextStep={nextStep}
+          handleCheckboxChange={handleCheckboxChange}
           handleSubmit={handleSubmit}
-          questions={registrationQuestions["questions"]}
-          handleChangeQuestionInMain={handleChangeQuestionInMain}
+          questions={questions}
         />
       )}
 
@@ -172,6 +206,7 @@ export default function RegistrationForm() {
           nextStep={nextStep}
           prevStep={prevStep}
           inputValues={formData}
+          sizeOptions={sizeOptions}
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
           saveAndContinue={saveAndContinue}
@@ -189,14 +224,13 @@ export default function RegistrationForm() {
 
       {userDetails.id !== -1 && userDetails.status === 2 && (
         // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
-        <ConsentForm userDetails={userDetails} sizeOptions={sizeOptions} />
+        <ConsentForm userDetails={userDetails} />
       )}
       {userDetails.id !== -1 && userDetails.status === 3 && (
         // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
-            We have got your consent. You can use portal after mentee
-            allocation. We appreciate your patience till then.
+            We have got your consent. You can use portal after mentee allocation. We appreciate your patience till then.
           </div>
         </div>
       )}
