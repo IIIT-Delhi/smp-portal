@@ -4,8 +4,10 @@ function UserDetails(props) {
   const {
     inputValues,
     handleChange,
+    handleImageChange,
     prevStep,
     nextStep,
+    sizeOptions,
     yearOptions,
     departmentOptions,
   } = props;
@@ -25,7 +27,8 @@ function UserDetails(props) {
       inputValues.email === "" ||
       inputValues.department === "" ||
       inputValues.year === "" ||
-      inputValues.contact === "" 
+      inputValues.size === "" ||
+      inputValues.imgSrc === ""
     ) {
       alert("Please fill in all required fields.");
       return;
@@ -34,13 +37,15 @@ function UserDetails(props) {
     // Proceed to the next step
     nextStep();
   };
+  
+
 
   return (
     <div className="container">
       <form>
         <div className="mb-3">
           <label className="form-label" htmlFor="formName">
-            Full Name (as per records)
+            Full Name
           </label>
           <input
             type="text"
@@ -82,6 +87,26 @@ function UserDetails(props) {
         </div>
 
         <div className="mb-3">
+          <label className="form-label">Department</label>
+          <select
+            className="form-select"
+            name="department"
+            value={inputValues.department}
+            required // Make the select required
+            onChange={handleChange}
+          >
+            <option value="" disabled>
+              Select Department
+            </option>
+            {Object.entries(departmentOptions).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-3">
           <label className="form-label">Year</label>
           <select
             className="form-select"
@@ -102,39 +127,36 @@ function UserDetails(props) {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Department</label>
+          <label className="form-label">Size</label>
           <select
             className="form-select"
-            name="department"
-            value={inputValues.department}
+            name="size"
+            value={inputValues.size}
             required // Make the select required
             onChange={handleChange}
-            disabled={!inputValues.year} // Disable if year not selected
           >
             <option value="" disabled>
-              Select Department
+              Select Size
             </option>
-            {Object.entries(departmentOptions).map(([value, label]) => (
+            {Object.entries(sizeOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
             ))}
           </select>
         </div>
-
         <div className="mb-3">
-          <label className="form-label" htmlFor="formContact">
-            Contact Number
-          </label>
+          <label className="form-label">Passport-size Photo</label>
           <input
-            type="text"
+            type="file"
             className="form-control"
-            defaultValue={inputValues.contact}
-            name="contact"
+            name="imgSrc"
+            accept="image/*" // Allow only image files
             required // Make the input required
-            onChange={handleChange}
+            onChange={handleImageChange} // Handle image selection
           />
         </div>
+
         <button className="btn btn-primary mb-5" onClick={saveAndcontinue}>
           Next
         </button>
