@@ -7,7 +7,6 @@ function UserDetails(props) {
     handleImageChange,
     prevStep,
     nextStep,
-    sizeOptions,
     yearOptions,
     departmentOptions,
   } = props;
@@ -27,7 +26,7 @@ function UserDetails(props) {
       inputValues.email === "" ||
       inputValues.department === "" ||
       inputValues.year === "" ||
-      inputValues.size === "" ||
+      inputValues.contact === "" ||
       inputValues.imgSrc === ""
     ) {
       alert("Please fill in all required fields.");
@@ -37,8 +36,6 @@ function UserDetails(props) {
     // Proceed to the next step
     nextStep();
   };
-  
-
 
   return (
     <div className="container">
@@ -87,26 +84,6 @@ function UserDetails(props) {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Department</label>
-          <select
-            className="form-select"
-            name="department"
-            value={inputValues.department}
-            required // Make the select required
-            onChange={handleChange}
-          >
-            <option value="" disabled>
-              Select Department
-            </option>
-            {Object.entries(departmentOptions).map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-3">
           <label className="form-label">Year</label>
           <select
             className="form-select"
@@ -127,23 +104,38 @@ function UserDetails(props) {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Size</label>
+          <label className="form-label">Department</label>
           <select
             className="form-select"
-            name="size"
-            value={inputValues.size}
+            name="department"
+            value={inputValues.department}
             required // Make the select required
             onChange={handleChange}
+            disabled={!inputValues.year} // Disable if year not selected
           >
             <option value="" disabled>
-              Select Size
+              Select Department
             </option>
-            {Object.entries(sizeOptions).map(([value, label]) => (
+            {Object.entries(departmentOptions).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label" htmlFor="formContact">
+            Contact Number
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            defaultValue={inputValues.contact}
+            name="contact"
+            required // Make the input required
+            onChange={handleChange}
+          />
         </div>
         <div className="mb-3">
           <label className="form-label">Passport-size Photo</label>

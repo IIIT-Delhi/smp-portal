@@ -12,6 +12,7 @@ export default function RegistrationForm() {
   const { userDetails } = useAuth();
   const [step, setStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  
   // const [score, setScore] = useState(0);
 
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -55,7 +56,7 @@ export default function RegistrationForm() {
     email: "",
     department: "",
     year: "",
-    size: "",
+    contact: "",
     imgSrc: "",
     score: 0,
   });
@@ -73,7 +74,7 @@ export default function RegistrationForm() {
     }
   ]
 
-  const departmentOptions = {
+  const initialDepartmentOptions = {
     "B-CSB": "CSB (B.Tech.)",
     "B-CSSS": "CSSS (B.Tech.)",
     "B-CSD": "CSD (B.Tech.)",
@@ -86,13 +87,14 @@ export default function RegistrationForm() {
     "M-ECE": "ECE (M.Tech.)",
     "M-CB": "CB (M.Tech.)",
   };
+  const [departmentOptions, setDepartmentOptions] = useState(initialDepartmentOptions);
 
   const yearOptions = {
-    B1: "B.Tech. 1st year",
-    B2: "B.Tech. 2nd year",
+    // B1: "B.Tech. 1st year",
+    // B2: "B.Tech. 2nd year",
     B3: "B.Tech. 3rd year",
     B4: "B.Tech. 4th year",
-    M1: "M.Tech. 1st year",
+    // M1: "M.Tech. 1st year",
     M2: "M.Tech. 2nd year",
   };
 
@@ -112,9 +114,39 @@ export default function RegistrationForm() {
     setStep(step - 1);
   };
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "year") {
+      const selectedYear = e.target.value;
+      let updatedDepartments = { ...initialDepartmentOptions };
+
+      // Filtering departments based on selectedYear
+      if (selectedYear.startsWith("B3") || selectedYear.startsWith("B4")) {
+        updatedDepartments = Object.fromEntries(
+          Object.entries(updatedDepartments).filter(([key]) =>
+            key.startsWith("B")
+          )
+        );
+      } else if (selectedYear.startsWith("M2")) {
+        updatedDepartments = Object.fromEntries(
+          Object.entries(updatedDepartments).filter(([key]) =>
+            key.startsWith("M")
+          )
+        );
+      }
+
+      setFormData({
+        ...formData,
+        [name]: value,
+        department: "", // Clear the selected department when year changes
+      });
+
+      // Update departmentOptions state with filtered departments
+      setDepartmentOptions(updatedDepartments);
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
   
   const handleImageChange = (e) => {
@@ -156,7 +188,7 @@ export default function RegistrationForm() {
       email: formData.email,
       department: formData.department,
       year: formData.year,
-      size: formData.size,
+      contact: formData.contact,
       imgSrc: formData.imgSrc,
       score: formData.score,
     };
@@ -186,7 +218,6 @@ export default function RegistrationForm() {
           handleChange={handleChange}
           handleImageChange={handleImageChange}
           inputValues={formData}
-          sizeOptions={sizeOptions}
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
         />

@@ -35,10 +35,19 @@ const MentorProfile = ({ mentor, onClose, onEdit, departmentOptions }) => {
           >
             {/* Display mentor's profile information here */}
             <div>
+              <img
+                src={mentor.imgSrc}
+                alt="Profile"
+                className="img-fluid img-thumbnail mt-4 mb-2"
+                style={{ width: "50%", borderRadius: "10%" }}
+              />
               <p>Name: {mentor.name}</p>
               <p>Roll Number: {mentor.id}</p>
               <p>Email: {mentor.email}</p>
+              <p>Contact Number: {mentor.contact}</p>
+              <p>Year: {mentor.year}</p>
               <p>Department: {departmentOptions[mentor.department]}</p>
+              <p>Goodies Status: {mentor.goodiesStatus}</p>
               {/* Add more mentor profile details here */}
             </div>
             <h5>Mentees:</h5>

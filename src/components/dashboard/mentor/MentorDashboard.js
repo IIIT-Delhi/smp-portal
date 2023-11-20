@@ -174,22 +174,22 @@ const MentorDashboard = () => {
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Department</p>
+                            <p className="mb-0">Contact</p>
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {departmentOptions[mentorData.department]}
+                              {mentorData.contact}
                             </p>
                           </div>
                         </div>
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Reimbursed Amount</p>
+                            <p className="mb-0">Department</p>
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {mentorData.reimbursement}
+                              {departmentOptions[mentorData.department]}
                             </p>
                           </div>
                         </div>
