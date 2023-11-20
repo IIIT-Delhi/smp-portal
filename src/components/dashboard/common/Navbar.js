@@ -36,7 +36,7 @@ const Navbar = () => {
         className="navbar-brand"
         src={iiitdLogo}
         alt="IIITD Logo"
-        style={{ width:"30%", marginRight: "10px" }}
+        style={{ width:"200px", marginRight: "10px" }}
       />
       <ul className="navbar-nav ml-auto">
         {userDetails?.id !== -1 &&

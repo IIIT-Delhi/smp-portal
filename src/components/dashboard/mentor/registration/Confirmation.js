@@ -4,11 +4,10 @@ const Confirmation = ({
   inputValues,
   prevStep,
   saveAndContinue,
-  sizeOptions,
   yearOptions,
   departmentOptions,
 }) => {
-  const { name, id, email, department, year, size, imgSrc } = inputValues;
+  const { name, id, email, department, year, contact } = inputValues;
 
   const back = (e) => {
     e.preventDefault();
@@ -38,7 +37,7 @@ const Confirmation = ({
               <strong>Year:</strong> {yearOptions[year]}
             </p>
             <p>
-              <strong>Size:</strong> {sizeOptions[size]}
+              <strong>Contact:</strong> {contact}
             </p>
           </div>
 
@@ -48,20 +47,6 @@ const Confirmation = ({
           <button className="btn btn-primary mx-3" onClick={saveAndContinue}>
             Confirm
           </button>
-        </div>
-
-        <div className="col-md-6">
-          <div className="mb-3">
-            <p>
-              <strong>Image:</strong>
-            </p>
-            <img
-              src={imgSrc}
-              alt="User Profile"
-              className="img-fluid"
-              style={{ width: "50%", height: "50%" }}
-            />
-          </div>
         </div>
       </div>
     </div>

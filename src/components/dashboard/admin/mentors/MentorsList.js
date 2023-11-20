@@ -195,7 +195,7 @@ const MentorsList = () => {
                           width: headerColumnWidths["department"],
                         }}
                       >
-                        {mentor.department}
+                        {departmentOptions[mentor.department]}
                       </td>
                       <td
                         style={{

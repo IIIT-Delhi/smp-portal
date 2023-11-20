@@ -15,18 +15,23 @@ const MentorDashboard = () => {
   "name": "",
   "email": "",
   }
-  const departmentOptions = {
-    "B-CSB": "CSB (B.Tech.)",
-    "B-CSSS": "CSSS (B.Tech.)",
-    "B-CSD": "CSD (B.Tech.)",
-    "B-CSE": "CSE (B.Tech.)",
-    "B-CSAI": "CSAI (B.Tech.)",
-    "B-CSAM": "CSAM (B.Tech.)",
-    "B-ECE": "ECE (B.Tech.)",
-    "B-EVE": "EVE (B.Tech.)",
-    "M-CSE": "CSE (M.Tech.)",
-    "M-ECE": "ECE (M.Tech.)",
-    "M-CB": "CB (M.Tech.)",
+  const branchOptions = {
+    "B-CSB": "CSB",
+    "B-CSSS": "CSSS",
+    "B-CSD": "CSD",
+    "B-CSE": "CSE",
+    "B-CSAI": "CSAI",
+    "B-CSAM": "CSAM",
+    "B-ECE": "ECE",
+    "B-EVE": "EVE",
+    "M-CSE": "CSE",
+    "M-ECE": "ECE",
+    "M-CB": "CB",
+  };
+  const yearOptions = {
+    B3: "3",
+    B4: "4",
+    M2: "2",
   };
   const fetchAttributeId = async (id) => {
     try {
@@ -174,22 +179,46 @@ const MentorDashboard = () => {
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Department</p>
+                            <p className="mb-0">Contact</p>
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {departmentOptions[mentorData.department]}
+                              {mentorData.contact}
                             </p>
                           </div>
                         </div>
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Reimbursed Amount</p>
+                            <p className="mb-0">Year</p>
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {mentorData.reimbursement}
+                              {yearOptions[mentorData.year]}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Programme</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {mentorData.department.startsWith("B")
+                                ? "B.Tech"
+                                : "M.Tech"}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Branch</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {branchOptions[mentorData.department]}
                             </p>
                           </div>
                         </div>
