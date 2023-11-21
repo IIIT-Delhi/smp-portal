@@ -3,10 +3,12 @@ import {React} from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import consentQuestions from '../../../../data/consentQuestions.json';
+import { useAuth } from '../../../../context/AuthContext';
 
 export default function ConsentForm({ userDetails , sizeOptions}) {
   // const [selectedOption, setSelectedOption] = useState(""); // State to store the selected option
   const navigate = useNavigate();
+  const {logout} = useAuth();
   const [consentData, setConsentData] = useState({
     id: userDetails.id,
     imgSrc: "",
@@ -50,21 +52,20 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
   const sendConsent = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/consentResponse/",
+        "http://127.0.0.1:8000/submitConsentForm/",
         JSON.stringify(consentData)
       )
       .then((response) => {
         // If the backend successfully deletes the meeting, update your local state
         if (response.status === 200) {
-          if (consentData.response === "Yes") {
-            navigate("/dashboard/mentor/profile");
-          } else {
-            navigate("/login");
-          }
+          logout();
+          alert("Consent Form Submitted Successfully. You are logged out.");
+          navigate("/login");
         }
       })
       .catch((error) => {
         console.error("Error sending consent:", error);
+        console.log(consentData);
       });
   };
   const handleSubmit = (e) => {
@@ -86,14 +87,14 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
                   className="form-check-input"
                   id={`${question.id}-option-${index}`}
                   value={option}
-                  checked={consentData[question.id] === option}
+                  checked={consentData[question.id] === index}
                   onChange={(e) =>
                     handleChangeQuestion(
                       question.id,
-                      e.target.value
+                      index
                     )
                   }
-                  name={`question${question.id}`}
+                  name={question.id}
                 />
                 <label
                   className="form-check-label"
