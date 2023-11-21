@@ -7,7 +7,7 @@ import MentorProfile from "./MentorProfile";
 
 const MentorsList = () => {
   // Dummy data (replace with actual data fetching)
-  const { userDetails } = useAuth();
+  // const { userDetails } = useAuth();
   const [mentors, setMentors] = useState([]);
   const departmentOptions = {
     "B-CSB": "CSB (B.Tech.)",

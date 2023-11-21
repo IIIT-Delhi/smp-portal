@@ -13,10 +13,6 @@ export default function RegistrationForm() {
   const { userDetails } = useAuth();
   const [step, setStep] = useState(1);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    nextStep();
-  };
   const handleChangeQuestionInMain = (questionId,value) => {
     setFormData({
       ...formData,
@@ -161,7 +157,7 @@ export default function RegistrationForm() {
       {userDetails.id === -1 && step === 2 && (
         <Questions
           nextStep={nextStep}
-          handleSubmit={handleSubmit}
+          prevStep={prevStep}
           questions={registrationQuestions["questions"]}
           handleChangeQuestionInMain={handleChangeQuestionInMain}
         />
@@ -172,6 +168,7 @@ export default function RegistrationForm() {
           nextStep={nextStep}
           prevStep={prevStep}
           inputValues={formData}
+          questions={registrationQuestions["questions"]}
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
           saveAndContinue={saveAndContinue}
