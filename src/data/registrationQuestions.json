@@ -1,0 +1,16 @@
+{
+    "questions": [
+      {
+        "id": "rq1",
+        "question": "Question 1",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctAnswer": 1
+      },
+      {
+        "id": "rq2",
+        "question": "Question 2",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctAnswer": 1
+      }
+    ]
+}
