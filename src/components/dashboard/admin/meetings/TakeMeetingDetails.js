@@ -11,6 +11,7 @@ export default function TakeMeetingDetails({
   handledate,
   handleattendees,
   handleDescription,
+  handleBranch
 }) {
   const [formValid, setFormValid] = useState(true);
 
@@ -46,6 +47,7 @@ export default function TakeMeetingDetails({
                 handletitle={handletitle}
                 handleDescription={handleDescription}
                 formValid={formValid}
+                handleBranch={handleBranch}
               />
             </div>
             <div className="modal-footer">

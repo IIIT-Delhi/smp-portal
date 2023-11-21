@@ -13,6 +13,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     title: "",
     description: "",
     attendee: [],
+    mentorBranches : []
   });
 
   const handleScheduleClick = () => {
@@ -24,6 +25,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
       title: "",
       description: "",
       attendee: [],
+      mentorBranches : []
     });
     setShowModal(true);
   };
@@ -35,6 +37,10 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
   const handleSaveModal = () => {
     const newMeeting = { ...currmeeting, id: Date.now() };
     setcurrmeeting(newMeeting); // Update the current meeting state
+
+    console.log("Here")
+    console.log(newMeeting)
+
     const meetingData = {
       title: newMeeting.title,
       schedulerId: newMeeting.schedulerId,
@@ -42,6 +48,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
       time: newMeeting.time,
       attendee: newMeeting.attendee,
       description: newMeeting.description,
+      mentorBranches: newMeeting.mentorBranches
     };
 
     axios
@@ -109,6 +116,27 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     setcurrmeeting({ ...currmeeting, description: e.target.value });
   };
 
+  const handleBranch = (e) => {
+    const value = e.target.value;
+    const isChecked = e.target.checked;
+
+    setcurrmeeting((prevDetails) => {
+      if (isChecked) {
+        return {
+          ...prevDetails,
+          mentorBranches: [...prevDetails.mentorBranches, value],
+        };
+      } else {
+        return {
+          ...prevDetails,
+          mentorBranches: prevDetails.mentorBranches.filter(
+            (mentorBranches) => mentorBranches !== value
+          ),
+        };
+      }
+    });
+  }
+
   return (
     <div>
       {/* <i class="bi bi-plus-circle"></i> */}
@@ -141,6 +169,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
           handletime={handletime}
           handletitle={handletitle}
           handleDescription={handleDescription}
+          handleBranch={handleBranch}
         />
       )}
     </div>

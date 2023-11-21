@@ -1,9 +1,23 @@
 import React from 'react'
 
-export default function Formelement({currmeeting, handletitle,handledate, handletime,handleattendees,handleDescription,formValid}) {
+export default function Formelement({currmeeting, handletitle,handledate, handletime,handleattendees,handleDescription,formValid,handleBranch}) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
+  };
+
+  const Departments = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
   };
 
   return (
@@ -38,6 +52,30 @@ export default function Formelement({currmeeting, handletitle,handledate, handle
                     Mentors
                   </label>
                 </div>
+
+                {currmeeting.attendee.includes('Mentors') && (
+                  <div className="form-group">
+                    <label>Mentor Branches</label>
+                    <div>
+                      {Object.entries(Departments).map(([key, label]) => (
+                        <div key={key} className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value={key}
+                            id={`${key}Check`}
+                            checked={currmeeting.mentorBranches.includes(key)}
+                            onChange={handleBranch}
+                          />
+                          <label className="form-check-label" htmlFor={`${key}Check`}>
+                            {label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="form-check">
                   <input className="form-check-input" onChange={handleattendees} checked = {currmeeting.attendee.includes('Mentees')} type="checkbox" value="Mentees" id="menteeCheck" />
                   <label className="form-check-label" htmlFor="menteeCheck">

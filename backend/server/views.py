@@ -462,7 +462,11 @@ def upload_CSV(request):
 def index(request):
     return HttpResponse("home")
 
-# Done
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Meetings  # Import your Meetings model here
+
 @csrf_exempt
 def add_meeting(request):
     # returns json ; {"message": "//message//"}
@@ -471,8 +475,10 @@ def add_meeting(request):
         scheduler_id = data.get('schedulerId')
         date = data.get('date')
         time = data.get('time')
-        attendeelist=data.get('attendee')
+        attendeelist = data.get('attendee')
         attendeevalue = -1
+        mentorBranches = data.get('mentorBranches', [])
+
         if "Mentees" in attendeelist and "Mentors" in attendeelist:
             attendeevalue = 3
         elif "Mentors" in attendeelist:
@@ -491,12 +497,13 @@ def add_meeting(request):
             return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
         else:
             new_meeting = Meetings(
-                title = data.get('title'),
+                title=data.get('title'),
                 schedulerId=scheduler_id,
                 date=date,
                 time=time,
                 attendee=attendeevalue,
-                description=data.get('description')
+                description=data.get('description'),
+                mentorBranches=mentorBranches  # Add this line to set mentorBranches
             )
             new_meeting.save()
             return JsonResponse({"message": "Data added successfully"})
@@ -523,6 +530,7 @@ def edit_meeting_by_id(request):
             attendeevalue = 2
         meeting.attendee = attendeevalue
         meeting.description = data.get('description')
+        meeting.mentorBranches = data.get('mentorBranches', [])
         existing_meeting = Meetings.objects.filter(
             schedulerId=data.get('schedulerId'),
             date=data.get('date'),
@@ -552,19 +560,29 @@ def get_meetings(request):
         user_type = data.get('role')
         user_id = data.get('id')
         current_datetime = datetime.now()
+
+        print(user_type)
         
         if user_type == "admin":
             all_meetings = Meetings.objects.all().values()
         elif user_type == "mentor":
-            # Return meetings organized by the mentor, and meetings where the mentor is an attendee (1 or 3)
-            organized_meetings = Meetings.objects.filter(schedulerId=user_id)
-            attendee_meetings = Meetings.objects.filter(attendee__in=[1, 3])  # Include 1 (mentor) and 3 (both mentor and mentee)
+            try:
+                mentor_department = Candidate.objects.get(id=user_id).department
+            except Candidate.DoesNotExist:
+                return JsonResponse({"error": "Mentor not found"})
+            
+            # Return meetings organized by the mentor and meetings where the mentor is an attendee (1 or 3)
+            organized_meetings = Meetings.objects.filter(schedulerId=user_id).values()
+            attendee_meetings = Meetings.objects.filter(
+                attendee__in=[1, 3],
+                mentorBranches__contains=[mentor_department]
+            ).values()
             all_meetings = organized_meetings | attendee_meetings
         elif user_type == "mentee":
             # Return meetings organized by the mentee's mentor and meetings where the mentee is an attendee
             mentor = Mentee.objects.get(id=user_id).mentorId
-            mentor_meetings = Meetings.objects.filter(schedulerId=mentor)
-            attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3])  # Include 2 (mentee) and 3 (both mentor and mentee)
+            mentor_meetings = Meetings.objects.filter(schedulerId=mentor).values()
+            attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3]).values()  # Include 2 (mentee) and 3 (both mentor and mentee)
             all_meetings = mentor_meetings | attendee_meetings
         else:
             return JsonResponse({"message": "Invalid user type"})
