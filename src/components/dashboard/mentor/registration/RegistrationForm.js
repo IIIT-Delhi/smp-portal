@@ -10,7 +10,7 @@ import registrationQuestions from "../../../../data/registrationQuestions.json";
 import axios from "axios";
 
 export default function RegistrationForm() {
-  const { userDetails } = useAuth();
+  const { userDetails,logout } = useAuth();
   const [step, setStep] = useState(1);
 
   const handleChangeQuestionInMain = (questionId,value) => {
