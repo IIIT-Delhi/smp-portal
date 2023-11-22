@@ -89,6 +89,20 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
     
   // };
 
+  const Departments = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
+  };
+
   return (
     <div className='mb-2'>
       <div className="accordion" id="accordionExample">
@@ -113,6 +127,15 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
                   ))
                 ) : (
                   <li>{meet.attendee}</li>
+                )}
+                Mentors Branches:
+                <br />
+                {Array.isArray(meet.mentorBranches) ? (
+                  meet.mentorBranches.map((branch, index) => (
+                    <li key={index}>{Departments[branch]}</li>
+                  ))
+                ) : (
+                  <li>{meet.mentorBranches}</li>
                 )}
               </p>
               <p>Description:<br/>{meet.description}</p> 

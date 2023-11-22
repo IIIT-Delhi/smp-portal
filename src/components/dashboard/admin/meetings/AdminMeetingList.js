@@ -77,6 +77,7 @@ export default function AdminMeetingList() {
           time: meeting.time,
           attendee: meeting.attendee,
           description: meeting.description,
+          mentorBranches: meeting.mentorBranches
         }))
         .then((response) => {
           // If the backend successfully updates the meeting, update your local state

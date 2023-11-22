@@ -74,6 +74,23 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     });
   };
 
+  const handleBranch = (e) => {
+    const value = e.target.value;
+    const isChecked = e.target.checked;
+
+    setEditedMeeting((prevDetails) => {
+      const updatedbranch = isChecked
+        ? [...prevDetails.mentorBranches, value]
+        : prevDetails.mentorBranches.filter((branch) => branch !== value);
+
+      return {
+        ...prevDetails,
+        mentorBranches: updatedbranch,
+      };
+    });
+  }
+
+
   const handleDescription = (e) => {
     setEditedMeeting({
       ...editedMeeting,
@@ -88,6 +105,20 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
   const handleConfirmDelete = () => {
     ondelete(meet.meetingId);
     setconfirmdelete(false);
+  };
+
+  const Departments = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
   };
 
   return (
@@ -129,6 +160,15 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 ) : (
                   <li>{meet.attendee}</li>
                 )}
+                Mentor Branches:
+                <br />
+                {Array.isArray(meet.mentorBranches) ? (
+                  meet.mentorBranches.map((branch, index) => (
+                    <li key={index}>{Departments[branch]}</li>
+                  ))
+                ) : (
+                  <li>{meet.mentorBranches}</li>
+                )}
               </p>
 
               <p>
@@ -138,12 +178,14 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               </p>
 
               <div className="mt-2">
-                <button
-                  className="btn btn-danger mx-2"
-                  onClick={handleDeleteClick}
-                >
-                  Delete
-                </button>
+                {!isPreviousMeeting && (
+                  <button
+                    className="btn btn-danger mx-2"
+                    onClick={handleDeleteClick}
+                  >
+                    Delete
+                  </button>
+                )}
                 {!isPreviousMeeting && (userDetails.id === meet.schedulerId) && (
                   <button
                     className="btn btn-primary mx-2"
@@ -168,6 +210,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handletitle={handletitle}
               handleattendee={handleattendee}
               handleDescription={handleDescription}
+              handleBranch={handleBranch}
             />
           )}
 
