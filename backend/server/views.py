@@ -418,25 +418,30 @@ def edit_mentee_by_id(request):
     # returns json ; {"message": "//message//"}
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        mentee = Mentee.objects.get(id=data.get('id'))
+        existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
+        if existing_mentee:
+            mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
+            if len(mentor) == 0: 
+                return JsonResponse({"message": "Mentor Not Found Make sure that the mentor exist and have same department"})
+            existing_mentee.mentorId = mentor[0]['id']
+            existing_mentee.save()
+            return JsonResponse({"message": "Mentee added successfully"})
+        else: 
+            return JsonResponse({"message": "No such mentee Exist"})
+       
+        # if(data.get('fieldName')=="name"):
+        #     mentee.name = data.get('newValue')
+        # elif(data.get('fieldName')=="email"):
+        #     mentee.email = data.get('newValue')
+        # elif(data.get('fieldName')=="department"):
+        #     mentee.department = data.get('newValue')
+        # elif(data.get('fieldName')=="imgSrc"):
+        #     mentee.imgSrc = data.get('newValue')
+        # elif(data.get('fieldName')=="mentorId"):
+            # mentee.mentorId = data.get('newValue')            
 
-        if(data.get('fieldName')=="name"):
-            mentee.name = data.get('newValue')
-        elif(data.get('fieldName')=="email"):
-            mentee.email = data.get('newValue')
-        elif(data.get('fieldName')=="department"):
-            mentee.department = data.get('newValue')
-        elif(data.get('fieldName')=="imgSrc"):
-            mentee.imgSrc = data.get('newValue')
-        elif(data.get('fieldName')=="mentorId"):
-            mentee.mentorId = data.get('newValue')            
-
-        mentee.save()
-        return JsonResponse({"message": "data added successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
-
-from django.http import JsonResponse
 
 @csrf_exempt
 def submit_consent_form(request):
@@ -698,4 +703,26 @@ def create_mentor_mentee_pairs(request):
     except Exception as e:
         return JsonResponse({'message': str(e)})
     
+@csrf_exempt
+def get_form_response(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
 
+
+@csrf_exempt
+def get_form_status(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        id = data.get("formId")
+        form = FormStatus.objects.filter(formId=id).values()
+        return JsonResponse(form[0], safe=False)
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+
+@csrf_exempt
+def update_form_status(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        form = FormStatus.objects.get(formId = data.get("formId"))
+        form.formStatus = data.get('formStatus')

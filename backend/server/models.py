@@ -119,3 +119,21 @@ class FormResponses(models.Model):
     
     class Meta:
         app_label = 'server'
+
+class FormStatus(models.Model):
+    formId = models.CharField(primary_key=True)
+    """
+    1: mentor enrollment 
+    2: mentor consent 
+    3: mentee feedback 
+    """
+    formStatus = models.CharField()
+    """
+    0 : off 
+    1 : on"""
+
+    def __str__(self):
+        return self.formId
+    
+    class Meta:
+        app_label = 'server'

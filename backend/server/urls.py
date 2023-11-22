@@ -40,4 +40,8 @@ urlpatterns = [
 
     #forms 
     path('submitConsentForm/', views.submit_consent_form, name='submitConsentForm'),
+    path('getFormResponse/', views.get_form_response, name='getFormResponse'),
+    path('getFormStatus/', views.get_form_status, name='getFormStatus'),
+    path('updateFormStatus/', views.update_form_status, name='updateFormStatus'),
+    
 ]
