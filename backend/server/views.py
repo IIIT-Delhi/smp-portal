@@ -9,7 +9,9 @@ from .models import *
 import csv
 from datetime import datetime
 from django.db import transaction
-# Create your views here.
+from django.core.mail import send_mail
+
+
 def get_all_admins(request):
     # returns list of json ; [{details},{details},...]
     if request.method == "GET":
@@ -468,7 +470,7 @@ def submit_consent_form(request):
         candidate.imgSrc = data.get('imgSrc')
         candidate.size = data.get('size')
         candidate.save()
-        if correct_options == 11: 
+        if correct_options == 0:
             Candidate.objects.filter(id=user_id).update(status=3)
 
         return JsonResponse({"message": "Consent form submitted successfully"})
@@ -512,6 +514,8 @@ def upload_CSV(request):
                     contact=item['Contact'],
                     department= department
                 )
+                if 'Image' in item:
+                    mentee.imgSrc = item["Image"]
                 mentee.save()
 
             return JsonResponse({'message': 'File uploaded and processed successfully'})
@@ -563,9 +567,22 @@ def add_meeting(request):
                 mentorBranches=mentorBranches 
             )
             new_meeting.save()
+            send_emails_to_attendees(attendee_emails=['vishesh20550@iiitd.ac.in','mohit20086@iiitd.ac.in'])
             return JsonResponse({"message": "Data added successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"})
+
+def send_emails_to_attendees(attendee_emails):
+    # Implement your logic to send emails to all attendees
+    # Use Django's send_mail function
+    # Replace the following lines with your actual logic
+    subject = 'Meeting Notification'
+    message = 'phish phish'
+    from_email = 'mohit20086@iiitd.ac.in'  # Replace with your email
+    recipient_list = attendee_emails
+
+    send_mail(subject, message, from_email, recipient_list)
+
 
 @csrf_exempt
 def edit_meeting_by_id(request):
@@ -669,14 +686,16 @@ def get_meetings(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
     
-'''
-Mentor mentee mapping karni hai
-create a list of dep - then get mentees of each dep in loop - divide total mentees by 5 - then get n candidates based on score with status 2 and same department - then do random matching between mentor and mentee each mentor gets 5 mentee - update mentors status to 5
-repeat 2
-form wala check krna h 
-mentor ke details ke sath login pr form status bhi add kr de 
 
-'''
+@csrf_exempt
+def get_attendance(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+
+@csrf_exempt
+def update_attendance(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
 
 def create_mentor_mentee_pairs(request):
     try:
