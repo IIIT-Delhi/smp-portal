@@ -121,6 +121,20 @@ const MenteeDashboard = () => {
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
+                            <p className="mb-0">Mentor Image</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <img
+                              src={menteeData.mentorImage}
+                              alt="Mentor Profile"
+                              className="img-fluid img-thumbnail mt-2"  
+                              style={{ maxWidth: "100px", maxHeight: "100px", borderRadius: "10%" }}
+                            />
+                        </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
                             <p className="mb-0">Mentor</p>
                           </div>
                           <div className="col-sm-9">
@@ -138,6 +152,17 @@ const MenteeDashboard = () => {
                             <p className="text-muted mb-0">
                               {menteeData.mentorEmail}
                             </p>
+                          </div>
+                          <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Mentor Contact</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {menteeData.mentorContact}
+                            </p>
+                            </div>
                           </div>
                         </div>
                       </div>
