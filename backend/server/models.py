@@ -104,8 +104,14 @@ class Attendance(models.Model):
         app_label = 'server'
 
 class FormResponses(models.Model):
-    formId = models.CharField(primary_key=True)
+    SubmissionId = models.AutoField(primary_key=True)
     submitterId = models.CharField()
+    FormType =  models.CharField()
+    """
+    1: mentor enrollment 
+    2: mentor consent 
+    3: mentee feedback 
+    """
     responses = models.JSONField(null=True)
 
     def __str__(self):

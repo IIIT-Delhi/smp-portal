@@ -314,13 +314,42 @@ def add_candidate(request):
     # returns json ; {"message": "//message//"}
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        responses = {
+            'rq1': data.get('rq1'),
+            'rq2': data.get('rq2'),
+            'rq3': data.get('rq3'),
+            'rq4': data.get('rq4'),
+            'rq5': data.get('rq5'),
+            'rq6': data.get('rq6'),
+        }
+
+        scoring_rules = {
+            'rq1': [0, 0, 5, 3, 1, 4],
+            'rq2': [4, 3, 1, 4, 5, 2],
+            'rq3': [1, 2, 0, 5, 2, 3],
+            'rq4': [3, 2, 0, 1, 5, 4],
+            'rq5': [5, 0, 2, 3, 4, 1],
+            'rq6': [3, 2, 4, 1, 5, 4],
+        }
+
+        scores = {key: scoring_rules[key][value] for key, value in responses.items()}
+        score = sum(scores.values())
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'), contact=data.get('contact'),
-                          size=data.get('size'), score=data.get('score'),
+                          score=score,
                           status=1)
         if(data.get('imgSrc')):
             new_candidate.imgSrc = data.get('imgSrc')
         new_candidate.save()
+
+        new_responses = FormResponses(
+            submitterId=data.get('id'),
+            FormType='1',
+            responses=responses
+        )
+
+        # Save the new FormResponses instance
+        new_responses.save()
         
         return JsonResponse({"message": "data added successfully"})
     else:
@@ -412,6 +441,13 @@ def edit_mentee_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+@csrf_exempt
+def submit_consent_form(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        user_type = data.get('role')
+        user_id = data.get('id')
+
 # Done
 @csrf_exempt
 def upload_CSV(request):
@@ -449,11 +485,7 @@ def upload_CSV(request):
 def index(request):
     return HttpResponse("home")
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from .models import Meetings  # Import your Meetings model here
-
+# Done
 @csrf_exempt
 def add_meeting(request):
     # returns json ; {"message": "//message//"}
@@ -547,8 +579,6 @@ def get_meetings(request):
         user_type = data.get('role')
         user_id = data.get('id')
         current_datetime = datetime.now()
-
-        print(user_type)
         
         if user_type == "admin":
             all_meetings = Meetings.objects.all().values()
