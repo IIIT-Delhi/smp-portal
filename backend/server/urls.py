@@ -45,5 +45,7 @@ urlpatterns = [
     path('getFormResponse/', views.get_form_response, name='getFormResponse'),
     path('getFormStatus/', views.get_form_status, name='getFormStatus'),
     path('updateFormStatus/', views.update_form_status, name='updateFormStatus'),
+    path('menteeFilledFeedback/', views.mentee_filled_feedback, name='menteeFilledFeedback'),
+    
     
 ]
