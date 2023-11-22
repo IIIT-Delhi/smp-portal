@@ -329,6 +329,7 @@ def add_candidate(request):
 
         scores = {key: scoring_rules[key][value] for key, value in responses.items()}
         score = sum(scores.values())
+        responses["score"] = score
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'), contact=data.get('contact'),
                           score=score,
@@ -454,6 +455,7 @@ def submit_consent_form(request):
         }
 
         correct_options = sum(value == 1 for value in cq_responses.values())
+        cq_responses["score"] = correct_options
         new_responses = FormResponses(
             SubmissionId=None,
             submitterId=user_id,
@@ -703,10 +705,44 @@ def create_mentor_mentee_pairs(request):
     except Exception as e:
         return JsonResponse({'message': str(e)})
     
+
 @csrf_exempt
 def get_form_response(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        form_type = data.get("formType")
+
+        try:
+            form_responses_objs = FormResponses.objects.filter(FormType=form_type)
+            form_responses_data = []
+            for form_response_obj in form_responses_objs:
+                response_data = {
+                    "submitterId": form_response_obj.submitterId,
+                    "responses": form_response_obj.responses,
+                }
+
+                if form_type in ["1", "2"]:
+                    mentor_obj = Mentor.objects.get(id=form_response_obj.submitterId)
+                    response_data["submitterName"] = mentor_obj.name
+                    response_data["submitterEmail"] = mentor_obj.email
+
+                elif form_type == "3":
+                    mentee_obj = Mentee.objects.get(id=form_response_obj.submitterId)
+                    response_data["submitterName"] = mentee_obj.name
+                    response_data["submitterEmail"] = mentee_obj.email
+
+                response_data.update(form_response_obj.responses)
+
+                form_responses_data.append(response_data)
+
+            return JsonResponse({"formResponses": form_responses_data})
+
+        except FormResponses.DoesNotExist:
+            return JsonResponse({"error": "FormResponses not found for the given formType"}, status=404)
+        
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+
 
 
 @csrf_exempt
@@ -724,5 +760,5 @@ def get_form_status(request):
 def update_form_status(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        form = FormStatus.objects.get(formId = data.get("formId"))
+        form = FormStatus.objects.filter(formId=data.get("formId")).values()
         form.formStatus = data.get('formStatus')
