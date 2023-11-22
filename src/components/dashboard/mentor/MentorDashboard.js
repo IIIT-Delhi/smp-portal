@@ -14,6 +14,7 @@ const MentorDashboard = () => {
   "id": "",
   "name": "",
   "email": "",
+  "contact":"",
   }
   const branchOptions = {
     "B-CSB": "CSB",
@@ -95,13 +96,14 @@ const MentorDashboard = () => {
               // console.log(menteeDetails[0]);
              const menteeRows = menteeDetails.map((mentee) => {
               // mentee should be an array with id, name, and email
-              const [id, name, email] = mentee;
+              const [id, name, email, contact] = mentee;
               
               return (
                 <tr key={id}>
                   <td>{id}</td>
                   <td>{name}</td>
                   <td>{email}</td>
+                  <td>{contact}</td>
                 </tr>
               );
             });

@@ -8,21 +8,22 @@ const MentorProfile = ({ mentor, onClose }) => {
   // Create a table row for each mentee
   const menteeRows = mentor.menteesToMentors.map((mentee) => {
     // mentee should be an array with id, name, and email
-    const [id, name, email] = mentee;
+    const [id, name, email, contact] = mentee;
 
     return (
       <tr key={id}>
         <td>{name}</td>
         <td>{id}</td>
         <td>{email}</td>
+        <td>{contact}</td>
       </tr>
     );
   });
 
   const yearOptions = {
-    B3: "3 rd",
-    B4: "4 th",
-    M2: "2 nd",
+    B3: "3rd",
+    B4: "4th",
+    M2: "2nd",
   };
   const branchOptions = {
     "B-CSB": "CSB",
@@ -82,6 +83,7 @@ const MentorProfile = ({ mentor, onClose }) => {
                   <th>Name</th>
                   <th>Roll Number</th>
                   <th>Email</th>
+                  <th>Contact</th>
                 </tr>
               </thead>
               <tbody>{menteeRows}</tbody>
