@@ -2,25 +2,19 @@ from io import StringIO
 import math
 import random
 from django.shortcuts import render, HttpResponse
-from django.core import serializers
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .models import *
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 import csv
 from datetime import datetime
-from django.shortcuts import get_list_or_404
-
-
+from django.db import transaction
 # Create your views here.
 def get_all_admins(request):
     # returns list of json ; [{details},{details},...]
     if request.method == "GET":
-        admins = Admin.objects.all()  # Fetch all Admin objects from the database.
-        return JsonResponse(list(admins), safe=False)
+        admins = Admin.objects.all().values()  # Fetch all Admin objects from the database.
+        return JsonResponse(admins, safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
@@ -28,7 +22,7 @@ def get_admin_by_id(request):
     # returns list of json with one element; [{details}]
     if request.method == "GET":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
-        admin = Admin.objects.filter(id=id_to_search)
+        admin = Admin.objects.filter(id=id_to_search).values()
         return JsonResponse(list(admin), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -63,7 +57,7 @@ def get_mentor_by_id(request):
 
         # adding 'goodiesStatus' details
         other_details = Mentor.objects.filter(id=id_to_search).values()
-        if len(mentor) == 0: 
+        if len(mentor) == 0:
             return JsonResponse({"message": "Mentor Not Found"})
         mentor[0].update({'goodiesStatus': other_details[0]['goodiesStatus']})
         # adding menteesToMentors list
@@ -126,7 +120,6 @@ def get_mentee_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-
 @csrf_exempt 
 def get_id_by_email(request):
     if request.method == "POST":
@@ -134,7 +127,7 @@ def get_id_by_email(request):
         role = json.loads(request.body.decode('utf-8')).get('role')
         try: 
             if not email or not role:
-                return JsonResponse({'error': 'Invalid email or role'}, status=400)
+                return JsonResponse({'error': 'Invalid email or role'})
             
             if role == "admin":
                 entry = Admin.objects.filter(email=email).values()
@@ -158,9 +151,6 @@ def get_id_by_email(request):
                                 'mentorEmail': 'NULL',
                                 'mentorContact': 'NULL',
                                 'mentorImage': 'NULL'})
-
-                print(entry)
-
             if(len(entry) == 0):
                 data_dict = {
                     'id': -1
@@ -176,8 +166,6 @@ def get_id_by_email(request):
             return JsonResponse(serialized_data, safe=False)
     else: 
         return JsonResponse({"message": "Invalid request method"})
-
-
 
 def delete_all_admins(request):
     # returns json ; {"message": "//message//"}
@@ -232,7 +220,7 @@ def delete_mentor_by_id(request):
             mentor = Mentor(id = highest_score_mentor["id"], goodiesStatus = 0)
             mentor.save()
             return JsonResponse({"message": f"Repalced Mentor ID: {highest_score_mentor_id}"})
-        except Mentor.DoesNotExist:
+        except Candidate.DoesNotExist:
             return JsonResponse({"message": "Mentor not found"})
     else:
         return JsonResponse({"message": "No new mentor to replace"})
@@ -293,28 +281,27 @@ def add_mentor(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-# Done
 @csrf_exempt
 def add_mentee(request):
     # returns json ; {"message": "//message//"}
     if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
         existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
         if existing_mentee:
-            raise JsonResponse({"message": "Mentee with this ID"})
-        
-        data = json.loads(request.body.decode('utf-8'))
+            return JsonResponse({"message": "Mentee with this ID"})
         new_mentee = Mentee(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'))
 
-        mentor = Candidate.objects.filter(status=3, id=str(data.get('mentorId')))
-        mentor_department = mentor.department
-        # if mentor_department != data.get('department')):
-            # return JsonResponse({"message": "Mentor is of differnt branch"})
+        mentor = Candidate.objects.filter(status=3, id=str(data.get('mentorId'))).values()
+        for m in mentor:
+            mentor_department = m['department']
+            if mentor_department != data.get('department'):
+                return JsonResponse({"message": "Mentor is of differnt branch"})
         if(data.get('imgSrc')):
             new_mentee.imgSrc = data.get('imgSrc')
         if len(mentor) == 0: 
             return JsonResponse({"message": "Mentor Not Found"})
-        new_mentee.mentorId = mentor[0].id
+        new_mentee.mentorId = mentor[0]['id']
         new_mentee.save()
         return JsonResponse({"message": "Mentee added successfully"})
     else:
