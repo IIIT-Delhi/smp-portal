@@ -42,6 +42,7 @@ const MenteeProfile = ({ mentee, onClose }) => {
                 Branch:
                 {branchOptions[mentee.department]}
               </p>
+              <p>Contact: {mentee.contact}</p>
               <p>Mentor Name: {mentee.mentorName}</p>
               <p>Mentor Email: {mentee.mentorEmail}</p>
               <p>Mentor Roll Number: {mentee.mentorId}</p>

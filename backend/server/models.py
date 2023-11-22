@@ -115,7 +115,7 @@ class FormResponses(models.Model):
     responses = models.JSONField(null=True)
 
     def __str__(self):
-        return self.form_id
+        return self.SubmissionId
     
     class Meta:
         app_label = 'server'

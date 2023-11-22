@@ -288,15 +288,10 @@ def add_mentee(request):
         data = json.loads(request.body.decode('utf-8'))
         existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
         if existing_mentee:
-            return JsonResponse({"message": "Mentee with this ID"})
+            return JsonResponse({"message": "Mentee with this ID already exist"})
         new_mentee = Mentee(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'))
-
-        mentor = Candidate.objects.filter(status=3, id=str(data.get('mentorId'))).values()
-        for m in mentor:
-            mentor_department = m['department']
-            if mentor_department != data.get('department'):
-                return JsonResponse({"message": "Mentor is of differnt branch"})
+        mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
         if(data.get('imgSrc')):
             new_mentee.imgSrc = data.get('imgSrc')
         if len(mentor) == 0: 
@@ -441,12 +436,38 @@ def edit_mentee_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+from django.http import JsonResponse
+
 @csrf_exempt
 def submit_consent_form(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        user_type = data.get('role')
         user_id = data.get('id')
+
+        cq_responses = {
+            f'cq{i}': data.get(f'cq{i}', 0) for i in range(1, 12)
+        }
+
+        correct_options = sum(value == 1 for value in cq_responses.values())
+        new_responses = FormResponses(
+            SubmissionId=None,
+            submitterId=user_id,
+            FormType='2',
+            responses=cq_responses
+        )
+
+        new_responses.save()
+        candidate = Candidate.objects.get(id=user_id)
+        candidate.imgSrc = data.get('imgSrc')
+        candidate.size = data.get('size')
+        candidate.save()
+        if correct_options == 11: 
+            Candidate.objects.filter(id=user_id).update(status=3)
+
+        return JsonResponse({"message": "Consent form submitted successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
 
 # Done
 @csrf_exempt
@@ -454,7 +475,7 @@ def upload_CSV(request):
     if request.method == 'POST':
         # Check if a file was uploaded
         if 'csvFile' in request.FILES:
-            
+            print("here")
             uploaded_file = request.FILES['csvFile']
             file_contents = uploaded_file.read()
             csv_data = file_contents.decode('iso-8859-1')
@@ -468,11 +489,21 @@ def upload_CSV(request):
             csv_data_list = [dict(zip(header, row)) for row in csv_list[1:]]
             Mentee.objects.all().delete()
             for item in csv_data_list:
+                program = item['Program']
+                branch = item['Branch']
+
+                if program == 'B.Tech.':
+                    department = 'B-' + branch
+                elif program == 'M.Tech.':
+                    department = 'M-' + branch
+                else:
+                    department = 'Unknown'
                 mentee = Mentee(
-                    id=item['id'],
-                    email=item['email'],
-                    name=item['name'],
-                    department=item['department']
+                    id=item['Roll'],
+                    name=item['Name'],
+                    email=item['Email'],
+                    contact=item['Contact'],
+                    department= department
                 )
                 mentee.save()
 
@@ -522,7 +553,7 @@ def add_meeting(request):
                 time=time,
                 attendee=attendeevalue,
                 description=data.get('description'),
-                mentorBranches=mentorBranches  # Add this line to set mentorBranches
+                mentorBranches=mentorBranches 
             )
             new_meeting.save()
             return JsonResponse({"message": "Data added successfully"})
