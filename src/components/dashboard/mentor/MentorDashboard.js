@@ -29,9 +29,9 @@ const MentorDashboard = () => {
     "M-CB": "CB",
   };
   const yearOptions = {
-    B3: "3",
-    B4: "4",
-    M2: "2",
+    B3: "3rd",
+    B4: "4th",
+    M2: "2nd",
   };
   const fetchAttributeId = async (id) => {
     try {
