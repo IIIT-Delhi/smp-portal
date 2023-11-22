@@ -96,7 +96,7 @@ class Meetings(models.Model):
 class Attendance(models.Model):
     id = models.AutoField(primary_key=True)
     attendeeId = models.CharField()
-    meeting = models.JSONField(null=True)
+    meetingId = models.JSONField(null=True)
 
     def __str__(self):
         return self.id

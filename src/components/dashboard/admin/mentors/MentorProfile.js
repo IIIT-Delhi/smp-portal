@@ -20,9 +20,9 @@ const MentorProfile = ({ mentor, onClose }) => {
   });
 
   const yearOptions = {
-    B3: "3",
-    B4: "4",
-    M2: "2",
+    B3: "3 rd",
+    B4: "4 th",
+    M2: "2 nd",
   };
   const branchOptions = {
     "B-CSB": "CSB",

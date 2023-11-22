@@ -446,38 +446,6 @@ def edit_mentee_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-@csrf_exempt
-def submit_consent_form(request):
-    if request.method == 'POST':
-        data = json.loads(request.body.decode('utf-8'))
-        user_id = data.get('id')
-
-        cq_responses = {
-            f'cq{i}': data.get(f'cq{i}', 0) for i in range(1, 12)
-        }
-
-        correct_options = sum(value == 1 for value in cq_responses.values())
-        cq_responses["score"] = correct_options
-        new_responses = FormResponses(
-            SubmissionId=None,
-            submitterId=user_id,
-            FormType='2',
-            responses=cq_responses
-        )
-
-        new_responses.save()
-        candidate = Candidate.objects.get(id=user_id)
-        candidate.imgSrc = data.get('imgSrc')
-        candidate.size = data.get('size')
-        candidate.save()
-        if correct_options == 0:
-            Candidate.objects.filter(id=user_id).update(status=3)
-
-        return JsonResponse({"message": "Consent form submitted successfully"})
-    else:
-        return JsonResponse({"message": "Invalid request method"})
-
-
 # Done
 @csrf_exempt
 def upload_CSV(request):
@@ -691,6 +659,108 @@ def get_meetings(request):
 def get_attendance(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        meeting_id = data.get("meetingId")
+
+        try:
+            meeting = Meetings.objects.get(meetingId=meeting_id)
+        except Meetings.DoesNotExist:
+            return JsonResponse({"error": "Meeting not found"}, status=404)
+
+        scheduler_id = meeting.schedulerId
+
+        attendees_list = []
+        attendees = meeting.attendee
+
+        try:
+            admin = Admin.objects.get(id=scheduler_id)
+           
+            if attendees == 1:  # Mentor
+                # Filter mentors based on mentorBranches
+                mentors = Candidate.objects.filter(department__in=meeting.mentorBranches)
+                for mentor in mentors:
+                    attendee_info = {}
+                    attendee_info["id"] = mentor.id
+                    attendee_info["name"] = mentor.name
+                    attendee_info["email"] = mentor.email
+                    try:
+                        attendance = Attendance.objects.get(attendeeId=mentor.id, meeting=meeting_id)
+                        attendee_info["attendance"] = 1  # Attendee is present
+                    except Attendance.DoesNotExist:
+                        attendee_info["attendance"] = 0  # Attendee is absent
+                    attendees_list.append(attendee_info)
+
+            elif attendees == 2:  # Mentee
+                mentees = Mentee.objects.all()
+                for mentee in mentees:
+                    attendee_info = {}
+                    attendee_info["id"] = mentee.id
+                    attendee_info["name"] = mentee.name
+                    attendee_info["email"] = mentee.email
+                    try:
+                        attendance = Attendance.objects.get(attendeeId=mentee.id, meeting=meeting_id)
+                        attendee_info["attendance"] = 1  # Attendee is present
+                    except Attendance.DoesNotExist:
+                        attendee_info["attendance"] = 0  # Attendee is absent
+                    attendees_list.append(attendee_info)
+
+
+            elif attendees == 3:  # Both mentor and mentee
+                # Filter mentors based on mentorBranches
+                mentors = Mentee.objects.filter(department__in=meeting.mentorBranches)
+                for mentor in mentors:
+                    attendee_info = {}
+                    attendee_info["id"] = mentor.id
+                    attendee_info["name"] = mentor.name
+                    attendee_info["email"] = mentor.email
+                    try:
+                        attendance = Attendance.objects.get(attendeeId=mentor.id, meeting=meeting_id)
+                        attendee_info["attendance"] = 1  # Attendee is present
+                    except Attendance.DoesNotExist:
+                        attendee_info["attendance"] = 0  # Attendee is 
+                    attendees_list.append(attendee_info)
+                mentees = Mentee.objects.all()
+                for mentee in mentees:
+                    attendee_info = {}
+                    attendee_info["id"] = mentee.id
+                    attendee_info["name"] = mentee.name
+                    attendee_info["email"] = mentee.email
+                    try:
+                        attendance = Attendance.objects.get(attendeeId=mentee.id, meeting=meeting_id)
+                        attendee_info["attendance"] = 1  # Attendee is present
+                    except Attendance.DoesNotExist:
+                        attendee_info["attendance"] = 0  # Attendee is absent
+                    attendees_list.append(attendee_info)
+                    for attendee_id in attendees_list:
+                        attendee_info = {}
+                        try:
+                            mentee = Mentee.objects.get(id=attendee_id)
+                            attendee_info["id"] = mentee.id
+                            attendee_info["name"] = mentee.name
+                            attendee_info["email"] = mentee.email
+
+                            # Check attendance in the Attendance table
+                            try:
+                                attendance = Attendance.objects.get(attendeeId=mentee.id, meeting=meeting_id)
+                                attendee_info["attendance"] = 1  # Attendee is present
+                            except Attendance.DoesNotExist:
+                                attendee_info["attendance"] = 0  # Attendee is absent
+
+                            attendees_list.append(attendee_info)
+                        except Mentee.DoesNotExist:
+                            return JsonResponse({"error": f"Mentee with ID {attendee_id} not found"}, status=404)
+                
+        except Admin.DoesNotExist:
+            # Mentor scheduler, get all mentees of the mentor
+            try:
+                mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id)
+                attendees = [mentee.id for mentee in mentor_mentees]
+            except Mentee.DoesNotExist:
+                return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
+            
+        return JsonResponse({"attendees": attendees_list})
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+
 
 @csrf_exempt
 def update_attendance(request):
@@ -724,6 +794,59 @@ def create_mentor_mentee_pairs(request):
     except Exception as e:
         return JsonResponse({'message': str(e)})
     
+@csrf_exempt
+def submit_consent_form(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        user_id = data.get('id')
+
+        cq_responses = {
+            f'cq{i}': data.get(f'cq{i}', 0) for i in range(1, 12)
+        }
+
+        correct_options = sum(value == 1 for value in cq_responses.values())
+        cq_responses["score"] = correct_options
+        new_responses = FormResponses(
+            SubmissionId=None,
+            submitterId=user_id,
+            FormType='2',
+            responses=cq_responses
+        )
+
+        new_responses.save()
+        candidate = Candidate.objects.get(id=user_id)
+        candidate.imgSrc = data.get('imgSrc')
+        candidate.size = data.get('size')
+        candidate.save()
+        if correct_options == 0:
+            Candidate.objects.filter(id=user_id).update(status=3)
+
+        return JsonResponse({"message": "Consent form submitted successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+@csrf_exempt
+def mentee_filled_feedback(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        responses = {
+            'mentorId':data.get('mentorId'),
+            'mentorName':data.get('mentorName'),
+            'fq1': data.get('fq1'),
+            'fq2': data.get('fq2'),
+            'fq3': data.get('fq3'),
+            'fq4': data.get('fq4'),
+        }
+
+        new_responses = FormResponses(
+            submitterId=data.get('id'),
+            FormType='3',
+            responses=responses
+        )
+        new_responses.save()
+        return JsonResponse({"message": "Feedback form submitted successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
 
 @csrf_exempt
 def get_form_response(request):
