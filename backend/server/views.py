@@ -452,7 +452,6 @@ def upload_CSV(request):
     if request.method == 'POST':
         # Check if a file was uploaded
         if 'csvFile' in request.FILES:
-            print("here")
             uploaded_file = request.FILES['csvFile']
             file_contents = uploaded_file.read()
             csv_data = file_contents.decode('iso-8859-1')
@@ -535,7 +534,7 @@ def add_meeting(request):
                 mentorBranches=mentorBranches 
             )
             new_meeting.save()
-            send_emails_to_attendees(attendee_emails=['vishesh20550@iiitd.ac.in','mohit20086@iiitd.ac.in'])
+            # send_emails_to_attendees(attendee_emails=['vishesh20550@iiitd.ac.in','mohit20086@iiitd.ac.in'])
             return JsonResponse({"message": "Data added successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"})
@@ -579,7 +578,6 @@ def edit_meeting_by_id(request):
             time=data.get('time')
         ).first()
         if existing_meeting and existing_meeting.meetingId != data.get('meetingId'):
-            print('here')
             return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
         meeting.save()
         return JsonResponse({"message": "data added successfully"})
@@ -649,7 +647,6 @@ def get_meetings(request):
             "previousMeeting":  previous_meetings,
             "upcomingMeeting": upcoming_meetings
         }
-        print(meetings_data)
         return JsonResponse(meetings_data)
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -673,31 +670,30 @@ def get_attendance(request):
 
         try:
             admin = Admin.objects.get(id=scheduler_id)
-           
             if attendees == 1:  # Mentor
                 # Filter mentors based on mentorBranches
-                mentors = Candidate.objects.filter(department__in=meeting.mentorBranches)
+                mentors = Candidate.objects.filter(department__in=meeting.mentorBranches).values()
                 for mentor in mentors:
                     attendee_info = {}
-                    attendee_info["id"] = mentor.id
-                    attendee_info["name"] = mentor.name
-                    attendee_info["email"] = mentor.email
+                    attendee_info["id"] = mentor['id']
+                    attendee_info["name"] = mentor['name']
+                    attendee_info["email"] = mentor['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentor.id, meeting=meeting_id)
+                        attendance = Attendance.objects.get(attendeeId=mentor['id'], meetingId=meeting_id).values()
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
-                        attendee_info["attendance"] = 0  # Attendee is absent
+                        attendee_info["attendance"] = 0  # Attendee is 
                     attendees_list.append(attendee_info)
 
             elif attendees == 2:  # Mentee
-                mentees = Mentee.objects.all()
+                mentees = Mentee.objects.all().values()
                 for mentee in mentees:
                     attendee_info = {}
-                    attendee_info["id"] = mentee.id
-                    attendee_info["name"] = mentee.name
-                    attendee_info["email"] = mentee.email
+                    attendee_info["id"] = mentee['id']
+                    attendee_info["name"] = mentee['name']
+                    attendee_info["email"] = mentee['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentee.id, meeting=meeting_id)
+                        attendance = Attendance.objects.get(attendeeId=mentee['id'], meetingId=meeting_id).values()
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is absent
@@ -706,41 +702,48 @@ def get_attendance(request):
 
             elif attendees == 3:  # Both mentor and mentee
                 # Filter mentors based on mentorBranches
-                mentors = Mentee.objects.filter(department__in=meeting.mentorBranches)
+                mentors = Candidate.objects.filter(department__in=meeting.mentorBranches).values()
                 for mentor in mentors:
                     attendee_info = {}
-                    attendee_info["id"] = mentor.id
-                    attendee_info["name"] = mentor.name
-                    attendee_info["email"] = mentor.email
+                    attendee_info["id"] = mentor['id']
+                    attendee_info["name"] = mentor['name']
+                    attendee_info["email"] = mentor['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentor.id, meeting=meeting_id)
+                        attendance = Attendance.objects.get(attendeeId=mentor['id'], meetingId=meeting_id).values()
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is 
                     attendees_list.append(attendee_info)
-                mentees = Mentee.objects.all()
+
+                mentees = Mentee.objects.all().values()
                 for mentee in mentees:
                     attendee_info = {}
-                    attendee_info["id"] = mentee.id
-                    attendee_info["name"] = mentee.name
-                    attendee_info["email"] = mentee.email
+                    attendee_info["id"] = mentee['id']
+                    attendee_info["name"] = mentee['name']
+                    attendee_info["email"] = mentee['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentee.id, meeting=meeting_id)
+                        attendance = Attendance.objects.get(attendeeId=mentee['id'], meetingId=meeting_id).values()
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is absent
                     attendees_list.append(attendee_info)
-                    for attendee_id in attendees_list:
+                    
+                
+        except Admin.DoesNotExist:
+            # Mentor scheduler, get all mentees of the mentor
+            try:
+                mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id).values()
+                attendees = [mentee['id'] for mentee in mentor_mentees]
+                for attendee_id in attendees:
                         attendee_info = {}
                         try:
                             mentee = Mentee.objects.get(id=attendee_id)
                             attendee_info["id"] = mentee.id
                             attendee_info["name"] = mentee.name
                             attendee_info["email"] = mentee.email
-
                             # Check attendance in the Attendance table
                             try:
-                                attendance = Attendance.objects.get(attendeeId=mentee.id, meeting=meeting_id)
+                                attendance = Attendance.objects.get(attendeeId=mentee.id, meetingId=meeting_id)
                                 attendee_info["attendance"] = 1  # Attendee is present
                             except Attendance.DoesNotExist:
                                 attendee_info["attendance"] = 0  # Attendee is absent
@@ -748,16 +751,11 @@ def get_attendance(request):
                             attendees_list.append(attendee_info)
                         except Mentee.DoesNotExist:
                             return JsonResponse({"error": f"Mentee with ID {attendee_id} not found"}, status=404)
-                
-        except Admin.DoesNotExist:
-            # Mentor scheduler, get all mentees of the mentor
-            try:
-                mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id)
-                attendees = [mentee.id for mentee in mentor_mentees]
             except Mentee.DoesNotExist:
                 return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
-            
+        print(attendees_list)  
         return JsonResponse({"attendees": attendees_list})
+        
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
