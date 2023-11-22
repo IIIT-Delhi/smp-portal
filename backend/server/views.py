@@ -9,7 +9,9 @@ from .models import *
 import csv
 from datetime import datetime
 from django.db import transaction
-# Create your views here.
+from django.core.mail import send_mail
+
+
 def get_all_admins(request):
     # returns list of json ; [{details},{details},...]
     if request.method == "GET":
@@ -288,15 +290,10 @@ def add_mentee(request):
         data = json.loads(request.body.decode('utf-8'))
         existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
         if existing_mentee:
-            return JsonResponse({"message": "Mentee with this ID"})
+            return JsonResponse({"message": "Mentee with this ID already exist"})
         new_mentee = Mentee(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'))
-
-        mentor = Candidate.objects.filter(status=3, id=str(data.get('mentorId'))).values()
-        for m in mentor:
-            mentor_department = m['department']
-            if mentor_department != data.get('department'):
-                return JsonResponse({"message": "Mentor is of differnt branch"})
+        mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
         if(data.get('imgSrc')):
             new_mentee.imgSrc = data.get('imgSrc')
         if len(mentor) == 0: 
@@ -334,6 +331,7 @@ def add_candidate(request):
 
         scores = {key: scoring_rules[key][value] for key, value in responses.items()}
         score = sum(scores.values())
+        responses["score"] = score
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'), contact=data.get('contact'),
                           score=score,
@@ -423,21 +421,28 @@ def edit_mentee_by_id(request):
     # returns json ; {"message": "//message//"}
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        mentee = Mentee.objects.get(id=data.get('id'))
+        existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
+        if existing_mentee:
+            mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
+            if len(mentor) == 0: 
+                return JsonResponse({"message": "Mentor Not Found Make sure that the mentor exist and have same department"})
+            existing_mentee.mentorId = mentor[0]['id']
+            existing_mentee.save()
+            return JsonResponse({"message": "Mentee added successfully"})
+        else: 
+            return JsonResponse({"message": "No such mentee Exist"})
+       
+        # if(data.get('fieldName')=="name"):
+        #     mentee.name = data.get('newValue')
+        # elif(data.get('fieldName')=="email"):
+        #     mentee.email = data.get('newValue')
+        # elif(data.get('fieldName')=="department"):
+        #     mentee.department = data.get('newValue')
+        # elif(data.get('fieldName')=="imgSrc"):
+        #     mentee.imgSrc = data.get('newValue')
+        # elif(data.get('fieldName')=="mentorId"):
+            # mentee.mentorId = data.get('newValue')            
 
-        if(data.get('fieldName')=="name"):
-            mentee.name = data.get('newValue')
-        elif(data.get('fieldName')=="email"):
-            mentee.email = data.get('newValue')
-        elif(data.get('fieldName')=="department"):
-            mentee.department = data.get('newValue')
-        elif(data.get('fieldName')=="imgSrc"):
-            mentee.imgSrc = data.get('newValue')
-        elif(data.get('fieldName')=="mentorId"):
-            mentee.mentorId = data.get('newValue')            
-
-        mentee.save()
-        return JsonResponse({"message": "data added successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
 
@@ -445,8 +450,33 @@ def edit_mentee_by_id(request):
 def submit_consent_form(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        user_type = data.get('role')
         user_id = data.get('id')
+
+        cq_responses = {
+            f'cq{i}': data.get(f'cq{i}', 0) for i in range(1, 12)
+        }
+
+        correct_options = sum(value == 1 for value in cq_responses.values())
+        cq_responses["score"] = correct_options
+        new_responses = FormResponses(
+            SubmissionId=None,
+            submitterId=user_id,
+            FormType='2',
+            responses=cq_responses
+        )
+
+        new_responses.save()
+        candidate = Candidate.objects.get(id=user_id)
+        candidate.imgSrc = data.get('imgSrc')
+        candidate.size = data.get('size')
+        candidate.save()
+        if correct_options == 0:
+            Candidate.objects.filter(id=user_id).update(status=3)
+
+        return JsonResponse({"message": "Consent form submitted successfully"})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
 
 # Done
 @csrf_exempt
@@ -454,7 +484,7 @@ def upload_CSV(request):
     if request.method == 'POST':
         # Check if a file was uploaded
         if 'csvFile' in request.FILES:
-            
+            print("here")
             uploaded_file = request.FILES['csvFile']
             file_contents = uploaded_file.read()
             csv_data = file_contents.decode('iso-8859-1')
@@ -468,12 +498,24 @@ def upload_CSV(request):
             csv_data_list = [dict(zip(header, row)) for row in csv_list[1:]]
             Mentee.objects.all().delete()
             for item in csv_data_list:
+                program = item['Program']
+                branch = item['Branch']
+
+                if program == 'B.Tech.':
+                    department = 'B-' + branch
+                elif program == 'M.Tech.':
+                    department = 'M-' + branch
+                else:
+                    department = 'Unknown'
                 mentee = Mentee(
-                    id=item['id'],
-                    email=item['email'],
-                    name=item['name'],
-                    department=item['department']
+                    id=item['Roll'],
+                    name=item['Name'],
+                    email=item['Email'],
+                    contact=item['Contact'],
+                    department= department
                 )
+                if 'Image' in item:
+                    mentee.imgSrc = item["Image"]
                 mentee.save()
 
             return JsonResponse({'message': 'File uploaded and processed successfully'})
@@ -522,12 +564,25 @@ def add_meeting(request):
                 time=time,
                 attendee=attendeevalue,
                 description=data.get('description'),
-                mentorBranches=mentorBranches  # Add this line to set mentorBranches
+                mentorBranches=mentorBranches 
             )
             new_meeting.save()
+            send_emails_to_attendees(attendee_emails=['vishesh20550@iiitd.ac.in','mohit20086@iiitd.ac.in'])
             return JsonResponse({"message": "Data added successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"})
+
+def send_emails_to_attendees(attendee_emails):
+    # Implement your logic to send emails to all attendees
+    # Use Django's send_mail function
+    # Replace the following lines with your actual logic
+    subject = 'Meeting Notification'
+    message = 'phish phish'
+    from_email = 'mohit20086@iiitd.ac.in'  # Replace with your email
+    recipient_list = attendee_emails
+
+    send_mail(subject, message, from_email, recipient_list)
+
 
 @csrf_exempt
 def edit_meeting_by_id(request):
@@ -631,14 +686,16 @@ def get_meetings(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
     
-'''
-Mentor mentee mapping karni hai
-create a list of dep - then get mentees of each dep in loop - divide total mentees by 5 - then get n candidates based on score with status 2 and same department - then do random matching between mentor and mentee each mentor gets 5 mentee - update mentors status to 5
-repeat 2
-form wala check krna h 
-mentor ke details ke sath login pr form status bhi add kr de 
 
-'''
+@csrf_exempt
+def get_attendance(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+
+@csrf_exempt
+def update_attendance(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
 
 def create_mentor_mentee_pairs(request):
     try:
@@ -668,3 +725,59 @@ def create_mentor_mentee_pairs(request):
         return JsonResponse({'message': str(e)})
     
 
+@csrf_exempt
+def get_form_response(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        form_type = data.get("formType")
+
+        try:
+            form_responses_objs = FormResponses.objects.filter(FormType=form_type)
+            form_responses_data = []
+            for form_response_obj in form_responses_objs:
+                response_data = {
+                    "submitterId": form_response_obj.submitterId,
+                    "responses": form_response_obj.responses,
+                }
+
+                if form_type in ["1", "2"]:
+                    mentor_obj = Mentor.objects.get(id=form_response_obj.submitterId)
+                    response_data["submitterName"] = mentor_obj.name
+                    response_data["submitterEmail"] = mentor_obj.email
+
+                elif form_type == "3":
+                    mentee_obj = Mentee.objects.get(id=form_response_obj.submitterId)
+                    response_data["submitterName"] = mentee_obj.name
+                    response_data["submitterEmail"] = mentee_obj.email
+
+                response_data.update(form_response_obj.responses)
+
+                form_responses_data.append(response_data)
+
+            return JsonResponse({"formResponses": form_responses_data})
+
+        except FormResponses.DoesNotExist:
+            return JsonResponse({"error": "FormResponses not found for the given formType"}, status=404)
+        
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+
+
+
+@csrf_exempt
+def get_form_status(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        id = data.get("formId")
+        form = FormStatus.objects.filter(formId=id).values()
+        return JsonResponse(form[0], safe=False)
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+
+@csrf_exempt
+def update_form_status(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode('utf-8'))
+        form = FormStatus.objects.filter(formId=data.get("formId")).values()
+        form.formStatus = data.get('formStatus')

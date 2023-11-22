@@ -37,7 +37,13 @@ urlpatterns = [
     path('editMeetingById/', views.edit_meeting_by_id, name='editMeetingById'),
     path('deleteMeetingById/', views.delete_meeting_by_id, name='deleteMeetingById'),
     path('getMeetings/', views.get_meetings, name='getMeetings'),
+    path('getAttendance/', views.get_attendance, name='getAttendance'),
+    path('updateAttendance/', views.update_attendance, name='updateAttendance'),
 
     #forms 
     path('submitConsentForm/', views.submit_consent_form, name='submitConsentForm'),
+    path('getFormResponse/', views.get_form_response, name='getFormResponse'),
+    path('getFormStatus/', views.get_form_status, name='getFormStatus'),
+    path('updateFormStatus/', views.update_form_status, name='updateFormStatus'),
+    
 ]

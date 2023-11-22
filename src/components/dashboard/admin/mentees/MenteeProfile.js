@@ -31,6 +31,13 @@ const MenteeProfile = ({ mentee, onClose }) => {
           <div className="modal-body">
             {/* Display mentee's profile information here */}
             <div>
+              <h6>Mentee:</h6>
+              <img
+                src={mentee.imgSrc}
+                alt="Mentee Profile"
+                className="img-fluid img-thumbnail mt-4 mb-2"
+                sstyle={{ maxWidth: "400px", maxHeight: "400px", borderRadius: "10%" }}
+              />
               <p>Name: {mentee.name}</p>
               <p>Roll Number: {mentee.id}</p>
               <p>Email: {mentee.email}</p>
@@ -42,10 +49,21 @@ const MenteeProfile = ({ mentee, onClose }) => {
                 Branch:
                 {branchOptions[mentee.department]}
               </p>
+              <p>Contact: {mentee.contact}</p>
+              <p>Mentor Name: {mentee.mentorName}</p>
+            </div>
+            <div>
+              <h6>Mentor:</h6>
+              <img
+                src={mentee.mentorImage}
+                alt="Mentor Profile"
+                className="img-fluid img-thumbnail mt-4 mb-2"
+                style={{ maxWidth: "200px", maxHeight: "200px", borderRadius: "10%" }}
+              />
               <p>Mentor Name: {mentee.mentorName}</p>
               <p>Mentor Email: {mentee.mentorEmail}</p>
               <p>Mentor Roll Number: {mentee.mentorId}</p>
-              {/* Add more mentee profile details here */}
+              {/* Add other mentor profile details */}
             </div>
           </div>
           <div className="modal-footer">
@@ -56,9 +74,6 @@ const MenteeProfile = ({ mentee, onClose }) => {
             >
               Close
             </button>
-            {/* <button type="button" className="btn btn-primary" onClick={onEdit}>
-              Edit
-            </button> */}
           </div>
         </div>
       </div>
