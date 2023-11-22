@@ -1,9 +1,22 @@
 import React from "react";
 
-const MenteeProfile = ({ mentee, onClose, onEdit }) => {
+const MenteeProfile = ({ mentee, onClose }) => {
   if (!mentee) {
     return null;
   }
+  const branchOptions = {
+    "B-CSB": "CSB",
+    "B-CSSS": "CSSS",
+    "B-CSD": "CSD",
+    "B-CSE": "CSE",
+    "B-CSAI": "CSAI",
+    "B-CSAM": "CSAM",
+    "B-ECE": "ECE",
+    "B-EVE": "EVE",
+    "M-CSE": "CSE",
+    "M-ECE": "ECE",
+    "M-CB": "CB",
+  };
 
   return (
     <div className="modal fade show" style={{ display: "block" }}>
@@ -21,7 +34,14 @@ const MenteeProfile = ({ mentee, onClose, onEdit }) => {
               <p>Name: {mentee.name}</p>
               <p>Roll Number: {mentee.id}</p>
               <p>Email: {mentee.email}</p>
-              <p>Department: {mentee.department}</p>
+              <p>
+                Programme:
+                {mentee.department.startsWith("B") ? "B.Tech" : "M.Tech"}
+              </p>
+              <p>
+                Branch:
+                {branchOptions[mentee.department]}
+              </p>
               <p>Mentor Name: {mentee.mentorName}</p>
               <p>Mentor Email: {mentee.mentorEmail}</p>
               <p>Mentor Roll Number: {mentee.mentorId}</p>

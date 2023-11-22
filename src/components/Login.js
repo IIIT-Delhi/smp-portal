@@ -30,8 +30,8 @@ const Login = () => {
 
   function handleLogin(result) {
     var decoded = jwt_decode(result.credential);
-    console.log("Login Succesful");
-    console.log(decoded);
+    // console.log("Login Succesful");
+    // console.log(decoded);
 
     const userObject = {
       role: currRole,
@@ -45,7 +45,7 @@ const Login = () => {
     if (userDetails) {
       const id = userDetails.id;
       if (id === -1) {
-        console.log(id);
+        // console.log(id);
         if (currRole === "admin" || currRole === "mentee") {
           // Show "Invalid User" message and redirect to the login page
           setvaliduser(false);
@@ -62,13 +62,13 @@ const Login = () => {
           navigate("/registration");
         }
       } else {
-        console.log(id);
-        console.log(userDetails.status)
+        // console.log(id);
+        // console.log(userDetails.status)
         setvaliduser(true);
         if (currRole === "mentor") {
           const status = userDetails.status;
-          console.log(status);
-          if (status === 1 || status === 2 || status === 3 || status==4) {
+          // console.log(status);
+          if (status === 1 || status === 2 || status === 3 || status===4) {
             // Redirect to RegistrationForm.js
             navigate("/registration");
           } else if (status === 5) {

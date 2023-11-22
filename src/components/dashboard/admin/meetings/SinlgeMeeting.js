@@ -74,6 +74,23 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     });
   };
 
+  const handleBranch = (e) => {
+    const value = e.target.value;
+    const isChecked = e.target.checked;
+
+    setEditedMeeting((prevDetails) => {
+      const updatedbranch = isChecked
+        ? [...prevDetails.mentorBranches, value]
+        : prevDetails.mentorBranches.filter((branch) => branch !== value);
+
+      return {
+        ...prevDetails,
+        mentorBranches: updatedbranch,
+      };
+    });
+  }
+
+
   const handleDescription = (e) => {
     setEditedMeeting({
       ...editedMeeting,
@@ -90,17 +107,18 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     setconfirmdelete(false);
   };
 
-  const getAttendeeLabel = (attendee) => {
-    switch (attendee) {
-      case 1:
-        return 'Mentors';
-      case 2:
-        return 'Mentees';
-      case 3:
-        return 'Mentors and Mentees';
-      default:
-        return 'Unknown';
-    }
+  const Departments = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
   };
 
   return (
@@ -137,10 +155,19 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 <br />
                 {Array.isArray(meet.attendee) ? (
                   meet.attendee.map((attendee, index) => (
-                    <li key={index}>{getAttendeeLabel(attendee)}</li>
+                    <li key={index}>{attendee}</li>
                   ))
                 ) : (
-                  <li>{getAttendeeLabel(meet.attendee)}</li>
+                  <li>{meet.attendee}</li>
+                )}
+                Mentor Branches:
+                <br />
+                {Array.isArray(meet.mentorBranches) ? (
+                  meet.mentorBranches.map((branch, index) => (
+                    <li key={index}>{Departments[branch]}</li>
+                  ))
+                ) : (
+                  <li>{meet.mentorBranches}</li>
                 )}
               </p>
 
@@ -151,13 +178,15 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               </p>
 
               <div className="mt-2">
-                <button
-                  className="btn btn-danger mx-2"
-                  onClick={handleDeleteClick}
-                >
-                  Delete
-                </button>
                 {!isPreviousMeeting && (
+                  <button
+                    className="btn btn-danger mx-2"
+                    onClick={handleDeleteClick}
+                  >
+                    Delete
+                  </button>
+                )}
+                {!isPreviousMeeting && (userDetails.id === meet.schedulerId) && (
                   <button
                     className="btn btn-primary mx-2"
                     onClick={handleEditClick}
@@ -181,6 +210,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handletitle={handletitle}
               handleattendee={handleattendee}
               handleDescription={handleDescription}
+              handleBranch={handleBranch}
             />
           )}
 

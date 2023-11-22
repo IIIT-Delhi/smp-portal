@@ -9,10 +9,9 @@ const Navbar = () => {
   const navStyle = {
     backgroundColor: "#3fada8",
     padding: "0.5rem 1rem",
-    height: "50px",
     display: "flex",
     justifyContent: "space-between", // Align items horizontally
-    alignItems: "center", // Align items vertically
+    alignItems: "center", // Align items vertical
   };
 
   const listStyle = {
@@ -37,7 +36,7 @@ const Navbar = () => {
         className="navbar-brand"
         src={iiitdLogo}
         alt="IIITD Logo"
-        style={{ height: "60px", marginRight: "10px" }}
+        style={{ width:"200px", marginRight: "10px" }}
       />
       <ul className="navbar-nav ml-auto">
         {userDetails?.id !== -1 &&

@@ -9,6 +9,7 @@ class Candidate(models.Model):
     department = models.CharField()
     year = models.CharField()
     status = models.IntegerField()
+    contact = models.CharField()
     """
     1 - Form filled 
     2 - mentor selected and consent form mail send 
@@ -32,6 +33,7 @@ class Mentee(models.Model):
     email = models.CharField()
     name = models.CharField()
     department = models.CharField()
+    contact = models.CharField()
     imgSrc = models.TextField()
     mentorId = models.CharField() # id of the mentor
 
@@ -48,7 +50,6 @@ class Mentor(models.Model):
     0 - not collected 
     1 - collected 
     """
-    reimbursement = models.IntegerField()
 
     def __str__(self):
         return self.id
@@ -78,6 +79,7 @@ class Meetings(models.Model):
     date = models.CharField(max_length=255)
     time = models.CharField(max_length=255)
     attendee = models.IntegerField()
+    mentorBranches = models.JSONField(default=list)
     """
     1: mentor 
     2: mentee

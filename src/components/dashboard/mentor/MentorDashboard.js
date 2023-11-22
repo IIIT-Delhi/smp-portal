@@ -15,7 +15,24 @@ const MentorDashboard = () => {
   "name": "",
   "email": "",
   }
-
+  const branchOptions = {
+    "B-CSB": "CSB",
+    "B-CSSS": "CSSS",
+    "B-CSD": "CSD",
+    "B-CSE": "CSE",
+    "B-CSAI": "CSAI",
+    "B-CSAM": "CSAM",
+    "B-ECE": "ECE",
+    "B-EVE": "EVE",
+    "M-CSE": "CSE",
+    "M-ECE": "ECE",
+    "M-CB": "CB",
+  };
+  const yearOptions = {
+    B3: "3",
+    B4: "4",
+    M2: "2",
+  };
   const fetchAttributeId = async (id) => {
     try {
       const response = await axios.post(
@@ -103,7 +120,7 @@ const MentorDashboard = () => {
      };
 
      fetchData();
-   }, [userDetails.email]);
+   }, [userDetails.email,userDetails.id]);
 
 
   return (
@@ -129,7 +146,7 @@ const MentorDashboard = () => {
                           src={mentorData.imgSrc}
                           alt="Profile"
                           className="img-fluid img-thumbnail mt-4 mb-2"
-                          style={{ width: "200px", borderRadius: "10%" }}
+                          style={{ width: "50%", borderRadius: "10%" }}
                         />
                       </div>
                       <div className="mt-2 text-center">
@@ -162,22 +179,46 @@ const MentorDashboard = () => {
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Department</p>
+                            <p className="mb-0">Contact</p>
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {mentorData.department}
+                              {mentorData.contact}
                             </p>
                           </div>
                         </div>
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Reimbursed Amount</p>
+                            <p className="mb-0">Year</p>
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {mentorData.reimbursement}
+                              {yearOptions[mentorData.year]}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Programme</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {mentorData.department.startsWith("B")
+                                ? "B.Tech"
+                                : "M.Tech"}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Branch</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {branchOptions[mentorData.department]}
                             </p>
                           </div>
                         </div>

@@ -77,6 +77,7 @@ export default function AdminMeetingList() {
           time: meeting.time,
           attendee: meeting.attendee,
           description: meeting.description,
+          mentorBranches: meeting.mentorBranches
         }))
         .then((response) => {
           // If the backend successfully updates the meeting, update your local state
@@ -91,34 +92,9 @@ export default function AdminMeetingList() {
     }
   };
 
-  // const convertAttendeeToArr = (attendeeValue) => {
-  //   switch (attendeeValue) {
-  //     case 1:
-  //       return [1]; // Mentor
-  //     case 2:
-  //       return [2]; // Mentee
-  //     case 3:
-  //       return [1, 2]; // Mentor and Mentee
-  //     default:
-  //       return [];
-  //   }
-  // };
-
-  // const editMeeting = (meetingId, newValues) => {
-  //   const updatedMeetings = meetings.map((meet) => {
-  //     if (meet.meetingId === meetingId) {
-  //       const attendee = convertAttendeeToArr(newValues.attendee);
-  //       return { ...meet, ...newValues, attendee };
-  //     } else {
-  //       return meet;
-  //     }
-  //   });
-
   const editMeeting = (meetingId, newValues) => {
-    // const updatedMeetings = meetings.map((meet) =>
-    //   meet.meetingId === meetingId ? { ...meet, ...newValues } : meet
-    // );
     updateMeetingOnBackend(newValues);
+    fetchMeetings();
   };
 
   return (
@@ -128,11 +104,11 @@ export default function AdminMeetingList() {
         <h1 className="font-weight-bold mb-4">Meeting Schedule</h1>
       </div>
 
-      <div style={{ display: "flex", height: "70px", justifyContent: "center", position: "relative" }}>
+      <div className='row d-flex'>
         <MeetingSection title="Upcoming Meetings" meetings={upcomingMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={false} userDetails={userDetails} />
         <MeetingSection title="Previous Meetings" meetings={previousMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={true} userDetails={userDetails}/>
 
-        <div style={{ position: "relative", width: "15%", display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+        <div>
           <ScheduleMeetingButton userDetails={userDetails} fetchMeetings={fetchMeetings} />
         </div>
       </div>
@@ -142,9 +118,9 @@ export default function AdminMeetingList() {
 
 const MeetingSection = ({ title, meetings, deleteMeeting, editMeeting, isPreviousMeeting,userDetails }) => {
   return (
-    <div className="row">
-      <h2>{title}</h2>
-      <div className="container mt-4" style={{ marginLeft: "5px", marginRight: "0", width: "85%", overflowY: "auto" }}>
+    <div style={{width:'45%'}}>
+      <h3 className="text-center"> {title}</h3>
+      <div className="container" style={{height: '60vh', overflowY: "auto" }}>
         {meetings && meetings.length > 0 ? (
           meetings.map((meet) => (
             <SinlgeMeeting

@@ -6,6 +6,19 @@ import { useAuth } from "../../../context/AuthContext";
 const MenteeDashboard = () => {
   const { userDetails } = useAuth();
   const [menteeData, setMenteeData] = useState(null);
+  const branchOptions = {
+    "B-CSB": "CSB",
+    "B-CSSS": "CSSS",
+    "B-CSD": "CSD",
+    "B-CSE": "CSE",
+    "B-CSAI": "CSAI",
+    "B-CSAM": "CSAM",
+    "B-ECE": "ECE",
+    "B-EVE": "EVE",
+    "M-CSE": "CSE",
+    "M-ECE": "ECE",
+    "M-CB": "CB",
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +65,7 @@ const MenteeDashboard = () => {
                           src={menteeData.imgSrc}
                           alt="Profile"
                           className="img-fluid img-thumbnail mt-4 mb-2"
-                          style={{ width: "150px", borderRadius: "10%" }}
+                          style={{ width: "50%", borderRadius: "10%" }}
                         />
                       </div>
                       <div className="mt-2 text-center">
@@ -84,11 +97,24 @@ const MenteeDashboard = () => {
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Department</p>
+                            <p className="mb-0">Programme</p>
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {menteeData.department}
+                              {menteeData.department.startsWith("B")
+                                ? "B.Tech"
+                                : "M.Tech"}
+                            </p>
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col-sm-3">
+                            <p className="mb-0">Branch</p>
+                          </div>
+                          <div className="col-sm-9">
+                            <p className="text-muted mb-0">
+                              {branchOptions[menteeData.department]}
                             </p>
                           </div>
                         </div>
@@ -127,30 +153,6 @@ const MenteeDashboard = () => {
       </section>
     </div>
   );
-
-  // const { userDetails } = useAuth();
-  // return (
-  //   <div>
-  //     <Navbar userDetails={userDetails} />
-  //     <div className="container mt-4">
-  //       <div className="row">
-  //         <div className="col-12">
-  //           <div>
-  //             {/* Include profile information specific to Mentees */}
-  //             <h4>Mentee Dashboard</h4>
-  //             <p>
-  //               <strong>Role:</strong> {userDetails.role}
-  //             </p>
-  //             <p>
-  //               <strong>Email:</strong> {userDetails.email}
-  //             </p>
-  //             {/* Other Mentee-specific content */}
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default MenteeDashboard;

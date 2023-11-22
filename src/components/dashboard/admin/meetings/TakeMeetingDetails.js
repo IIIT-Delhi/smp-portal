@@ -1,7 +1,6 @@
 import React from 'react';
 import Formelement from './Formelement';
 import { useState } from 'react';
-import axios from 'axios';  // Import Axios
 
 export default function TakeMeetingDetails({
   currmeeting,
@@ -10,9 +9,9 @@ export default function TakeMeetingDetails({
   handletitle,
   handletime,
   handledate,
-  userDetails,
   handleattendees,
   handleDescription,
+  handleBranch
 }) {
   const [formValid, setFormValid] = useState(true);
 
@@ -48,6 +47,7 @@ export default function TakeMeetingDetails({
                 handletitle={handletitle}
                 handleDescription={handleDescription}
                 formValid={formValid}
+                handleBranch={handleBranch}
               />
             </div>
             <div className="modal-footer">
