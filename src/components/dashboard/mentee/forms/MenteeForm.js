@@ -49,6 +49,19 @@ export default function MenteeForm() {
       });
   };
 
+  if (userDetails.f3 === 0) {
+    return (
+      <div>
+        <Navbar className="fixed-top" />
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            Feedback Form not open. Admin is not accepting responses.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar className="fixed-top" />

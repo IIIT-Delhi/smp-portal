@@ -10,6 +10,7 @@ import csv
 from datetime import datetime
 from django.db import transaction
 from django.core.mail import send_mail
+from django.conf import settings
 
 
 def get_all_admins(request):
@@ -29,6 +30,7 @@ def get_admin_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+#Done
 def get_all_mentors(request):
     # returns list of json ; [{details}, {details}, ...]
     if request.method == "GET":
@@ -43,13 +45,13 @@ def get_all_mentors(request):
             mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
             
             for mentee in mentees:
-                menteesToMentors.append([mentee['id'], mentee['name'], mentee['email']])
+                menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
             mentor.update({'menteesToMentors': menteesToMentors})
         return JsonResponse(list(mentors_from_candidates), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-# Done
+#Done
 @csrf_exempt 
 def get_mentor_by_id(request):
     # returns list of json with one element; [{details}]
@@ -66,13 +68,13 @@ def get_mentor_by_id(request):
         menteesToMentors = []
         mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
         for mentee in mentees:
-            menteesToMentors.append([mentee['id'], mentee['name'], mentee['email']])
+            menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
         mentor[0].update({'menteesToMentors': menteesToMentors})
         return JsonResponse(mentor[0], safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-# Done
+#Done
 def get_all_mentees(request):
     # returns list of json ; [{details}, {details}, ...]
     if request.method == "GET":
@@ -86,17 +88,20 @@ def get_all_mentees(request):
                             'mentorName': mentor[0]['name'],
                             'mentorEmail': mentor[0]['email'],
                             'mentorContact': mentor[0]['contact'],
-                            'mentorImage': mentor[0]['imgSrc']})
+                            'mentorImage': mentor[0]['imgSrc'],
+                            'f3': int(FormStatus.objects.get(formId='3').formStatus)})
             else: 
                 mentee.update({'mentorId': 'NULL',
                            'mentorName': 'NULL',
                            'mentorEmail': 'NULL',
                             'mentorContact': 'NULL',
-                            'mentorImage': 'NULL'})
+                            'mentorImage': 'NULL',
+                            'f3': int(FormStatus.objects.get(formId='3').formStatus)})
         return JsonResponse(list(mentees), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+#Done
 def get_mentee_by_id(request):
     # returns list of json with one element; [{details}]
     if request.method == "GET":
@@ -111,17 +116,20 @@ def get_mentee_by_id(request):
                             'mentorName': mentor[0]['name'],
                             'mentorEmail': mentor[0]['email'],
                             'mentorContact': mentor[0]['contact'],
-                            'mentorImage': mentor[0]['imgSrc']})
+                            'mentorImage': mentor[0]['imgSrc'],
+                            'f3': int(FormStatus.objects.get(formId='3').formStatus)})
             else: 
                 mentee.update({'mentorId': 'NULL',
                            'mentorName': 'NULL',
                            'mentorEmail': 'NULL',
                             'mentorContact': 'NULL',
-                            'mentorImage': 'NULL'})
+                            'mentorImage': 'NULL',
+                            'f3': int(FormStatus.objects.get(formId='3').formStatus)})
         return JsonResponse(list(mentees), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+#Done
 @csrf_exempt 
 def get_id_by_email(request):
     if request.method == "POST":
@@ -146,24 +154,27 @@ def get_id_by_email(request):
                                     'mentorName': mentor[0]['name'],
                                     'mentorEmail': mentor[0]['email'],
                                     'mentorContact': mentor[0]['contact'],
-                                    'mentorImage': mentor[0]['imgSrc']})
+                                    'mentorImage': mentor[0]['imgSrc'],
+                                    'f3': int(FormStatus.objects.get(formId='3').formStatus)})
                     else: 
                         mentee.update({'mentorId': 'NULL',
                                 'mentorName': 'NULL',
                                 'mentorEmail': 'NULL',
                                 'mentorContact': 'NULL',
-                                'mentorImage': 'NULL'})
+                                'mentorImage': 'NULL',
+                                'f3': int(FormStatus.objects.get(formId='3').formStatus)})
             if(len(entry) == 0):
                 data_dict = {
-                    'id': -1
+                    'id': -1,
+                    'f1': int(FormStatus.objects.get(formId='1').formStatus)
                 }
                 serialized_data = json.dumps(data_dict)
                 return JsonResponse(serialized_data, safe=False)
             return JsonResponse(entry[0], safe=False)
         except: 
             data_dict = {
-                'id': -1
-            }
+                    'id': -1
+                }
             serialized_data = json.dumps(data_dict)
             return JsonResponse(serialized_data, safe=False)
     else: 
@@ -195,7 +206,7 @@ def delete_all_mentors(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-# Done   
+#Done   
 @csrf_exempt
 def delete_mentor_by_id(request):
     if request.method == "POST":
@@ -227,7 +238,6 @@ def delete_mentor_by_id(request):
     else:
         return JsonResponse({"message": "No new mentor to replace"})
 
-# Done
 def delete_all_mentees(request):
     # returns json ; {"message": "//message//"}
     if request.method == "GET":
@@ -236,7 +246,7 @@ def delete_all_mentees(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-# Done
+#Done
 @csrf_exempt
 def delete_mentee_by_id(request):
     # returns json ; {"message": "//message//"}
@@ -283,6 +293,7 @@ def add_mentor(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+#Done
 @csrf_exempt
 def add_mentee(request):
     # returns json ; {"message": "//message//"}
@@ -305,7 +316,7 @@ def add_mentee(request):
         return JsonResponse({"message": "Invalid request method"})
 
 
-# Done
+#Done
 @csrf_exempt
 def add_candidate(request):
     # returns json ; {"message": "//message//"}
@@ -348,6 +359,12 @@ def add_candidate(request):
 
         # Save the new FormResponses instance
         new_responses.save()
+        subject = "Registragtion From Filled"
+        message = "Registragtion form successfully filled. Please wait for furter Instructions"
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [new_candidate.email]
+        send_mail(subject, message, from_email, recipient_list)
+        
         
         return JsonResponse({"message": "data added successfully"})
     else:
@@ -416,6 +433,7 @@ def edit_mentor_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+#Done
 @csrf_exempt
 def edit_mentee_by_id(request):
     # returns json ; {"message": "//message//"}
@@ -446,7 +464,7 @@ def edit_mentee_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-# Done
+#Done
 @csrf_exempt
 def upload_CSV(request):
     if request.method == 'POST':
@@ -494,7 +512,7 @@ def upload_CSV(request):
 def index(request):
     return HttpResponse("home")
 
-# Done
+#Done
 @csrf_exempt
 def add_meeting(request):
     # returns json ; {"message": "//message//"}
@@ -534,26 +552,17 @@ def add_meeting(request):
                 mentorBranches=mentorBranches 
             )
             new_meeting.save()
-            # send_emails_to_attendees(attendee_emails=['vishesh20550@iiitd.ac.in','mohit20086@iiitd.ac.in'])
+            send_emails_to_attendees(new_meeting, 1)
             return JsonResponse({"message": "Data added successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"})
 
-def send_emails_to_attendees(attendee_emails):
-    # Implement your logic to send emails to all attendees
-    # Use Django's send_mail function
-    # Replace the following lines with your actual logic
-    subject = 'Meeting Notification'
-    message = 'phish phish'
-    from_email = 'mohit20086@iiitd.ac.in'  # Replace with your email
-    recipient_list = attendee_emails
 
-    send_mail(subject, message, from_email, recipient_list)
-
-
+#Done
 @csrf_exempt
 def edit_meeting_by_id(request):
     # returns json ; {"message": "//message//"}
+    
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         meeting = Meetings.objects.get(meetingId=data.get('meetingId'))
@@ -580,19 +589,24 @@ def edit_meeting_by_id(request):
         if existing_meeting and existing_meeting.meetingId != data.get('meetingId'):
             return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
         meeting.save()
+        send_emails_to_attendees(existing_meeting, 2)
         return JsonResponse({"message": "data added successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
     
+#Done
 @csrf_exempt
 def delete_meeting_by_id(request):
     if request.method == "POST":
         id_to_search = json.loads(request.body.decode('utf-8')).get('meetingId')
+        meeting = Meetings.objects.get(meetingId=id_to_search)
+        send_emails_to_attendees(meeting, 3)
         deleted = Meetings.objects.filter(meetingId=id_to_search).delete()
         return JsonResponse({"message": "deleted "+str(deleted[0])+" database entries"})
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+#Done
 @csrf_exempt
 def get_meetings(request):
     if request.method == "POST":
@@ -727,8 +741,7 @@ def get_attendance(request):
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is absent
                     attendees_list.append(attendee_info)
-                    
-                
+                             
         except Admin.DoesNotExist:
             # Mentor scheduler, get all mentees of the mentor
             try:
@@ -753,7 +766,6 @@ def get_attendance(request):
                             return JsonResponse({"error": f"Mentee with ID {attendee_id} not found"}, status=404)
             except Mentee.DoesNotExist:
                 return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
-        print(attendees_list)  
         return JsonResponse({"attendees": attendees_list})
         
     else:
@@ -764,6 +776,26 @@ def get_attendance(request):
 def update_attendance(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+
+        attendees = data.get("attendees")
+        meeting_id = data.get("meetingId")
+
+        for attendee in attendees:
+            attendee_id = attendee.get("id")
+            attendance_value = attendee.get("attendance")
+            try:
+                existing_attendance = Attendance.objects.get(attendeeId=attendee_id, meetingId=meeting_id)
+                if attendance_value == 0:
+                    existing_attendance.delete()
+            except Attendance.DoesNotExist:
+                if attendance_value == 1:
+                    new_attendance = Attendance(attendeeId=attendee_id, meetingId=meeting_id)
+                    new_attendance.save()
+
+        return JsonResponse({"message": "Attendance updated successfully"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
 
 def create_mentor_mentee_pairs(request):
     try:
@@ -791,7 +823,8 @@ def create_mentor_mentee_pairs(request):
         return JsonResponse({'message': 'Matching successful'})
     except Exception as e:
         return JsonResponse({'message': str(e)})
-    
+
+# Done   
 @csrf_exempt
 def submit_consent_form(request):
     if request.method == 'POST':
@@ -818,11 +851,17 @@ def submit_consent_form(request):
         candidate.save()
         if correct_options == 0:
             Candidate.objects.filter(id=user_id).update(status=3)
-
+        subject = "Consent From Filled"
+        message = "Consent form successfully filled. Please wait for furter Instructions"
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [candidate.email]
+        send_mail(subject, message, from_email, recipient_list)
+        
         return JsonResponse({"message": "Consent form submitted successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+# Done
 @csrf_exempt
 def mentee_filled_feedback(request):
     if request.method == 'POST':
@@ -853,25 +892,25 @@ def get_form_response(request):
         form_type = data.get("formType")
 
         try:
-            form_responses_objs = FormResponses.objects.filter(FormType=form_type)
+            form_responses_objs = FormResponses.objects.filter(FormType=form_type).values()
             form_responses_data = []
             for form_response_obj in form_responses_objs:
                 response_data = {
-                    "submitterId": form_response_obj.submitterId,
-                    "responses": form_response_obj.responses,
+                    "submitterId": form_response_obj['submitterId'],
+                    "responses": form_response_obj['responses'],
                 }
 
                 if form_type in ["1", "2"]:
-                    mentor_obj = Mentor.objects.get(id=form_response_obj.submitterId)
+                    mentor_obj = Mentor.objects.get(id=form_response_obj['submitterId'])
                     response_data["submitterName"] = mentor_obj.name
                     response_data["submitterEmail"] = mentor_obj.email
 
                 elif form_type == "3":
-                    mentee_obj = Mentee.objects.get(id=form_response_obj.submitterId)
+                    mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
                     response_data["submitterName"] = mentee_obj.name
                     response_data["submitterEmail"] = mentee_obj.email
 
-                response_data.update(form_response_obj.responses)
+                response_data.update(form_response_obj['responses'])
 
                 form_responses_data.append(response_data)
 
@@ -902,3 +941,86 @@ def update_form_status(request):
         data = json.loads(request.body.decode('utf-8'))
         form = FormStatus.objects.filter(formId=data.get("formId")).values()
         form.formStatus = data.get('formStatus')
+        # agr form status 2 h and f1 and f2 f3 send bhi krna h 
+
+
+def send_emails_to_attendees(meeting, type):
+    """
+    1: new meeting
+    2: meeting edited
+    3: deleted 
+    """
+    scheduler_id = meeting.schedulerId
+    attendees_list = []
+    attendees = meeting.attendee
+    user_type = ''
+    user_name = ''
+    user_email = ''
+
+    try:
+        admin = Admin.objects.get(id=scheduler_id)
+        user_type = 'Admin'
+        user_name = admin.name
+        user_email = admin.email
+        if attendees == 1:  # Mentor
+            # Filter mentors based on mentorBranches
+            mentors = Candidate.objects.filter(department__in=meeting.mentorBranches).values()
+            for mentor in mentors:
+                attendees_list.append(mentor['email'])
+
+        elif attendees == 2:  # Mentee
+            mentees = Mentee.objects.all().values()
+            for mentee in mentees:
+                attendees_list.append(mentee['email'])
+
+        elif attendees == 3:  # Both mentor and mentee
+            # Filter mentors based on mentorBranches
+            mentors = Candidate.objects.filter(department__in=meeting.mentorBranches).values()
+            for mentor in mentors:
+                attendees_list.append(mentor['email'])
+
+            mentees = Mentee.objects.all().values()
+            for mentee in mentees:
+                attendees_list.append(mentee['email'])
+                   
+    except Admin.DoesNotExist:
+        # Mentor scheduler, get all mentees of the mentor
+        try:
+            mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id).values()
+            attendees = [mentee['id'] for mentee in mentor_mentees]
+            for attendee_id in attendees:
+                    attendee_info = {}
+                    try:
+                        mentee = Mentee.objects.get(id=attendee_id)
+                        attendees_list.append(mentee['email'])
+                        candidate = Candidate.objects.get(id=scheduler_id)
+                        user_type = 'Mentor'
+                        user_name = candidate.name
+                        user_email = candidate.email
+                    except Mentee.DoesNotExist:
+                        return JsonResponse({"error": f"Mentee with ID {attendee_id} not found"}, status=404)
+        except Mentee.DoesNotExist:
+            return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
+    if type == 1:
+        # new meeting 
+        subject = 'New meeting Meeting ID: '+ str(meeting.meetingId)+" Title: "+meeting.title
+        message = 'New meeting Scheduled by your '+user_type
+    if type == 2:
+        # Edit meeting 
+        subject = 'Meeting Updated Meeting ID: '+ str(meeting.meetingId) + " Title: "+ meeting.title
+        message = 'Meeting details for meeting : '+ str(meeting.meetingId) + " updated by user " + user_type
+    if type == 3:
+        # Delete meeting 
+        subject = 'Meeting Deleted Meeting ID: '+ str(meeting.meetingId) + " Title: "+ meeting.title
+        message = 'Meeting Removed for meeting : '+ str(meeting.meetingId) + " updated by user " + user_type
+    message = message + '\n Schdeduler name : '+user_name
+    message = message + '\n Schdeduler email : '+user_email
+    message = message + '\n\t Meeting Detials : '
+    message = message + '\n\t\t\t Title : ' + meeting.title
+    message = message + '\n\t\t\t Date : ' + meeting.date
+    message = message + '\n\t\t\t Time : ' + meeting.time
+    message = message + '\n\t\t\t Description : ' + meeting.description.replace("\n", "\n\t\t\t\t")
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = attendees_list
+
+    send_mail(subject, message, from_email, recipient_list)
