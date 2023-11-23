@@ -587,12 +587,12 @@ def edit_meeting_by_id(request):
             time=data.get('time')
         ).first()
         if existing_meeting and existing_meeting.meetingId != data.get('meetingId'):
-            return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
+            return JsonResponse({"error": "Meeting already scheduled at the same date and time"}, status=404)
         meeting.save()
-        send_emails_to_attendees(existing_meeting, 2)
+        send_emails_to_attendees(meeting, 2)
         return JsonResponse({"message": "data added successfully"})
     else:
-        return JsonResponse({"message": "Invalid request method"})
+        return JsonResponse({"message": "Invalid request method"}, status=404)
     
 #Done
 @csrf_exempt
@@ -772,7 +772,7 @@ def get_attendance(request):
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
-
+#Done
 @csrf_exempt
 def update_attendance(request):
     if request.method == "POST":
@@ -797,33 +797,37 @@ def update_attendance(request):
     else:
         return JsonResponse({"error": "Invalid request method"})
 
-
+@csrf_exempt
 def create_mentor_mentee_pairs(request):
-    try:
-        departments = Mentee.objects.values_list('department', flat=True).distinct()
-
-        for department in departments:
-            mentees = Mentee.objects.filter(department=department)
-            mentee_batch_size = math.ceil(len(mentees) / 5.0)
-            candidates = Candidate.objects.filter(status=3, department=department).order_by('-score')[:mentee_batch_size]
-    
-            candidates_dict = {candidate.id: 0 for candidate in candidates}
-            for mentee in mentees:
-                candidate_id = random.choice([key for key, value in candidates_dict.items() if value < 5])
-                mentor = Mentor.objects.get(id=candidate_id)
-                mentee.mentorId = candidate_id
-                mentee.save()
-                candidates_dict[candidate_id] += 1
-            
-            for candidate in candidates:
-                mentor = Mentor(id=candidate.id, goodiesStatus = 0)
-                mentor.save()
-                candidate.status = 5
-                candidate.save()
-
-        return JsonResponse({'message': 'Matching successful'})
-    except Exception as e:
-        return JsonResponse({'message': str(e)})
+    if request.method == "POST":
+        try:
+            departments = Mentee.objects.values_list('department', flat=True).distinct()
+            print(departments)
+            for department in departments:
+                mentees = Mentee.objects.filter(department=department)
+                print(mentees)
+                mentee_batch_size = math.ceil(len(mentees) / 5.0)
+                print(mentee_batch_size)
+                candidates = Candidate.objects.filter(status=3, department=department).order_by('-score')[:mentee_batch_size]
+                print(candidates)        
+                candidates_dict = {candidate.id: 0 for candidate in candidates}
+                for mentee in mentees:
+                    candidate_id = random.choice([key for key, value in candidates_dict.items() if value < 5])
+                    mentor = Mentor.objects.get(id=candidate_id)
+                    mentee.mentorId = candidate_id
+                    mentee.save()
+                    candidates_dict[candidate_id] += 1
+                
+                # for candidate in candidates:
+                #     mentor = Mentor(id=candidate.id, goodiesStatus = 0)
+                #     mentor.save()
+                #     candidate.status = 5
+                #     candidate.save()
+            return JsonResponse({'message': 'Matching successful'})
+        except Exception as e:
+            return JsonResponse({'message': str(e)})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
 
 # Done   
 @csrf_exempt
@@ -1046,6 +1050,7 @@ def send_emails_to_attendees(meeting, type):
     message = message + '\n\t\t\t Description : ' + meeting.description.replace("\n", "\n\t\t\t\t")
     from_email = settings.EMAIL_HOST_USER
     recipient_list = attendees_list
+    send_emails_to(subject, message, from_email, [user_email])
     send_emails_to(subject, message, from_email, recipient_list)
 
 #Done
