@@ -966,8 +966,8 @@ def update_form_status(request):
         form.formStatus = formStatus
         form.save()
         if int(formId) == 2 and int(formStatus) == 1:
-            candidates_with_status_2 = Candidate.objects.filter(status=2).values("email")
-            emails = [candidate['email'] for candidate in candidates_with_status_2]
+            candidates_with_status_1 = Candidate.objects.filter(status=1).values("email")
+            emails = [candidate['email'] for candidate in candidates_with_status_1]
             Candidate.objects.filter(status=1).update(status=2)
             subject = "Consent Form Activated"
             message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
@@ -975,8 +975,8 @@ def update_form_status(request):
             thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
             thread.start()
         elif int(formId) == 2 and int(formStatus) == 0:
-            candidates_with_status_1 = Candidate.objects.filter(status=1).values("email")
-            emails = [candidate['email'] for candidate in candidates_with_status_1]
+            candidates_with_status_2 = Candidate.objects.filter(status=2).values("email")
+            emails = [candidate['email'] for candidate in candidates_with_status_2]
             Candidate.objects.filter(status=2).update(status=1) 
             subject = "Closure of Consent Form Submission"
             message = "Dear Students,\nWe would like to inform you that the submission window for the consent form has now closed. We appreciate your prompt response to this step in our process."
