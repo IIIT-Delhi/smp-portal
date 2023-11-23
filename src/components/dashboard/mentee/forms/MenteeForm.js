@@ -62,6 +62,19 @@ export default function MenteeForm() {
     );
   }
 
+  if (userDetails.mentorId === 'NULL') {
+    return (
+      <div>
+        <Navbar className="fixed-top" />
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            Mentor not assigned.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar className="fixed-top" />

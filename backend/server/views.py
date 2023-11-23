@@ -346,10 +346,15 @@ def add_candidate(request):
         scores = {key: scoring_rules[key][value] for key, value in responses.items()}
         score = sum(scores.values())
         responses["score"] = score
+        form = FormStatus.objects.get(formId=2)
+        if form.formStatus == '1': 
+            status=2
+        else:
+            status=1
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'), contact=data.get('contact'),
                           score=score,
-                          status=1)
+                          status=status)
         if(data.get('imgSrc')):
             new_candidate.imgSrc = data.get('imgSrc')
         new_candidate.save()
@@ -448,7 +453,7 @@ def edit_mentee_by_id(request):
                 return JsonResponse({"message": "Mentor Not Found Make sure that the mentor exist and have same department"})
             existing_mentee.mentorId = mentor[0]['id']
             existing_mentee.save()
-            return JsonResponse({"message": "Mentee added successfully"})
+            return JsonResponse({"message": "Mentee Details Updated successfully"})
         else: 
             return JsonResponse({"message": "No such mentee Exist"})
        
@@ -920,7 +925,7 @@ def get_form_response(request):
                 }
 
                 if form_type in ["1", "2"]:
-                    mentor_obj = Mentor.objects.get(id=form_response_obj['submitterId'])
+                    mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
                     response_data["submitterName"] = mentor_obj.name
                     response_data["submitterEmail"] = mentor_obj.email
 
@@ -967,6 +972,8 @@ def update_form_status(request):
             subject = "Consent Form Activated"
             message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
             message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
+            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            thread.start()
         elif int(formId) == 2 and int(formStatus) == 0:
             candidates_with_status_1 = Candidate.objects.filter(status=1).values("email")
             emails = [candidate['email'] for candidate in candidates_with_status_1]
@@ -974,8 +981,23 @@ def update_form_status(request):
             subject = "Closure of Consent Form Submission"
             message = "Dear Students,\nWe would like to inform you that the submission window for the consent form has now closed. We appreciate your prompt response to this step in our process."
             message = message + "If you have successfully submitted your consent form, we would like to express our gratitude for your cooperation."
-        thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
-        thread.start()
+            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            thread.start()
+        if int(formId) == 3 and int(formStatus) == 1:
+            mentee_list = Mentee.objects.filter().values("email")
+            emails = [candidate['email'] for candidate in mentee_list]
+            subject = "Feedback Form Activated"
+            message = "Dear Students,\nWe would like to inform you that the mentor feedback form has been activated by the admin. Your prompt action in filling out the feedback form is crucial."
+            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            thread.start()
+        elif int(formId) == 3 and int(formStatus) == 0:
+            mentee_list = Mentee.objects.filter().values("email")
+            emails = [candidate['email'] for candidate in mentee_list]
+            subject = "Closure of Feedback Form"
+            message = "Dear Students,\nWe would like to inform you that the submission window for the Feedback form has now closed. We appreciate your prompt response to this step in our process."
+            message = message + "If you have successfully submitted your consent form, we would like to express our gratitude for your cooperation."
+            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            thread.start()
         return JsonResponse({"message": "Form status updated successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
