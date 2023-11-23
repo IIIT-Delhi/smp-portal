@@ -772,7 +772,7 @@ def get_attendance(request):
                             return JsonResponse({"error": f"Mentee with ID {attendee_id} not found"}, status=404)
             except Mentee.DoesNotExist:
                 return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
-        print({"attendees": attendees_list})
+        # print({"attendees": attendees_list})
         return JsonResponse({"attendees": attendees_list})
         
     else:
@@ -920,7 +920,7 @@ def get_form_response(request):
                 }
 
                 if form_type in ["1", "2"]:
-                    mentor_obj = Mentor.objects.get(id=form_response_obj['submitterId'])
+                    mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
                     response_data["submitterName"] = mentor_obj.name
                     response_data["submitterEmail"] = mentor_obj.email
 
@@ -932,7 +932,7 @@ def get_form_response(request):
                 # response_data.update(form_response_obj['responses'])
                 form_responses_data.append(response_data)
 
-            print({"formResponses": form_responses_data})
+            # print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
 
         except FormResponses.DoesNotExist:
@@ -960,6 +960,9 @@ def update_form_status(request):
         form = FormStatus.objects.get(formId=formId)
         form.formStatus = formStatus
         form.save()
+        subject = ""
+        message = ""
+        emails = []
         if int(formId) == 2 and int(formStatus) == 1:
             candidates_with_status_2 = Candidate.objects.filter(status=2).values("email")
             emails = [candidate['email'] for candidate in candidates_with_status_2]
@@ -1084,8 +1087,3 @@ def send_emails_to(subject, message, from_email, emails):
             invalid_emails.append({"email": email, "error": "Invalid email address"})
         except Exception as e:
             invalid_emails.append({"email": email, "error": str(e)})
-
-
-        
-
-    
