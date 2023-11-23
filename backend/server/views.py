@@ -13,6 +13,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+import threading
 
 
 def get_all_admins(request):
@@ -363,7 +364,8 @@ def add_candidate(request):
         new_responses.save()
         subject = "Registragtion From Filled"
         message = "Registragtion form successfully filled. Please wait for furter Instructions"
-        send_emails_to(subject, message, settings.EMAIL_HOST_USER, [new_candidate.email])
+        thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, [new_candidate.email]))
+        thread.start()
         
         
         return JsonResponse({"message": "data added successfully"})
@@ -497,6 +499,7 @@ def upload_CSV(request):
                     name=item['Name'],
                     email=item['Email'],
                     contact=item['Contact'],
+                    mentorId = '',
                     department= department
                 )
                 if 'Image' in item:
@@ -552,7 +555,8 @@ def add_meeting(request):
                 mentorBranches=mentorBranches 
             )
             new_meeting.save()
-            send_emails_to_attendees(new_meeting, 1)
+            thread = threading.Thread(target=send_emails_to_attendees, args=(new_meeting, 1))
+            thread.start()
             return JsonResponse({"message": "Data added successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"})
@@ -587,9 +591,10 @@ def edit_meeting_by_id(request):
             time=data.get('time')
         ).first()
         if existing_meeting and existing_meeting.meetingId != data.get('meetingId'):
-            return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
+            return JsonResponse({"message": "Meeting already scheduled at the same date and time"})
         meeting.save()
-        send_emails_to_attendees(existing_meeting, 2)
+        thread = threading.Thread(target=send_emails_to_attendees, args=(meeting, 2))
+        thread.start()
         return JsonResponse({"message": "data added successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -600,7 +605,8 @@ def delete_meeting_by_id(request):
     if request.method == "POST":
         id_to_search = json.loads(request.body.decode('utf-8')).get('meetingId')
         meeting = Meetings.objects.get(meetingId=id_to_search)
-        send_emails_to_attendees(meeting, 3)
+        thread = threading.Thread(target=send_emails_to_attendees, args=(meeting, 3))
+        thread.start()
         deleted = Meetings.objects.filter(meetingId=id_to_search).delete()
         return JsonResponse({"message": "deleted "+str(deleted[0])+" database entries"})
     else:
@@ -772,7 +778,7 @@ def get_attendance(request):
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
-
+#Done
 @csrf_exempt
 def update_attendance(request):
     if request.method == "POST":
@@ -797,33 +803,39 @@ def update_attendance(request):
     else:
         return JsonResponse({"error": "Invalid request method"})
 
-
+@csrf_exempt
 def create_mentor_mentee_pairs(request):
-    try:
-        departments = Mentee.objects.values_list('department', flat=True).distinct()
-
-        for department in departments:
-            mentees = Mentee.objects.filter(department=department)
-            mentee_batch_size = math.ceil(len(mentees) / 5.0)
-            candidates = Candidate.objects.filter(status=3, department=department).order_by('-score')[:mentee_batch_size]
-    
-            candidates_dict = {candidate.id: 0 for candidate in candidates}
-            for mentee in mentees:
-                candidate_id = random.choice([key for key, value in candidates_dict.items() if value < 5])
-                mentor = Mentor.objects.get(id=candidate_id)
-                mentee.mentorId = candidate_id
-                mentee.save()
-                candidates_dict[candidate_id] += 1
-            
-            for candidate in candidates:
-                mentor = Mentor(id=candidate.id, goodiesStatus = 0)
-                mentor.save()
-                candidate.status = 5
-                candidate.save()
-
-        return JsonResponse({'message': 'Matching successful'})
-    except Exception as e:
-        return JsonResponse({'message': str(e)})
+    if request.method == "POST":
+        try:
+            departments = Mentee.objects.values_list('department', flat=True).distinct()
+            noMenteeBranch = []
+            for department in departments:
+                mentees = Mentee.objects.filter(department=department, mentorId='')
+                mentee_batch_size = math.ceil(len(mentees) / 5.0)
+                candidates = Candidate.objects.filter(status=3, department=department).order_by('-score')[:mentee_batch_size]  
+                candidates_dict = {candidate.id: 0 for candidate in candidates}
+                if len(candidates_dict) == mentee_batch_size:
+                    for mentee in mentees:
+                        candidate_id = random.choice([key for key, value in candidates_dict.items() if value < 5])
+                        mentee.mentorId = candidate_id
+                        mentee.save()
+                        candidates_dict[candidate_id] += 1
+                    
+                    for candidate in candidates:
+                        mentor = Mentor(id=candidate.id, goodiesStatus = 0)
+                        mentor.save()
+                        candidate.status = 5
+                        candidate.save()
+                else: 
+                    noMenteeBranch.append(department)
+            if len(noMenteeBranch):
+                return JsonResponse({'message': 'Not enough mentor for branches : '+ str(noMenteeBranch)})
+            else:
+                return JsonResponse({'message': 'Matching successful'})
+        except Exception as e:
+            return JsonResponse({'message': str(e)})
+    else:
+        return JsonResponse({"message": "Invalid request method"})
 
 # Done   
 @csrf_exempt
@@ -854,7 +866,8 @@ def submit_consent_form(request):
             Candidate.objects.filter(id=user_id).update(status=3)
         subject = "Consent From Filled"
         message = "Consent form successfully filled. Please wait for furter Instructions"
-        send_emails_to(subject, message, settings.EMAIL_HOST_USER, [candidate.email])
+        thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER,[candidate.email]))
+        thread.start()
         
         return JsonResponse({"message": "Consent form submitted successfully"})
     else:
@@ -954,7 +967,6 @@ def update_form_status(request):
             subject = "Consent Form Activated"
             message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
             message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
-            send_emails_to(subject, message, settings.EMAIL_HOST_USER, emails)
         elif int(formId) == 2 and int(formStatus) == 0:
             candidates_with_status_1 = Candidate.objects.filter(status=1).values("email")
             emails = [candidate['email'] for candidate in candidates_with_status_1]
@@ -962,7 +974,8 @@ def update_form_status(request):
             subject = "Closure of Consent Form Submission"
             message = "Dear Students,\nWe would like to inform you that the submission window for the consent form has now closed. We appreciate your prompt response to this step in our process."
             message = message + "If you have successfully submitted your consent form, we would like to express our gratitude for your cooperation."
-            send_emails_to(subject, message, settings.EMAIL_HOST_USER, emails)
+        thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+        thread.start()
         return JsonResponse({"message": "Form status updated successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
@@ -1046,6 +1059,7 @@ def send_emails_to_attendees(meeting, type):
     message = message + '\n\t\t\t Description : ' + meeting.description.replace("\n", "\n\t\t\t\t")
     from_email = settings.EMAIL_HOST_USER
     recipient_list = attendees_list
+    send_emails_to(subject, message, from_email, [user_email])
     send_emails_to(subject, message, from_email, recipient_list)
 
 #Done
