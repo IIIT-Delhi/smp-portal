@@ -5,6 +5,7 @@ import deleteIcon from "../../../../images/delete_icon.png";
 import MenteeProfile from "./MenteeProfile";
 import MenteeUpload from "./MenteeUpload";
 import axios from "axios";
+import ChangeMentor from "./ChangeMentor";
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
@@ -88,6 +89,54 @@ const MenteesList = () => {
   const handleDeleteConfirmation = (mentee) => {
     setMenteeToDelete(mentee);
   };
+
+  const [showChangeMentor, setshowChangeMentor] = useState(false);
+  const [editMentee, seteditMentee] = useState(null);
+  const [currMentee, setcurrMentee] = useState(null);
+
+
+  const handleChangeMentor = (mentee) => {
+    console.log(mentee)
+    seteditMentee({
+      mentorID : '',
+      mentorName : '',
+      menteeId : mentee.id
+    })
+    setcurrMentee(mentee)
+    setshowChangeMentor(true)
+  }
+
+  const editMentor = async() => {
+
+    axios
+      .post('http://127.0.0.1:8000/editMenteeById/', JSON.stringify(
+        {
+          id : editMentee.menteeId,
+          mentorId : editMentee.mentorId,
+          department : currMentee.department
+        }
+      ))
+      .then((response) => {
+        if (response.status === 200) {
+          alert(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Error changing Mentor', error);
+      });
+
+  }
+
+  const handleSaveChangeMentor = () => {
+
+    editMentor()
+    setshowChangeMentor(false)
+    fetchMenteeList()
+  }
+
+  const handleCloseChangeMentor = () => {
+    setshowChangeMentor(false)
+  }
 
   const addMenteeOnBackend = async (mentee) => {
     try {
@@ -421,8 +470,9 @@ const MenteesList = () => {
                           width: headerColumnWidths["actions"],
                         }}
                       >
+                        <div className="d-flex">
                         <button
-                          className="btn btn-sm"
+                          className="btn btn-sm mr-2"
                           onClick={() => handleDeleteConfirmation(mentee)}
                         >
                           <img
@@ -431,6 +481,12 @@ const MenteesList = () => {
                             style={{ width: "20px", height: "20px" }}
                           />
                         </button>
+                        <button className="btn btn-sm btn-outline-dark ml-4"
+                          onClick={() => handleChangeMentor(mentee)}
+                        >
+                          Change Mentor
+                        </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -508,6 +564,18 @@ const MenteesList = () => {
             fetchMenteeList={fetchMenteeList}
             // onUpload = {onIpload}
           />
+        )}
+
+        { showChangeMentor && (
+
+          <ChangeMentor
+            handleSave={handleSaveChangeMentor}
+            handleClose={handleCloseChangeMentor}
+            editMentee = {editMentee}
+            seteditMentee = {seteditMentee}
+            currMentee = {currMentee}
+          />
+
         )}
       </div>
     </div>
