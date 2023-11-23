@@ -693,7 +693,7 @@ def get_attendance(request):
                     attendee_info["name"] = mentor['name']
                     attendee_info["email"] = mentor['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentor['id'], meetingId=meeting_id).values()
+                        attendance = Attendance.objects.get(attendeeId=mentor['id'], meetingId=meeting_id)
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is 
@@ -707,7 +707,7 @@ def get_attendance(request):
                     attendee_info["name"] = mentee['name']
                     attendee_info["email"] = mentee['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentee['id'], meetingId=meeting_id).values()
+                        attendance = Attendance.objects.get(attendeeId=mentee['id'], meetingId=meeting_id)
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is absent
@@ -723,7 +723,7 @@ def get_attendance(request):
                     attendee_info["name"] = mentor['name']
                     attendee_info["email"] = mentor['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentor['id'], meetingId=meeting_id).values()
+                        attendance = Attendance.objects.get(attendeeId=mentor['id'], meetingId=meeting_id)
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is 
@@ -736,7 +736,7 @@ def get_attendance(request):
                     attendee_info["name"] = mentee['name']
                     attendee_info["email"] = mentee['email']
                     try:
-                        attendance = Attendance.objects.get(attendeeId=mentee['id'], meetingId=meeting_id).values()
+                        attendance = Attendance.objects.get(attendeeId=mentee['id'], meetingId=meeting_id)
                         attendee_info["attendance"] = 1  # Attendee is present
                     except Attendance.DoesNotExist:
                         attendee_info["attendance"] = 0  # Attendee is absent
@@ -766,6 +766,7 @@ def get_attendance(request):
                             return JsonResponse({"error": f"Mentee with ID {attendee_id} not found"}, status=404)
             except Mentee.DoesNotExist:
                 return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
+        print({"attendees": attendees_list})
         return JsonResponse({"attendees": attendees_list})
         
     else:
