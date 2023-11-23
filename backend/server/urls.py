@@ -39,6 +39,8 @@ urlpatterns = [
     path('getMeetings/', views.get_meetings, name='getMeetings'),
     path('getAttendance/', views.get_attendance, name='getAttendance'),
     path('updateAttendance/', views.update_attendance, name='updateAttendance'),
+    # mentor mentee pairing
+    path('createMentorMenteePair/', views.create_mentor_mentee_pairs, name='createMentorMenteePair'),
 
     #forms 
     path('submitConsentForm/', views.submit_consent_form, name='submitConsentForm'),

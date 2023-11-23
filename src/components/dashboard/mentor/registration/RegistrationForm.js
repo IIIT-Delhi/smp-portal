@@ -139,7 +139,7 @@ export default function RegistrationForm() {
   return (
     <div>
       <Navbar className="fixed-top" />
-      {userDetails.id === -1 && step === 1 && (
+      {userDetails.id === -1 && userDetails.f1 === 1 && step === 1 && (
         // If userDetails.id is -1 and step is 1, show UserDetails
         <UserDetails
           nextStep={nextStep}
@@ -150,7 +150,7 @@ export default function RegistrationForm() {
         />
       )}
 
-      {userDetails.id === -1 && step === 2 && (
+      {userDetails.id === -1 && userDetails.f1 === 1 && step === 2 && (
         <Questions
           nextStep={nextStep}
           prevStep={prevStep}
@@ -159,7 +159,7 @@ export default function RegistrationForm() {
         />
       )}
 
-      {userDetails.id === -1 && step === 3 && (
+      {userDetails.id === -1 && userDetails.f1 === 1 && step === 3 && (
         <Confirmation
           nextStep={nextStep}
           prevStep={prevStep}
@@ -169,6 +169,15 @@ export default function RegistrationForm() {
           departmentOptions={departmentOptions}
           saveAndContinue={saveAndContinue}
         />
+      )}
+
+      {userDetails.id === -1 && userDetails.f1 === 0 && (
+        // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            Enrollment proccess not started. Admin is not accepting responses.
+          </div>
+        </div>
       )}
 
       {userDetails.id !== -1 && userDetails.status === 1 && (
