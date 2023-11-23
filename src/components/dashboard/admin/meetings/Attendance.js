@@ -24,6 +24,24 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
         }
     }, [meetingId]);
 
+    const updateAttendance = async() => {
+        const response1 = await axios.post("http://127.0.0.1:8000/updateAttendance/",
+        JSON.stringify({
+            meetingId: meetingId,
+            attendees : attendanceList
+        }));
+
+        if(response1.status == 200){
+            alert('Attendance updated succesfully');
+        }
+
+    }   
+
+    const handleSave = () => {
+        updateAttendance();
+        handleButtonSave();
+    }
+
     useEffect(() => {
         // if(isFirstTime){setisFirstTime(false);fetchMeetings();}
         fetchAttendance();
@@ -90,7 +108,7 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
               <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>
                 Close
               </button>
-              <button type="button" className="btn btn-primary" onClick={handleButtonSave}>
+              <button type="button" className="btn btn-primary" onClick={handleSave}>
                 Save Details
               </button>
             </div>
