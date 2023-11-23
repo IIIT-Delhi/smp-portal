@@ -93,6 +93,7 @@ export default function AdminMeetingList() {
   };
 
   const editMeeting = (meetingId, newValues) => {
+    console.log(newValues)
     updateMeetingOnBackend(newValues);
     fetchMeetings();
   };
