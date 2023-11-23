@@ -14,9 +14,15 @@ class AddCandidateTestCase(TestCase):
             'email': 'candidate@example.com',
             'department': 'CS',
             'year': '3',
-            'size': 'Medium',
             'score': '90',
+            'contact': '122334354',
             'imgSrc': '',
+            'rq1': 0,
+            'rq2': 1,
+            'rq3': 2,
+            'rq4': 3,
+            'rq5': 4,
+            'rq6': 5,
         }
 
         response = self.client.post(reverse('addCandidate'), json.dumps(data), content_type='application/json')
@@ -30,8 +36,7 @@ class AddCandidateTestCase(TestCase):
         self.assertEqual(candidate.email, 'candidate@example.com')
         self.assertEqual(candidate.department, 'CS')
         self.assertEqual(candidate.year, '3')
-        self.assertEqual(candidate.size, 'Medium')
-        self.assertEqual(candidate.score, '90')
+        self.assertEqual(candidate.score, '12')
         self.assertEqual(candidate.status, 1)
         self.assertEqual(candidate.imgSrc, '')
 
