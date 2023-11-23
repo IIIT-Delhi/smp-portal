@@ -5,7 +5,8 @@ from .models import *
 from .views import *
 from datetime import datetime, timedelta
 class AddCandidateTestCase(TestCase):
-
+    def setUp(self):
+        self.formStatus = FormStatus.objects.create(formId=2, formStatus=0)
     def test_add_candidate_success(self):
         # Test the successful addition of a candidate
         data = {
