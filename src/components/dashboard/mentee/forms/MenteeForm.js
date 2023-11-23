@@ -9,6 +9,7 @@ export default function MenteeForm() {
   const [formData, setFormData] = useState({
     id: userDetails.id,
     mentorId: userDetails.mentorId,
+    mentorName: userDetails.mentorName,
     fq1: "",
     fq2: "",
     fq3: "",

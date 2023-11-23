@@ -914,28 +914,31 @@ def get_form_response(request):
             form_responses_data = []
             for form_response_obj in form_responses_objs:
                 summiter_name = ''
-                if form_type == 1 or form_type == 2:
-                    summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
-                if form_type == 3:
-                    summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
+                if int(form_type) == 1 or int(form_type) == 2:
+                    if len(Candidate.objects.filter(id=form_response_obj['submitterId']).values()):
+                        summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
+                if int(form_type) == 3:
+                    if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
+                        summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                 response_data = {
                     "submitterId": form_response_obj['submitterId'],
                     "submiterName": summiter_name,
                     "responses": form_response_obj['responses'],
                 }
 
-                if form_type in ["1", "2"]:
-                    mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
-                    response_data["submitterName"] = mentor_obj.name
-                    response_data["submitterEmail"] = mentor_obj.email
+                if summiter_name != '':
+                    if int(form_type) in [1, 2]:
+                        mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
+                        response_data["submitterName"] = mentor_obj.name
+                        response_data["submitterEmail"] = mentor_obj.email
 
-                elif form_type == "3":
-                    mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
-                    response_data["submitterName"] = mentee_obj.name
-                    response_data["submitterEmail"] = mentee_obj.email
-
+                    elif int(form_type) == 3:
+                        mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
+                        response_data["submitterName"] = mentee_obj.name
+                        response_data["submitterEmail"] = mentee_obj.email
+                    
                 # response_data.update(form_response_obj['responses'])
-                form_responses_data.append(response_data)
+                    form_responses_data.append(response_data)
 
             print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
