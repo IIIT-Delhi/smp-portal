@@ -1051,7 +1051,7 @@ def send_emails_to_attendees(meeting, type):
                     attendee_info = {}
                     try:
                         mentee = Mentee.objects.get(id=attendee_id)
-                        attendees_list.append(mentee['email'])
+                        attendees_list.append(mentee.email)
                         candidate = Candidate.objects.get(id=scheduler_id)
                         user_type = 'Mentor'
                         user_name = candidate.name
