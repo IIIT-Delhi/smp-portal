@@ -9,6 +9,7 @@ export default function MenteeForm() {
   const [formData, setFormData] = useState({
     id: userDetails.id,
     mentorId: userDetails.mentorId,
+    mentorName: userDetails.mentorName,
     fq1: "",
     fq2: "",
     fq3: "",
@@ -56,6 +57,19 @@ export default function MenteeForm() {
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
             Feedback Form not open. Admin is not accepting responses.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (userDetails.mentorId === 'NULL') {
+    return (
+      <div>
+        <Navbar className="fixed-top" />
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            Mentor not assigned.
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserDetails from "./UserDetails";
 import Confirmation from "./Confirmation";
 import ConsentForm from "./ConsentForm";
@@ -12,6 +12,32 @@ import axios from "axios";
 export default function RegistrationForm() {
   const { userDetails,logout } = useAuth();
   const [step, setStep] = useState(1);
+  const [enrollmentFormStatus, setEnrollmentFormStatus] = useState([]);
+  const [consentFormStatus, setConsentFormStatus] = useState([]);
+
+  useEffect(() => {
+    const fetchFormStatus = async () => {
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/getFormStatus/"
+        );
+        const filteredEnrollmentFormStatus = response.data.filter(
+          (status) => status.formId === "1"
+        );
+        const filteredConsentFormStatus = response.data.filter(
+          (status) => status.formId === "2"
+        );
+        setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
+        setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+        console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
+        console.log(filteredConsentFormStatus[0]["formStatus"]);
+      } catch (error) {
+        console.error("Error fetching form status:", error);
+      }
+    };
+
+    fetchFormStatus();
+  }, []);
 
   const handleChangeQuestionInMain = (questionId,value) => {
     setFormData({
@@ -139,44 +165,51 @@ export default function RegistrationForm() {
   return (
     <div>
       <Navbar className="fixed-top" />
-      {userDetails.id === -1 && userDetails.f1 === 1 && step === 1 && (
-        // If userDetails.id is -1 and step is 1, show UserDetails
-        <UserDetails
-          nextStep={nextStep}
-          handleChange={handleChange}
-          inputValues={formData}
-          yearOptions={yearOptions}
-          departmentOptions={departmentOptions}
-        />
-      )}
+      {enrollmentFormStatus === "1" &&
+        userDetails.id === -1 &&
+        userDetails.f1 === 1 &&
+        step === 1 && (
+          // If userDetails.id is -1 and step is 1, show UserDetails
+          <UserDetails
+            nextStep={nextStep}
+            handleChange={handleChange}
+            inputValues={formData}
+            yearOptions={yearOptions}
+            departmentOptions={departmentOptions}
+          />
+        )}
 
-      {userDetails.id === -1 && userDetails.f1 === 1 && step === 2 && (
-        <Questions
-          nextStep={nextStep}
-          prevStep={prevStep}
-          questions={registrationQuestions["questions"]}
-          handleChangeQuestionInMain={handleChangeQuestionInMain}
-        />
-      )}
+      {enrollmentFormStatus === "1" &&
+        userDetails.id === -1 &&
+        userDetails.f1 === 1 &&
+        step === 2 && (
+          <Questions
+            nextStep={nextStep}
+            prevStep={prevStep}
+            questions={registrationQuestions["questions"]}
+            handleChangeQuestionInMain={handleChangeQuestionInMain}
+          />
+        )}
 
-      {userDetails.id === -1 && userDetails.f1 === 1 && step === 3 && (
-        <Confirmation
-          nextStep={nextStep}
-          prevStep={prevStep}
-          inputValues={formData}
-          questions={registrationQuestions["questions"]}
-          yearOptions={yearOptions}
-          departmentOptions={departmentOptions}
-          saveAndContinue={saveAndContinue}
-        />
-      )}
+      {enrollmentFormStatus === "1" &&
+        userDetails.id === -1 &&
+        userDetails.f1 === 1 &&
+        step === 3 && (
+          <Confirmation
+            nextStep={nextStep}
+            prevStep={prevStep}
+            inputValues={formData}
+            questions={registrationQuestions["questions"]}
+            yearOptions={yearOptions}
+            departmentOptions={departmentOptions}
+            saveAndContinue={saveAndContinue}
+          />
+        )}
 
-      {userDetails.id === -1 && userDetails.f1 === 0 && (
+      {userDetails.id === -1 && enrollmentFormStatus === "0" && (
         // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
-          <div className="card p-4 mt-5">
-            Enrollment proccess not started. Admin is not accepting responses.
-          </div>
+          <div className="card p-4 mt-5">Admin is not accepting responses.</div>
         </div>
       )}
 
@@ -189,10 +222,22 @@ export default function RegistrationForm() {
         </div>
       )}
 
-      {userDetails.id !== -1 && userDetails.status === 2 && (
-        // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
-        <ConsentForm userDetails={userDetails} sizeOptions={sizeOptions} />
-      )}
+      {consentFormStatus === "1" &&
+        userDetails.id !== -1 &&
+        userDetails.status === 2 && (
+          // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
+          <ConsentForm userDetails={userDetails} sizeOptions={sizeOptions} />
+        )}
+      {consentFormStatus === "0" &&
+        userDetails.id !== -1 &&
+        userDetails.status === 2 && (
+          // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
+          <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+            <div className="card p-4 mt-5">
+              Consent Form Closed. Please contact admin.
+            </div>
+          </div>
+        )}
       {userDetails.id !== -1 && userDetails.status === 3 && (
         // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">

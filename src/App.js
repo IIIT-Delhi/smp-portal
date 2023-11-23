@@ -16,6 +16,7 @@ import MenteeForm from "./components/dashboard/mentee/forms/MenteeForm";
 import Login from "./components/Login";
 import RegistrationForm from "./components/dashboard/mentor/registration/RegistrationForm";
 import PrivateRoute from "./routes/PrivateRoute";
+import FormResponses from "./components/dashboard/admin/forms/FormResponses";
 // import MenteeProfile from "./components/dashboard/admin/mentees/MenteeProfile";
 // import MentorProfile from "./components/dashboard/admin/mentors/MentorProfile";
 
@@ -37,7 +38,7 @@ function App() {
                   allowedRole={"mentor"}
                   requiredStatus={5}
                 >
-                  <MentorDashboard/>
+                  <MentorDashboard />
                 </PrivateRoute>
               }
             />
@@ -49,7 +50,7 @@ function App() {
                   allowedRole={"mentor"}
                   requiredStatus={5}
                 >
-                  <MentorMeetingList/>
+                  <MentorMeetingList />
                 </PrivateRoute>
               }
             />
@@ -57,7 +58,7 @@ function App() {
               path="/registration"
               element={
                 <PrivateRoute path="/registration" allowedRole={"mentor"}>
-                  <RegistrationForm/>
+                  <RegistrationForm />
                 </PrivateRoute>
               }
             />
@@ -69,7 +70,7 @@ function App() {
                   path="/dashboard/mentee/profile"
                   allowedRole={"mentee"}
                 >
-                  <MenteeDashboard/>
+                  <MenteeDashboard />
                 </PrivateRoute>
               }
             />
@@ -80,7 +81,7 @@ function App() {
                   path="/dashboard/mentee/meetings"
                   allowedRole={"mentee"}
                 >
-                  <MenteeMeetingList/>
+                  <MenteeMeetingList />
                 </PrivateRoute>
               }
             />
@@ -91,7 +92,7 @@ function App() {
                   path="/dashboard/mentee/form"
                   allowedRole={"mentee"}
                 >
-                  <MenteeForm/>
+                  <MenteeForm />
                 </PrivateRoute>
               }
             />
@@ -114,7 +115,7 @@ function App() {
                   path="/dashboard/admin/meetings"
                   allowedRole={"admin"}
                 >
-                  <AdminMeetingList/>
+                  <AdminMeetingList />
                 </PrivateRoute>
               }
             />
@@ -125,7 +126,7 @@ function App() {
                   path="/dashboard/admin/mentors"
                   allowedRole={"admin"}
                 >
-                  <MentorsList/>
+                  <MentorsList />
                 </PrivateRoute>
               }
             />
@@ -136,7 +137,7 @@ function App() {
                   path="/dashboard/admin/mentees"
                   allowedRole={"admin"}
                 >
-                  <MenteesList/>
+                  <MenteesList />
                 </PrivateRoute>
               }
             />
@@ -147,7 +148,18 @@ function App() {
                   path="/dashboard/admin/form"
                   allowedRole={"admin"}
                 >
-                  <FormList/>
+                  <FormList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard/admin/form-responses"
+              element={
+                <PrivateRoute
+                  path="/dashboard/admin/form-responses"
+                  allowedRole={"admin"}
+                >
+                  <FormResponses />
                 </PrivateRoute>
               }
             />
