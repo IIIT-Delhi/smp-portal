@@ -497,6 +497,7 @@ def upload_CSV(request):
                     name=item['Name'],
                     email=item['Email'],
                     contact=item['Contact'],
+                    mentorId = '',
                     department= department
                 )
                 if 'Image' in item:
@@ -802,32 +803,34 @@ def create_mentor_mentee_pairs(request):
     if request.method == "POST":
         try:
             departments = Mentee.objects.values_list('department', flat=True).distinct()
-            print(departments)
+            noMenteeBranch = []
             for department in departments:
-                mentees = Mentee.objects.filter(department=department)
-                print(mentees)
+                mentees = Mentee.objects.filter(department=department, mentorId='')
                 mentee_batch_size = math.ceil(len(mentees) / 5.0)
-                print(mentee_batch_size)
-                candidates = Candidate.objects.filter(status=3, department=department).order_by('-score')[:mentee_batch_size]
-                print(candidates)        
+                candidates = Candidate.objects.filter(status=3, department=department).order_by('-score')[:mentee_batch_size]  
                 candidates_dict = {candidate.id: 0 for candidate in candidates}
-                for mentee in mentees:
-                    candidate_id = random.choice([key for key, value in candidates_dict.items() if value < 5])
-                    mentor = Mentor.objects.get(id=candidate_id)
-                    mentee.mentorId = candidate_id
-                    mentee.save()
-                    candidates_dict[candidate_id] += 1
-                
-                # for candidate in candidates:
-                #     mentor = Mentor(id=candidate.id, goodiesStatus = 0)
-                #     mentor.save()
-                #     candidate.status = 5
-                #     candidate.save()
-            return JsonResponse({'message': 'Matching successful'})
+                if len(candidates_dict) == mentee_batch_size:
+                    for mentee in mentees:
+                        candidate_id = random.choice([key for key, value in candidates_dict.items() if value < 5])
+                        mentee.mentorId = candidate_id
+                        mentee.save()
+                        candidates_dict[candidate_id] += 1
+                    
+                    for candidate in candidates:
+                        mentor = Mentor(id=candidate.id, goodiesStatus = 0)
+                        mentor.save()
+                        candidate.status = 5
+                        candidate.save()
+                else: 
+                    noMenteeBranch.append(department)
+            if len(noMenteeBranch):
+                return JsonResponse({'message': 'Not enough mentor for branches : '+ str(noMenteeBranch)})
+            else:
+                return JsonResponse({'message': 'Matching successful'})
         except Exception as e:
-            return JsonResponse({'message': str(e)})
+            return JsonResponse({'message': str(e)}, status=400)
     else:
-        return JsonResponse({"error": "Invalid request method"})
+        return JsonResponse({"error": "Invalid request method"}, status=400)
 
 # Done   
 @csrf_exempt
