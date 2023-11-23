@@ -31,7 +31,7 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
             attendees : attendanceList
         }));
 
-        if(response1.status == 200){
+        if(response1.status === 200){
             alert('Attendance updated succesfully');
         }
 

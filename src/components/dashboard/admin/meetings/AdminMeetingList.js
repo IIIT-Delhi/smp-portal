@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import axios from 'axios'; // Import Axios
 import Navbar from "../../common/Navbar";
 import { useAuth } from "../../../../context/AuthContext";
@@ -11,7 +11,7 @@ export default function AdminMeetingList() {
   const [previousMeeting, setpreviousMeeting] = useState([]);
   const [upcomingMeeting, setupcomingMeeting] = useState([]);
   // const[isFirstTime,setisFirstTime] = useState(true);
-  const fetchMeetings = async () => {
+  const fetchMeetings = useCallback( async () => {
     try {
       console.log(userDetails)
       const response = await axios.post("http://127.0.0.1:8000/getMeetings/",
@@ -37,11 +37,12 @@ export default function AdminMeetingList() {
     } catch (error) {
       console.error("Error fetching meetings:", error);
     }
-  };
+  },[userDetails]);
+
   useEffect(() => {
     // if(isFirstTime){setisFirstTime(false);fetchMeetings();}
     fetchMeetings();
-  }, []);
+  },[fetchMeetings]);
 
   const deleteMeeting = (meetingId) => {
     // Send a request to delete the meeting on the backend
@@ -51,13 +52,8 @@ export default function AdminMeetingList() {
       }))
       .then((response) => {
         // If the backend successfully deletes the meeting, update your local state
-        if (response.status === 200) {
-          // setmeetings((prevMeetings) =>
-          //   prevMeetings.filter((meet) => meet.id !== meetingId)
-          // );
-          fetchMeetings();
-
-        }
+        alert(response.data.message);
+        fetchMeetings();
       })
       .catch((error) => {
         console.error("Error deleting meeting:", error);
@@ -68,7 +64,7 @@ export default function AdminMeetingList() {
     try {
       console.log(meeting.meetingId)
       // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
-      await axios
+      const response = await axios
         .post("http://127.0.0.1:8000/editMeetingById/", JSON.stringify({
           meetingId: meeting.meetingId, 
           schedulerId: meeting.schedulerId,
@@ -79,13 +75,11 @@ export default function AdminMeetingList() {
           description: meeting.description,
           mentorBranches: meeting.mentorBranches
         }))
-        .then((response) => {
-          // If the backend successfully updates the meeting, update your local state
-          if (response.status === 200) {
-            // setmeetings(meeting);
-            console.log("Meeting updated successfully on the backend");
-          }
-        });
+
+        console.log(response.data.message)
+        alert(response.data.message);
+        fetchMeetings();
+
     } catch (error) {
       console.error("Error updating meeting on the backend:", error);
       // Handle errors or display an error message to the user.
