@@ -88,7 +88,7 @@ class Meetings(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return str(self.meeting_id)
+        return str(self.meetingId)
     
     class Meta:
         app_label = 'server'
