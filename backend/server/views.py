@@ -11,6 +11,8 @@ from datetime import datetime
 from django.db import transaction
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 
 def get_all_admins(request):
@@ -361,9 +363,7 @@ def add_candidate(request):
         new_responses.save()
         subject = "Registragtion From Filled"
         message = "Registragtion form successfully filled. Please wait for furter Instructions"
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [new_candidate.email]
-        send_mail(subject, message, from_email, recipient_list)
+        send_emails_to(subject, message, settings.EMAIL_HOST_USER, [new_candidate.email])
         
         
         return JsonResponse({"message": "data added successfully"})
@@ -665,7 +665,7 @@ def get_meetings(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
     
-
+#Done
 @csrf_exempt
 def get_attendance(request):
     if request.method == "POST":
@@ -853,9 +853,7 @@ def submit_consent_form(request):
             Candidate.objects.filter(id=user_id).update(status=3)
         subject = "Consent From Filled"
         message = "Consent form successfully filled. Please wait for furter Instructions"
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [candidate.email]
-        send_mail(subject, message, from_email, recipient_list)
+        send_emails_to(subject, message, settings.EMAIL_HOST_USER, [candidate.email])
         
         return JsonResponse({"message": "Consent form submitted successfully"})
     else:
@@ -885,6 +883,7 @@ def mentee_filled_feedback(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+# Done
 @csrf_exempt
 def get_form_response(request):
     if request.method == "POST":
@@ -895,8 +894,14 @@ def get_form_response(request):
             form_responses_objs = FormResponses.objects.filter(FormType=form_type).values()
             form_responses_data = []
             for form_response_obj in form_responses_objs:
+                summiter_name = ''
+                if form_type == 1 or form_type == 2:
+                    summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
+                if form_type == 3:
+                    summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                 response_data = {
                     "submitterId": form_response_obj['submitterId'],
+                    "submiterName": summiter_name,
                     "responses": form_response_obj['responses'],
                 }
 
@@ -910,10 +915,10 @@ def get_form_response(request):
                     response_data["submitterName"] = mentee_obj.name
                     response_data["submitterEmail"] = mentee_obj.email
 
-                response_data.update(form_response_obj['responses'])
-
+                # response_data.update(form_response_obj['responses'])
                 form_responses_data.append(response_data)
 
+            print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
 
         except FormResponses.DoesNotExist:
@@ -922,28 +927,46 @@ def get_form_response(request):
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
-
-
+#Done
 @csrf_exempt
 def get_form_status(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode('utf-8'))
-        id = data.get("formId")
-        form = FormStatus.objects.filter(formId=id).values()
-        return JsonResponse(form[0], safe=False)
+        form = FormStatus.objects.all().values()
+        return JsonResponse(list(form), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-
+#Done
 @csrf_exempt
 def update_form_status(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
-        form = FormStatus.objects.filter(formId=data.get("formId")).values()
-        form.formStatus = data.get('formStatus')
-        # agr form status 2 h and f1 and f2 f3 send bhi krna h 
+        formStatus = data.get('formStatus')
+        formId=data.get("formId")
+        form = FormStatus.objects.get(formId=formId)
+        form.formStatus = formStatus
+        form.save()
+        if int(formId) == 2 and int(formStatus) == 1:
+            candidates_with_status_2 = Candidate.objects.filter(status=2).values("email")
+            emails = [candidate['email'] for candidate in candidates_with_status_2]
+            Candidate.objects.filter(status=1).update(status=2)
+            subject = "Consent Form Activated"
+            message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
+            message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
+            send_emails_to(subject, message, settings.EMAIL_HOST_USER, emails)
+        elif int(formId) == 2 and int(formStatus) == 0:
+            candidates_with_status_1 = Candidate.objects.filter(status=1).values("email")
+            emails = [candidate['email'] for candidate in candidates_with_status_1]
+            Candidate.objects.filter(status=2).update(status=1) 
+            subject = "Closure of Consent Form Submission"
+            message = "Dear Students,\nWe would like to inform you that the submission window for the consent form has now closed. We appreciate your prompt response to this step in our process."
+            message = message + "If you have successfully submitted your consent form, we would like to express our gratitude for your cooperation."
+            send_emails_to(subject, message, settings.EMAIL_HOST_USER, emails)
+        return JsonResponse({"message": "Form status updated successfully"})
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
 
-
+#Done
 def send_emails_to_attendees(meeting, type):
     """
     1: new meeting
@@ -1022,5 +1045,32 @@ def send_emails_to_attendees(meeting, type):
     message = message + '\n\t\t\t Description : ' + meeting.description.replace("\n", "\n\t\t\t\t")
     from_email = settings.EMAIL_HOST_USER
     recipient_list = attendees_list
+    send_emails_to(subject, message, from_email, recipient_list)
 
-    send_mail(subject, message, from_email, recipient_list)
+#Done
+def send_emails_to(subject, message, from_email, emails):
+    invalid_emails = []
+
+    for email in emails:
+        try:
+            # Validate the email address (add more sophisticated validation if needed)
+            validate_email(email)
+
+            # Send email
+            send_mail(
+                subject,
+                message,
+                from_email,
+                [email],
+                fail_silently=False,
+            )
+
+        except ValidationError:
+            invalid_emails.append({"email": email, "error": "Invalid email address"})
+        except Exception as e:
+            invalid_emails.append({"email": email, "error": str(e)})
+
+
+        
+
+    
