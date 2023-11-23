@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
+import Attendance from './Attendance';
 
 export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails, isPreviousMeeting}) {
   const handleButtonClick = (e) => {
@@ -15,10 +16,13 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
 
   const [editedMeeting, setEditedMeeting] = useState(meet);
 
+  const [showAttendance, setshowAttendance] = useState(false);
+
   const handleEditClick = () => {
     // Add your edit functionality here
     setIsEditing(true);
     console.log("Edit clicked for meeting ID:", meet.meetingId);
+    console.log(editedMeeting)
   };
 
   const handleEditSave = () => {
@@ -58,19 +62,40 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     });
   };
 
-  const handleattendee = (e) => {
+  // const handleattendee = (e) => {
+  //   const value = e.target.value;
+  //   const isChecked = e.target.checked;
+
+  //   setEditedMeeting((prevDetails) => {
+  //     const updatedattendee = isChecked
+  //       ? [...prevDetails.attendee, value]
+  //       : prevDetails.attendee.filter((attendee) => attendee !== value);
+
+  //     return {
+  //       ...prevDetails,
+  //       attendee: updatedattendee,
+  //     };
+  //   });
+  // };
+
+  const handleattendees = (e) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
 
     setEditedMeeting((prevDetails) => {
-      const updatedattendee = isChecked
-        ? [...prevDetails.attendee, value]
-        : prevDetails.attendee.filter((attendee) => attendee !== value);
-
-      return {
-        ...prevDetails,
-        attendee: updatedattendee,
-      };
+      if (isChecked) {
+        return {
+          ...prevDetails,
+          attendee: [...prevDetails.attendee, value],
+        };
+      } else {
+        return {
+          ...prevDetails,
+          attendee: prevDetails.attendee.filter(
+            (attendee) => attendee !== value
+          ),
+        };
+      }
     });
   };
 
@@ -120,6 +145,18 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     "M-ECE": "ECE (M.Tech.)",
     "M-CB": "CB (M.Tech.)",
   };
+
+  const handleShowAttendance = () => {
+    setshowAttendance(true)
+  }
+
+  const handleCloseAttendance= () => {
+    setshowAttendance(false)
+  }
+
+  const handleSaveAttendance = () => {
+    setshowAttendance(false)
+  }
 
   return (
     <div className="mb-2" style={{ width: "100%" }}>
@@ -194,6 +231,12 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                     Edit
                   </button>
                 )}
+                  <button
+                    className="btn btn-primary mx-2"
+                    onClick={handleShowAttendance}
+                  >
+                    Take Attendance
+                  </button>
               </div>
 
             </div>
@@ -206,12 +249,21 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handleSave={handleEditSave}
               handledate={handledate}
               handletime={handletime}
-              userDetails={userDetails}
               handletitle={handletitle}
-              handleattendee={handleattendee}
+              handleattendees={handleattendees}
               handleDescription={handleDescription}
               handleBranch={handleBranch}
             />
+          )}
+
+          {showAttendance && (
+
+            <Attendance
+              handleClose={handleCloseAttendance}
+              handleButtonSave = {handleSaveAttendance}
+              meetingId = {meet.meetingId}
+            />
+
           )}
 
           {confirmdelete && (
