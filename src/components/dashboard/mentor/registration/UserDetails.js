@@ -4,16 +4,10 @@ function UserDetails(props) {
   const {
     inputValues,
     handleChange,
-    prevStep,
     nextStep,
     yearOptions,
     departmentOptions,
   } = props;
-
-  const back = (e) => {
-    e.preventDefault();
-    prevStep();
-  };
 
   const saveAndcontinue = (e) => {
     e.preventDefault();

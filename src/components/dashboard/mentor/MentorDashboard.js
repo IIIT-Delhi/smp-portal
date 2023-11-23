@@ -14,6 +14,7 @@ const MentorDashboard = () => {
   "id": "",
   "name": "",
   "email": "",
+  "contact":"",
   }
   const branchOptions = {
     "B-CSB": "CSB",
@@ -29,9 +30,9 @@ const MentorDashboard = () => {
     "M-CB": "CB",
   };
   const yearOptions = {
-    B3: "3",
-    B4: "4",
-    M2: "2",
+    B3: "3rd",
+    B4: "4th",
+    M2: "2nd",
   };
   const fetchAttributeId = async (id) => {
     try {
@@ -95,13 +96,14 @@ const MentorDashboard = () => {
               // console.log(menteeDetails[0]);
              const menteeRows = menteeDetails.map((mentee) => {
               // mentee should be an array with id, name, and email
-              const [id, name, email] = mentee;
+              const [id, name, email, contact] = mentee;
               
               return (
                 <tr key={id}>
                   <td>{id}</td>
                   <td>{name}</td>
                   <td>{email}</td>
+                  <td>{contact}</td>
                 </tr>
               );
             });
@@ -120,7 +122,7 @@ const MentorDashboard = () => {
      };
 
      fetchData();
-   }, [userDetails.email]);
+   }, [userDetails.email,userDetails.id]);
 
 
   return (

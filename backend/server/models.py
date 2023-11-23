@@ -94,22 +94,47 @@ class Meetings(models.Model):
         app_label = 'server'
 
 class Attendance(models.Model):
-    attendeeId = models.CharField(primary_key=True)
-    meeting = models.JSONField(null=True)
+    id = models.AutoField(primary_key=True)
+    attendeeId = models.CharField()
+    meetingId = models.JSONField(null=True)
 
     def __str__(self):
-        return self.attendee_id
+        return self.id
     
     class Meta:
         app_label = 'server'
 
 class FormResponses(models.Model):
-    formId = models.CharField(primary_key=True)
+    SubmissionId = models.AutoField(primary_key=True)
     submitterId = models.CharField()
+    FormType =  models.CharField()
+    """
+    1: mentor enrollment 
+    2: mentor consent 
+    3: mentee feedback 
+    """
     responses = models.JSONField(null=True)
 
     def __str__(self):
-        return self.form_id
+        return self.SubmissionId
+    
+    class Meta:
+        app_label = 'server'
+
+class FormStatus(models.Model):
+    formId = models.CharField(primary_key=True)
+    """
+    1: mentor enrollment 
+    2: mentor consent 
+    3: mentee feedback 
+    """
+    formStatus = models.CharField()
+    """
+    0 : off 
+    1 : on"""
+
+    def __str__(self):
+        return self.formId
     
     class Meta:
         app_label = 'server'

@@ -10,13 +10,9 @@ import registrationQuestions from "../../../../data/registrationQuestions.json";
 import axios from "axios";
 
 export default function RegistrationForm() {
-  const { userDetails } = useAuth();
+  const { userDetails,logout } = useAuth();
   const [step, setStep] = useState(1);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    nextStep();
-  };
   const handleChangeQuestionInMain = (questionId,value) => {
     setFormData({
       ...formData,
@@ -112,13 +108,6 @@ export default function RegistrationForm() {
 
   const saveAndContinue = (e) => {
     e.preventDefault();
-
-    // code for writing to the file or database
-
-    // variable -> score
-
-    // console.log(score)
-    // console.log(selectedOptions)
     // Create a JSON object from the formData
     // const formDataJSON = {
     //   id: formData.id,
@@ -136,10 +125,13 @@ export default function RegistrationForm() {
       .then((response) => {
         console.log("Data sent to the backend:", response.data);
         // Redirect to the next step or do any other necessary actions
+        logout();
+        alert("Enrollment Form Submitted Successfully. You are logged out.");
         navigate("/login");
       })
       .catch((error) => {
         console.error("Error sending data to the backend:", error);
+        console.log(formData);
         // Handle the error as needed
       });
   };
@@ -161,7 +153,7 @@ export default function RegistrationForm() {
       {userDetails.id === -1 && step === 2 && (
         <Questions
           nextStep={nextStep}
-          handleSubmit={handleSubmit}
+          prevStep={prevStep}
           questions={registrationQuestions["questions"]}
           handleChangeQuestionInMain={handleChangeQuestionInMain}
         />
@@ -172,6 +164,7 @@ export default function RegistrationForm() {
           nextStep={nextStep}
           prevStep={prevStep}
           inputValues={formData}
+          questions={registrationQuestions["questions"]}
           yearOptions={yearOptions}
           departmentOptions={departmentOptions}
           saveAndContinue={saveAndContinue}
@@ -182,7 +175,7 @@ export default function RegistrationForm() {
         // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
-            Form submitted. Please wait for approval.
+            Enrollment Form submitted. Please wait for approval.
           </div>
         </div>
       )}

@@ -59,6 +59,7 @@ const MenteesList = () => {
     mentorName: "",
     mentorEmail: "",
     mentorId: "",
+    contact: "",
   });
   // Define the fixed widths for the header columns
   const headerColumnWidths = {
@@ -102,6 +103,7 @@ const MenteesList = () => {
               department: "",
               email: "",
               mentorId: "",
+              contact: "",
             });
             setAddMenteeModalVisible(false);
             setMentees((prevMentees) => [...prevMentees, mentee]); // Add the new mentee to the mentees list
@@ -262,6 +264,18 @@ const MenteesList = () => {
                       required
                     />
                   </div>
+                  <div className="form-group">
+                  <label>Contact *</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={menteeForm.contact}
+                    onChange={(e) =>
+                      setMenteeForm({ ...menteeForm, contact: e.target.value })
+                    }
+                    required
+                  />
+                </div>
                   <div className="mb-3">
                     <label className="form-label">Department</label>
                     <select
