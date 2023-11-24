@@ -16,29 +16,29 @@ export default function RegistrationForm() {
   const [consentFormStatus, setConsentFormStatus] = useState([]);
 
   useEffect(() => {
-    setConsentFormStatus(userDetails.f2);
-    setEnrollmentFormStatus(userDetails.f1); 
-    // const fetchFormStatus = async () => {
-    //   try {
-    //     const response = await axios.post(
-    //       "http://127.0.0.1:8000/getFormStatus/"
-    //     );
-    //     const filteredEnrollmentFormStatus = response.data.filter(
-    //       (status) => status.formId === "1"
-    //     );
-    //     const filteredConsentFormStatus = response.data.filter(
-    //       (status) => status.formId === "2"
-    //     );
-        // setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
-        // setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
-    //     console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
-    //     console.log(filteredConsentFormStatus[0]["formStatus"]);
-    //   } catch (error) {
-    //     console.error("Error fetching form status:", error);
-    //   }
-    // };
+    // setConsentFormStatus(userDetails.f2);
+    // setEnrollmentFormStatus(userDetails.f1); 
+    const fetchFormStatus = async () => {
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/getFormStatus/"
+        );
+        const filteredEnrollmentFormStatus = response.data.filter(
+          (status) => status.formId === "1"
+        );
+        const filteredConsentFormStatus = response.data.filter(
+          (status) => status.formId === "2"
+        );
+        setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
+        setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+        console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
+        console.log(filteredConsentFormStatus[0]["formStatus"]);
+      } catch (error) {
+        console.error("Error fetching form status:", error);
+      }
+    };
 
-    // fetchFormStatus();
+    fetchFormStatus();
   }, []);
 
   const handleChangeQuestionInMain = (questionId,value) => {
@@ -169,7 +169,6 @@ export default function RegistrationForm() {
       <Navbar className="fixed-top" />
       {enrollmentFormStatus === "1" &&
         userDetails.id === -1 &&
-        userDetails.f1 === 1 &&
         step === 1 && (
           // If userDetails.id is -1 and step is 1, show UserDetails
           <UserDetails
@@ -183,7 +182,6 @@ export default function RegistrationForm() {
 
       {enrollmentFormStatus === "1" &&
         userDetails.id === -1 &&
-        userDetails.f1 === 1 &&
         step === 2 && (
           <Questions
             nextStep={nextStep}
@@ -195,7 +193,6 @@ export default function RegistrationForm() {
 
       {enrollmentFormStatus === "1" &&
         userDetails.id === -1 &&
-        userDetails.f1 === 1 &&
         step === 3 && (
           <Confirmation
             nextStep={nextStep}

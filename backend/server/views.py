@@ -169,7 +169,8 @@ def get_id_by_email(request):
             if(len(entry) == 0):
                 data_dict = {
                     'id': -1,
-                    'f1': int(FormStatus.objects.get(formId='1').formStatus)
+                    'f1': str(FormStatus.objects.get(formId='1').formStatus),
+                    'f2': str(FormStatus.objects.get(formId='2').formStatus)
                 }
                 serialized_data = json.dumps(data_dict)
                 return JsonResponse(serialized_data, safe=False)
@@ -869,6 +870,8 @@ def submit_consent_form(request):
         candidate.save()
         if correct_options == 0:
             Candidate.objects.filter(id=user_id).update(status=3)
+        else:
+            Candidate.objects.filter(id=user_id).update(status=4)
         subject = "Consent From Filled"
         message = "Consent form successfully filled. Please wait for furter Instructions"
         thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER,[candidate.email]))
