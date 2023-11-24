@@ -836,7 +836,7 @@ def create_mentor_mentee_pairs(request):
             if len(noMenteeBranch):
                 return JsonResponse({'message': 'Not enough mentor for branches : '+ str(noMenteeBranch)})
             else:
-                return JsonResponse({'message': 'Matching successful'})
+                return JsonResponse({'message': "Mentor-Mentee Mapping is completed!"})
         except Exception as e:
             return JsonResponse({'message': str(e)})
     else:

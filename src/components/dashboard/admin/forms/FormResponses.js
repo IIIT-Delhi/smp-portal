@@ -87,19 +87,24 @@ const FormResponses = () => {
   const handleMentorMenteeMapping = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        "http://127.0.0.1:8000/createMentorMenteePair"
+      const response = await axios.post(
+        "http://127.0.0.1:8000/createMentorMenteePair/"
       );
       // Handle the response data if needed
 
       // Show an alert
-      alert("Mentor-Mentee Mapping is completed!");
+      if(response.data.message === "Mentor-Mentee Mapping is completed!"){
+        alert("Mentor-Mentee Mapping is completed!");
 
-      // Navigate to '/dashboard/admin/mentors'
-      navigate("/dashboard/admin/mentors");
+        // Navigate to '/dashboard/admin/mentors'
+          navigate("/dashboard/admin/mentors");
+      }
+      else{
+        alert(response.data.message);
+      }        
     } catch (error) {
       console.error("Error calling Mentor-Mentee Mapping API:", error);
-      alert("Mentor-Mentee Mapping failed. Please try again.");
+      alert(error.message);
     } finally {
       setLoading(false);
     }
