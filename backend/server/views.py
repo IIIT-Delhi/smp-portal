@@ -169,7 +169,8 @@ def get_id_by_email(request):
             if(len(entry) == 0):
                 data_dict = {
                     'id': -1,
-                    'f1': int(FormStatus.objects.get(formId='1').formStatus)
+                    'f1': str(FormStatus.objects.get(formId='1').formStatus),
+                    'f2': str(FormStatus.objects.get(formId='2').formStatus)
                 }
                 serialized_data = json.dumps(data_dict)
                 return JsonResponse(serialized_data, safe=False)
@@ -777,7 +778,7 @@ def get_attendance(request):
                             return JsonResponse({"error": f"Mentee with ID {attendee_id} not found"}, status=404)
             except Mentee.DoesNotExist:
                 return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
-        print({"attendees": attendees_list})
+        # print({"attendees": attendees_list})
         return JsonResponse({"attendees": attendees_list})
         
     else:
@@ -836,7 +837,7 @@ def create_mentor_mentee_pairs(request):
             if len(noMenteeBranch):
                 return JsonResponse({'message': 'Not enough mentor for branches : '+ str(noMenteeBranch)})
             else:
-                return JsonResponse({'message': 'Matching successful'})
+                return JsonResponse({'message': "Mentor-Mentee Mapping is completed!"})
         except Exception as e:
             return JsonResponse({'message': str(e)})
     else:
@@ -869,6 +870,8 @@ def submit_consent_form(request):
         candidate.save()
         if correct_options == 0:
             Candidate.objects.filter(id=user_id).update(status=3)
+        else:
+            Candidate.objects.filter(id=user_id).update(status=4)
         subject = "Consent From Filled"
         message = "Consent form successfully filled. Please wait for furter Instructions"
         thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER,[candidate.email]))
@@ -914,30 +917,33 @@ def get_form_response(request):
             form_responses_data = []
             for form_response_obj in form_responses_objs:
                 summiter_name = ''
-                if form_type == 1 or form_type == 2:
-                    summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
-                if form_type == 3:
-                    summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
+                if int(form_type) == 1 or int(form_type) == 2:
+                    if len(Candidate.objects.filter(id=form_response_obj['submitterId']).values()):
+                        summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
+                if int(form_type) == 3:
+                    if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
+                        summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                 response_data = {
                     "submitterId": form_response_obj['submitterId'],
                     "submiterName": summiter_name,
                     "responses": form_response_obj['responses'],
                 }
 
-                if form_type in ["1", "2"]:
-                    mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
-                    response_data["submitterName"] = mentor_obj.name
-                    response_data["submitterEmail"] = mentor_obj.email
+                if summiter_name != '':
+                    if int(form_type) in [1, 2]:
+                        mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
+                        response_data["submitterName"] = mentor_obj.name
+                        response_data["submitterEmail"] = mentor_obj.email
 
-                elif form_type == "3":
-                    mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
-                    response_data["submitterName"] = mentee_obj.name
-                    response_data["submitterEmail"] = mentee_obj.email
-
+                    elif int(form_type) == 3:
+                        mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
+                        response_data["submitterName"] = mentee_obj.name
+                        response_data["submitterEmail"] = mentee_obj.email
+                    
                 # response_data.update(form_response_obj['responses'])
-                form_responses_data.append(response_data)
+                    form_responses_data.append(response_data)
 
-            print({"formResponses": form_responses_data})
+            # print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
 
         except FormResponses.DoesNotExist:
@@ -965,6 +971,9 @@ def update_form_status(request):
         form = FormStatus.objects.get(formId=formId)
         form.formStatus = formStatus
         form.save()
+        subject = ""
+        message = ""
+        emails = []
         if int(formId) == 2 and int(formStatus) == 1:
             candidates_with_status_1 = Candidate.objects.filter(status=1).values("email")
             emails = [candidate['email'] for candidate in candidates_with_status_1]
@@ -1106,8 +1115,3 @@ def send_emails_to(subject, message, from_email, emails):
             invalid_emails.append({"email": email, "error": "Invalid email address"})
         except Exception as e:
             invalid_emails.append({"email": email, "error": str(e)})
-
-
-        
-
-    

@@ -9,7 +9,7 @@ class AddMenteeTestCase(TestCase):
     client = Client()
     def test_add_mentee_success(self):
         # Test the successful addition of a mentee
-        mentor = Candidate.objects.create(id='mentor123', email='mentor@example.com', name='Mentor Name', department='CS', status=3)
+        mentor = Candidate.objects.create(id='mentor123', email='mentor@example.com', name='Mentor Name', department='CS', status=5)
         data = {
             'id': 'mentee123',
             'name': 'Mentee Name',
@@ -47,7 +47,7 @@ class AddMenteeTestCase(TestCase):
         response = self.client.post('http://127.0.0.1:8000/addMentee/', json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {'message': 'Mentee with this ID'})
+        self.assertEqual(response.json(), {'message': 'Mentee with this ID already exist'})
 
     def test_add_mentee_invalid_method(self):
         # Test sending a GET request, which should result in an error

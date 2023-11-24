@@ -16,6 +16,8 @@ export default function RegistrationForm() {
   const [consentFormStatus, setConsentFormStatus] = useState([]);
 
   useEffect(() => {
+    // setConsentFormStatus(userDetails.f2);
+    // setEnrollmentFormStatus(userDetails.f1); 
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
@@ -167,7 +169,6 @@ export default function RegistrationForm() {
       <Navbar className="fixed-top" />
       {enrollmentFormStatus === "1" &&
         userDetails.id === -1 &&
-        userDetails.f1 === 1 &&
         step === 1 && (
           // If userDetails.id is -1 and step is 1, show UserDetails
           <UserDetails
@@ -181,7 +182,6 @@ export default function RegistrationForm() {
 
       {enrollmentFormStatus === "1" &&
         userDetails.id === -1 &&
-        userDetails.f1 === 1 &&
         step === 2 && (
           <Questions
             nextStep={nextStep}
@@ -193,7 +193,6 @@ export default function RegistrationForm() {
 
       {enrollmentFormStatus === "1" &&
         userDetails.id === -1 &&
-        userDetails.f1 === 1 &&
         step === 3 && (
           <Confirmation
             nextStep={nextStep}
