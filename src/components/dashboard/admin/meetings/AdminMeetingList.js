@@ -6,7 +6,8 @@ import SinlgeMeeting from "./SinlgeMeeting";
 import ScheduleMeetingButton from "./ScheduleMeetingButton";
 
 export default function AdminMeetingList() {
-  const { userDetails } = useAuth();
+  const { userDetails } = useAuth() ;
+  // console.log(userDetails.role)
   // const [meetings, setmeetings] = useState([]);
   const [previousMeeting, setpreviousMeeting] = useState([]);
   const [upcomingMeeting, setupcomingMeeting] = useState([]);
