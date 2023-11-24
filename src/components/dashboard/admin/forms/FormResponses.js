@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../common/Navbar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import registrationQuestions from "../../../../data/registrationQuestions.json";
 import consentQuestions from "../../../../data/consentQuestions.json";
 import menteeFeedbackQuestions from "../../../../data/menteeFeedbackQuestions.json";
@@ -9,6 +9,7 @@ import formNames from "../../../../data/formNames.json";
 
 const FormResponses = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { formType } = location.state || { formType: 1 };
   const [formResponses, setFormResponses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +17,7 @@ const FormResponses = () => {
   const [questionSet, setQuestionSet] = useState([]);
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [expandedResponse, setExpandedResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleExpandQuestion = (index) => {
     setExpandedQuestion((prevIndex) => (prevIndex === index ? null : index));
@@ -82,12 +84,46 @@ const FormResponses = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleMentorMenteeMapping = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/createMentorMenteePair"
+      );
+      // Handle the response data if needed
+
+      // Show an alert
+      alert("Mentor-Mentee Mapping is completed!");
+
+      // Navigate to '/dashboard/admin/mentors'
+      navigate("/dashboard/admin/mentors");
+    } catch (error) {
+      console.error("Error calling Mentor-Mentee Mapping API:", error);
+      alert("Mentor-Mentee Mapping failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }; 
+
   return (
     <div>
       <Navbar className="fixed-top" />
-      <div className="container mt-5">
+      <div className="container mt-3">
+        {formType === "2" && (
+          <div className="text-center mb-4">
+            <button
+              className="btn btn-outline-dark"
+              data-mdb-ripple-color="dark"
+              onClick={handleMentorMenteeMapping}
+              disabled={loading}
+            >
+              {loading ? "Mapping in Progress..." : "Mentor-Mentee Mapping"}
+            </button>
+          </div>
+        )}
         <h1 className="text-center mb-4">Form Responses</h1>
         <h4 className="text-center mb-4">{formNames[formType]}</h4>
+
         <div className="input-group my-3">
           <input
             type="text"
@@ -171,7 +207,7 @@ const FormResponses = () => {
                           >
                             {expandedResponse === idx
                               ? response.responses[key]
-                              : truncateText(response.responses[key],15)}
+                              : truncateText(response.responses[key], 15)}
                           </span>
                         </td>
                       ))}

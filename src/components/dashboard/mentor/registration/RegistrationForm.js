@@ -16,27 +16,29 @@ export default function RegistrationForm() {
   const [consentFormStatus, setConsentFormStatus] = useState([]);
 
   useEffect(() => {
-    const fetchFormStatus = async () => {
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:8000/getFormStatus/"
-        );
-        const filteredEnrollmentFormStatus = response.data.filter(
-          (status) => status.formId === "1"
-        );
-        const filteredConsentFormStatus = response.data.filter(
-          (status) => status.formId === "2"
-        );
-        setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
-        setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
-        console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
-        console.log(filteredConsentFormStatus[0]["formStatus"]);
-      } catch (error) {
-        console.error("Error fetching form status:", error);
-      }
-    };
+    setConsentFormStatus(userDetails.f2);
+    setEnrollmentFormStatus(userDetails.f1); 
+    // const fetchFormStatus = async () => {
+    //   try {
+    //     const response = await axios.post(
+    //       "http://127.0.0.1:8000/getFormStatus/"
+    //     );
+    //     const filteredEnrollmentFormStatus = response.data.filter(
+    //       (status) => status.formId === "1"
+    //     );
+    //     const filteredConsentFormStatus = response.data.filter(
+    //       (status) => status.formId === "2"
+    //     );
+        // setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
+        // setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+    //     console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
+    //     console.log(filteredConsentFormStatus[0]["formStatus"]);
+    //   } catch (error) {
+    //     console.error("Error fetching form status:", error);
+    //   }
+    // };
 
-    fetchFormStatus();
+    // fetchFormStatus();
   }, []);
 
   const handleChangeQuestionInMain = (questionId,value) => {
