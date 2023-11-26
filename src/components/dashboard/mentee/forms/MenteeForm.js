@@ -79,8 +79,15 @@ export default function MenteeForm() {
           <div className="container">
             <div className="card p-4 my-4">
               <h1 className="text-center">
-                <strong>Feedback Form</strong>
+                <strong>Mentor Feedback Form</strong>
               </h1>
+              <p className="text-left">
+                Dear Students,
+                <br />
+                This is a feedback form that you are supposed to fill against the services of your Student Mentor to you.
+                <br />
+                Your honest feedback is really important for our Student Mentorship Program. Please do not ignore this.
+              </p>
               <div className="card p-2 my-2">
                 <div className="row text-center">
                   <div className="col">

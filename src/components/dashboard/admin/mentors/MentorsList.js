@@ -22,6 +22,9 @@ const MentorsList = () => {
     "M-ECE": "ECE (M.Tech.)",
     "M-CB": "CB (M.Tech.)",
   };
+
+  const [totalEntries, setTotalEntries] = useState(0);
+  
   // Function to fetch Mentor list from Django endpoint
   const fetchMentorList = async () => {
     try {
@@ -30,7 +33,7 @@ const MentorsList = () => {
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
-      console.log(mentors);
+      setTotalEntries(response.data.length);
     } catch (error) {
       console.error("Error fetching Mentor list:", error);
     }
@@ -112,6 +115,7 @@ const MentorsList = () => {
       <div className="container">
         <div className="text-center my-3">
           <h4>Mentors List</h4>
+          <p>Total Entries: {totalEntries}</p>
         </div>
         <div className="input-group my-3">
           <input
@@ -140,6 +144,7 @@ const MentorsList = () => {
                       {column.label}
                     </th>
                   ))}
+                  <th>Total Mentees</th>
                 </tr>
               </thead>
             </table>
@@ -213,6 +218,7 @@ const MentorsList = () => {
                           />
                         </button>
                       </td>
+                      <td>{mentor.menteesToMentors.length}</td>
                     </tr>
                   ))}
               </tbody>

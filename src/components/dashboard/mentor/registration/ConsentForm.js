@@ -76,7 +76,17 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
   return (
     <div className="container">
       <div className="card p-4 mt-2">
-        <h1 className="text-center mb-4">Consent Form</h1>
+        <h1 className="text-center mb-4">Mentor Confirmation Form - SMP</h1>
+        <p className="text-left">
+          Dear Student,
+                <br />
+                Congratulations to you on getting shortlisted to be a Student Mentors for SMP.
+                <br />
+                Please review the confirmation form attentively, which outlines the commitments expected from you as a mentor and respond back accordingly.
+                <br />
+                You're requested to fill out this Confirmation form carefully 
+              </p>
+              <hr />
         <form onSubmit={handleSubmit}>
           {consentQuestions["questions"].map((question, i) => (
             <div key={question.id} className="mx-2 mb-3">
