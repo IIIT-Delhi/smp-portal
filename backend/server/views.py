@@ -835,7 +835,7 @@ def create_mentor_mentee_pairs(request):
                 else: 
                     noMenteeBranch.append(department)
             if len(noMenteeBranch):
-                return JsonResponse({'message': 'Not enough mentor for branches : '+ str(noMenteeBranch)})
+                return JsonResponse({'message': 'Not enough canidate for branches : '+ str(noMenteeBranch)})
             else:
                 return JsonResponse({'message': "Mentor-Mentee Mapping is completed!"})
         except Exception as e:
@@ -849,13 +849,14 @@ def submit_consent_form(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         user_id = data.get('id')
-
         cq_responses = {
             f'cq{i}': data.get(f'cq{i}', 0) for i in range(1, 12)
         }
-
         correct_options = sum(value == 1 for value in cq_responses.values())
-        cq_responses["score"] = correct_options
+        if correct_options == 0:
+            cq_responses["score"] = correct_options
+        else:
+            cq_responses["score"] = 1
         new_responses = FormResponses(
             SubmissionId=None,
             submitterId=user_id,
@@ -974,16 +975,7 @@ def update_form_status(request):
         subject = ""
         message = ""
         emails = []
-        if int(formId) == 2 and int(formStatus) == 1:
-            candidates_with_status_1 = Candidate.objects.filter(status=1).values("email")
-            emails = [candidate['email'] for candidate in candidates_with_status_1]
-            Candidate.objects.filter(status=1).update(status=2)
-            subject = "Consent Form Activated"
-            message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
-            message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
-            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
-            thread.start()
-        elif int(formId) == 2 and int(formStatus) == 0:
+        if int(formId) == 2 and int(formStatus) == 0:
             candidates_with_status_2 = Candidate.objects.filter(status=2).values("email")
             emails = [candidate['email'] for candidate in candidates_with_status_2]
             Candidate.objects.filter(status=2).update(status=1) 
@@ -1011,6 +1003,46 @@ def update_form_status(request):
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
+@csrf_exempt
+def send_consent_email(request):
+    if request.method == "POST":
+        try:
+            departments = Mentee.objects.values_list('department', flat=True).distinct()
+            noMenteeBranch = []
+            consent_responses_count = {department: 0 for department in departments}
+            form_responses = FormResponses.objects.filter(FormType='2')
+            for form_response in form_responses:
+                submitter_id = form_response.submitterId
+                department = Candidate.objects.get(id=submitter_id).department
+                consent_responses_count[department] += 1
+
+            for department in departments:
+                mentees = Mentee.objects.filter(department=department, mentorId='')
+                mentee_batch_size = math.ceil(len(mentees) / 5.0)
+                remaining_candidates_needed = mentee_batch_size - consent_responses_count[department]
+                candidates = Candidate.objects.filter(status=1, department=department).order_by('-score')[:remaining_candidates_needed]
+                remaining_candidates_emails =  [candidate.email for candidate in candidates] 
+                if len(remaining_candidates_emails) == remaining_candidates_needed:
+                    formStatus = FormStatus.objects.get(formId=2).formStatus
+                    if int(formStatus) == 1:
+                        emails = [candidate.email for candidate in candidates]
+                        Candidate.objects.filter(id__in=candidates.values_list('id', flat=True)).update(status='2')
+                        subject = "Consent Form Activated"
+                        message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
+                        message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
+                        thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+                        thread.start()
+                else: 
+                    noMenteeBranch.append(department)
+            if len(noMenteeBranch):
+                return JsonResponse({'message': 'Not enough candidate for branches : '+ str(noMenteeBranch)})
+            else:
+                return JsonResponse({'message': "Mail send successfully"})
+        except Exception as e:
+            return JsonResponse({'message': str(e)})
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+    
 #Done
 def send_emails_to_attendees(meeting, type):
     """
