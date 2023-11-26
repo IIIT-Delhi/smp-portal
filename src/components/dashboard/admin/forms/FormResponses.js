@@ -67,6 +67,8 @@ const FormResponses = () => {
         return [];
     }
   };
+  
+  const [totalEntries, setTotalEntries] = useState(0);
 
   useEffect(() => {
     const fetchFormResponses = async () => {
@@ -78,6 +80,7 @@ const FormResponses = () => {
           }
         );
         setFormResponses(response.data.formResponses);
+      setTotalEntries(response.data.formResponses.length);
       } catch (error) {
         console.error("Error fetching form responses:", error);
       }
@@ -151,6 +154,7 @@ const FormResponses = () => {
     <div>
       <Navbar className="fixed-top" />
       <div className="container mt-3">
+      <p>Total Entries: {totalEntries}</p>
         {formType === "2" && (
           <div className="text-center mb-4">
             <button
