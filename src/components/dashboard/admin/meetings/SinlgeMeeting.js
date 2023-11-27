@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 import Attendance from './Attendance';
+import ViewAttendance from './ViewAttendance';
 
 export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails, isPreviousMeeting}) {
   const handleButtonClick = (e) => {
@@ -17,6 +18,9 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
   const [editedMeeting, setEditedMeeting] = useState(meet);
 
   const [showAttendance, setshowAttendance] = useState(false);
+
+  const [viewAttendance, setviewAttendance] = useState(false);
+
 
   const handleEditClick = () => {
     // Add your edit functionality here
@@ -158,6 +162,14 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     setshowAttendance(false)
   }
 
+  const handleViewAttendance = () => {
+    setviewAttendance(true)
+  }
+
+  const handleCloseViewAttendance= () => {
+    setviewAttendance(false)
+  }
+
   return (
     <div className="mb-2" style={{ width: "100%" }}>
       <div className="accordion" id="accordionExample">
@@ -237,6 +249,14 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                   >
                     Take Attendance
                   </button>
+                  
+                  <button
+                    className="btn btn-primary mx-2"
+                    onClick={handleViewAttendance}
+                  >
+                    View Attendance
+                  </button>
+
               </div>
 
             </div>
@@ -263,6 +283,15 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handleButtonSave = {handleSaveAttendance}
               meetingId = {meet.meetingId}
             />
+
+          )}
+
+          {viewAttendance && (
+
+          <ViewAttendance
+            handleClose={handleCloseViewAttendance}
+            meetingId = {meet.meetingId}
+          />
 
           )}
 
