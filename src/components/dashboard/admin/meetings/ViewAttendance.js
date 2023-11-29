@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect,useCallback} from 'react';
 import axios from 'axios';
 
-export default function Attendance({handleClose,handleButtonSave,meetingId}) {
+export default function ViewAttendance({handleClose,meetingId}) {
 
     const [attendanceList, setattendanceList] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -36,48 +36,20 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
         }
     }, [meetingId]);
 
-    const updateAttendance = async() => {
-        const response1 = await axios.post("http://127.0.0.1:8000/updateAttendance/",
-        JSON.stringify({
-            meetingId: meetingId,
-            attendees : attendanceList
-        }));
-
-        if(response1.status === 200){
-            alert('Attendance updated succesfully');
-        }
-
-    }   
-
-    const handleSave = () => {
-        updateAttendance();
-        handleButtonSave();
-    }
 
     useEffect(() => {
         // if(isFirstTime){setisFirstTime(false);fetchMeetings();}
         fetchAttendance();
     }, [fetchAttendance]);
 
-    const handleCheckboxChange = (studentId) => {
-        setattendanceList((prevAttendanceList) => {
-          return prevAttendanceList.map((student) => {
-            if (student.id === studentId) {
-              return { ...student, attendance: student.attendance === 0 ? 1 : 0 };
-            }
-            return student;
-          });
-        });
-      };
-
 
   return (
     <div>
       <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-        <div className="modal-dialog modal-lg">
+        <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Take Attendance</h5>
+              <h5 className="modal-title">Current Attendance</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleClose}>
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -98,26 +70,16 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
                 <table className="table">
                   <thead>
                     <tr style={{width : '100%'}}>
-                      <th className='text-center' style={{width : '33%'}}>Mark Attendance</th>
-                      <th className='text-center' style={{width : '33%'}}>Roll Number</th>
-                      <th className='text-center' style={{width : '33%'}}>Name</th>
+                      <th className='text-center' style={{width : '50%'}}>Roll Number</th>
+                      <th className='text-center' style={{width : '50%'}}>Name</th>
                     </tr>
                   </thead>
         
                   <tbody style={{maxHeight : '60vh',overflowY : 'auto'}}>
-                    {filteredAttendanceList.map((student) => (
+                    {filteredAttendanceList.map((student) => ( (student.attendance === 1 ) &&
                       <tr key={student.id} style={{width : '100%'}}>
-                        <td className='text-center' style={{width : '33%'}}>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`attendanceCheckbox${student.id}`}
-                            checked={student.attendance === 1}
-                            onChange={() => handleCheckboxChange(student.id)}
-                          />
-                        </td>
-                        <td className='text-center' style={{width : '33%'}} >{student.id}</td>
-                        <td className='text-center' style={{width : '33%'}}>{student.name}</td>
+                        <td className='text-center' style={{width : '50%'}} >{student.id}</td>
+                        <td className='text-center' style={{width : '50%'}}>{student.name}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -131,9 +93,6 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>
                 Close
-              </button>
-              <button type="button" className="btn btn-primary" onClick={handleSave}>
-                Save Details
               </button>
             </div>
           </div>

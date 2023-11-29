@@ -1,6 +1,9 @@
 import React from 'react'
 import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
+import Attendance from './Attendance';
+import ViewAttendance from './ViewAttendance';
+
 
 export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails, isPreviousMeeting}) {
   const handleButtonClick = (e) => {
@@ -12,6 +15,9 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
   const [isEditing, setIsEditing] = useState(false);
   const [confirmdelete, setconfirmdelete] = useState(false);
   const [editedMeeting, setEditedMeeting] = useState(meet);
+  const [showAttendance, setshowAttendance] = useState(false);
+  const [viewAttendance, setviewAttendance] = useState(false);
+
 
   const handleEditClick = () => {
     // Add your edit functionality here
@@ -103,6 +109,27 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
     "M-CB": "CB (M.Tech.)",
   };
 
+  const handleShowAttendance = () => {
+    console.log(meet)
+    setshowAttendance(true)
+  }
+
+  const handleCloseAttendance= () => {
+    setshowAttendance(false)
+  }
+
+  const handleSaveAttendance = () => {
+    setshowAttendance(false)
+  }
+
+  const handleViewAttendance = () => {
+    setviewAttendance(true)
+  }
+
+  const handleCloseViewAttendance= () => {
+    setviewAttendance(false)
+  }
+
   return (
     <div className='mb-2'>
       <div className="accordion" id="accordionExample">
@@ -146,6 +173,24 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
                 {!isPreviousMeeting && (userDetails.id === meet.schedulerId) && (
                   <button className="btn btn-primary mx-2" onClick={handleEditClick}>Edit</button>
                 )}
+                {(meet.schedulerId === userDetails.id) && (
+                <button
+                    className="btn btn-primary mx-2"
+                    onClick={handleShowAttendance}
+                  >
+                    Take Attendance
+                </button>
+                )}
+
+                {(meet.schedulerId === userDetails.id) && (
+                <button
+                    className="btn btn-primary mx-2"
+                    onClick={handleViewAttendance}
+                  >
+                    View Attendance
+                </button>
+                )}
+
               </div>
             </div>
           </div>
@@ -164,6 +209,25 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
             />
 
           }
+
+          {showAttendance && (
+
+          <Attendance
+            handleClose={handleCloseAttendance}
+            handleButtonSave = {handleSaveAttendance}
+            meetingId = {meet.meetingId}
+          />
+
+          )}
+
+          {viewAttendance && (
+
+          <ViewAttendance
+            handleClose={handleCloseViewAttendance}
+            meetingId = {meet.meetingId}
+          />
+
+          )}
 
           {confirmdelete &&
 

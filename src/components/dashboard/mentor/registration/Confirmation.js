@@ -63,7 +63,7 @@ const Confirmation = ({
           Back
         </button>
         <button className="btn btn-primary mx-3" onClick={saveAndContinue}>
-          Confirm
+          Submit
         </button>
       </div>
     </div>

@@ -48,6 +48,5 @@ urlpatterns = [
     path('getFormStatus/', views.get_form_status, name='getFormStatus'),
     path('updateFormStatus/', views.update_form_status, name='updateFormStatus'),
     path('menteeFilledFeedback/', views.mentee_filled_feedback, name='menteeFilledFeedback'),
-    
-    
+    path('sendConsentEmail/', views.send_consent_email, name='sendConsentEmail'),
 ]

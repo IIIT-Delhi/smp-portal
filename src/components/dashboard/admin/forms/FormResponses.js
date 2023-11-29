@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../common/Navbar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import registrationQuestions from "../../../../data/registrationQuestions.json";
 import consentQuestions from "../../../../data/consentQuestions.json";
 import menteeFeedbackQuestions from "../../../../data/menteeFeedbackQuestions.json";
@@ -9,6 +9,7 @@ import formNames from "../../../../data/formNames.json";
 
 const FormResponses = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { formType } = location.state || { formType: 1 };
   const [formResponses, setFormResponses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +17,7 @@ const FormResponses = () => {
   const [questionSet, setQuestionSet] = useState([]);
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [expandedResponse, setExpandedResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleExpandQuestion = (index) => {
     setExpandedQuestion((prevIndex) => (prevIndex === index ? null : index));
@@ -27,6 +29,30 @@ const FormResponses = () => {
 
   const truncateText = (text, maxLength) => {
     return text.length > maxLength ? `${text.slice(0, maxLength)}..` : text;
+  };
+
+  const getAnswerForQuestion = (questionId, response, formType) => {
+    if (formType === "1") {
+      if (questionId === "score") {
+        return response.responses[questionId];
+      }
+      const question = registrationQuestions.questions.find((q) => q.id === questionId);
+      return question ? question.options[response.responses[questionId]] : '';
+    } else if (formType === "2") {
+      if (questionId === "score") {
+        if(response.responses[questionId] === 0){
+          return "Accepted";
+        }
+        else{
+          return 'rejected';
+        }
+      }
+      const question = consentQuestions.questions.find((q) => q.id === questionId);
+      return question ? question.options[response.responses[questionId]] : '';
+    }
+  
+    // Handle other form types if needed
+    return '';
   };
 
   const getQuestionSet = (formType) => {
@@ -41,6 +67,8 @@ const FormResponses = () => {
         return [];
     }
   };
+  
+  const [totalEntries, setTotalEntries] = useState(0);
 
   useEffect(() => {
     const fetchFormResponses = async () => {
@@ -52,6 +80,7 @@ const FormResponses = () => {
           }
         );
         setFormResponses(response.data.formResponses);
+      setTotalEntries(response.data.formResponses.length);
       } catch (error) {
         console.error("Error fetching form responses:", error);
       }
@@ -82,12 +111,77 @@ const FormResponses = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleMentorMenteeMapping = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/createMentorMenteePair/"
+      );
+      if (response.data.message === "Mentor-Mentee Mapping is completed!") {
+        alert("Mentor-Mentee Mapping is completed!");
+        navigate("/dashboard/admin/mentors");
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error calling Mentor-Mentee Mapping API:", error);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendConsentEmail = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/sendConsentEmail/"
+      );
+      if (response.data.message === "Mail send successfully") {
+        alert("Mail sent successfully!!");
+      } else {
+        alert(response.data.message);
+      }        
+    } catch (error) {
+      console.error("Error calling Mentor-Mentee Mapping API:", error);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }; 
+
   return (
     <div>
       <Navbar className="fixed-top" />
-      <div className="container mt-5">
+      <div className="container mt-3">
+      <p>Total Entries: {totalEntries}</p>
+        {formType === "2" && (
+          <div className="text-center mb-4">
+            <button
+              className="btn btn-outline-dark"
+              data-mdb-ripple-color="dark"
+              onClick={handleMentorMenteeMapping}
+              disabled={loading}
+            >
+              {loading ? "Mapping in Progress..." : "Mentor-Mentee Mapping"}
+            </button>
+          </div>
+        )}
+        {formType === "1" && (
+          <div className="text-center mb-4">
+            <button
+              className="btn btn-outline-dark"
+              data-mdb-ripple-color="dark"
+              onClick={handleSendConsentEmail}
+              disabled={loading}
+            >
+              {loading ? "Sending mail..." : "Send Consent Form"}
+            </button>
+          </div>
+        )}
         <h1 className="text-center mb-4">Form Responses</h1>
         <h4 className="text-center mb-4">{formNames[formType]}</h4>
+
         <div className="input-group my-3">
           <input
             type="text"
@@ -106,32 +200,6 @@ const FormResponses = () => {
           <p>No responses found for this form.</p>
         ) : (
           <div className="table-container text-left">
-            {/* <div className="table-header">
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Submitter ID</th>
-                    <th>Submitter Name</th>
-                    {questionSet.map((question, index) => (
-                      <th key={index}>
-                        <span
-                          className="truncated"
-                          title={question.question}
-                          onClick={() => handleExpandQuestion(index)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {expandedQuestion === index
-                            ? question.question
-                            : truncateText(question.question, 5)}
-                        </span>
-                      </th>
-                    ))}
-                    {formType === "3" && <th>Mentor Id</th>}
-                    {formType === "3" && <th>Mentor Name</th>}
-                  </tr>
-                </thead>
-              </table>
-            </div> */}
             <div className="table-body">
               <table className="table table-bordered">
                 <thead>
@@ -154,6 +222,8 @@ const FormResponses = () => {
                     ))}
                     {formType === "3" && <th>Mentor Id</th>}
                     {formType === "3" && <th>Mentor Name</th>}
+                    {formType === "1" && <th>Score</th>}
+                    {formType === "2" && <th>Score</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -162,16 +232,16 @@ const FormResponses = () => {
                       <td>{response.submitterId}</td>
                       <td>{response.submitterName}</td>
                       {Object.keys(response.responses).map((key, idx) => (
-                        <td>
+                        <td key={idx}>
                           <span
                             className="truncated"
-                            title={response.responses[key]}
+                            title={getAnswerForQuestion(key, response, formType)}
                             onClick={() => handleExpandResponse(idx)}
                             style={{ cursor: "pointer" }}
                           >
                             {expandedResponse === idx
-                              ? response.responses[key]
-                              : truncateText(response.responses[key],15)}
+                              ? getAnswerForQuestion(key, response, formType)
+                              : truncateText(getAnswerForQuestion(key, response, formType), 15)}
                           </span>
                         </td>
                       ))}

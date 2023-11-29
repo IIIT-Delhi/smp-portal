@@ -35,6 +35,11 @@ export default function Questions({
     <div className="container">
       <div className="card p-4 mt-2">
         <h1 className="text-center mb-4">Enrollment Form</h1>
+        <p className="text-left">
+        Dear Students,
+            <br />
+            You're requested to fill out this form carefully. There are 6 Multiple choice questions in this and you're suggested to read them properly and answer based on your own thought process.
+            </p>
         <form>
           {questions.map((question) => (
             <div key={question.id} className="mx-2 mb-3">

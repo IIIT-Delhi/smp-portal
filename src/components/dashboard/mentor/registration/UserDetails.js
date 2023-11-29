@@ -19,9 +19,14 @@ function UserDetails(props) {
       inputValues.email === "" ||
       inputValues.department === "" ||
       inputValues.year === "" ||
-      inputValues.contact === "" 
+      inputValues.contact === ""
     ) {
       alert("Please fill in all required fields.");
+      return;
+    }
+
+    if (isNaN(Number(inputValues.contact)) || inputValues.contact.length !== 10) {
+      alert("Please enter a valid 10-digit contact number.");
       return;
     }
 
@@ -32,6 +37,13 @@ function UserDetails(props) {
   return (
     <div className="container">
       <form>
+        <h1 className="text-center mb-4">B.Tech Student Mentor Enrollment</h1>
+        <p className="text-left">
+          Dear Students,
+          <br />
+          You're requested to fill out this form carefully. There are 6 Multiple choice questions in this, and you're suggested to read them properly and answer based on your own thought process.
+        </p>
+
         <div className="mb-3">
           <label className="form-label" htmlFor="formName">
             Full Name (as per records)
@@ -120,14 +132,17 @@ function UserDetails(props) {
           <label className="form-label" htmlFor="formContact">
             Contact Number
           </label>
-          <input
-            type="text"
-            className="form-control"
-            defaultValue={inputValues.contact}
-            name="contact"
-            required // Make the input required
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <span className="input-group-text">+91</span>
+            <input
+              type="text"
+              className="form-control"
+              defaultValue={inputValues.contact}
+              name="contact"
+              required // Make the input required
+              onChange={handleChange}
+            />
+          </div>
         </div>
         <button className="btn btn-primary mb-5" onClick={saveAndcontinue}>
           Next

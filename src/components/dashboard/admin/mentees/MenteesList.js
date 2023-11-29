@@ -12,6 +12,7 @@ const MenteesList = () => {
   const { userDetails } = useAuth();
   const [mentees, setMentees] = useState([]);
   const[isFirstTime,setisFirstTime] = useState(true);
+  const [totalEntries, setTotalEntries] = useState(0);
 
   // Function to fetch Mentee list from Django endpoint
   const fetchMenteeList = async () => {
@@ -21,6 +22,7 @@ const MenteesList = () => {
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
+      setTotalEntries(response.data.length);
       console.log(mentees);
     } catch (error) {
       console.error("Error fetching Mentee list:", error);
@@ -231,6 +233,7 @@ const MenteesList = () => {
       <div className="container">
         <div className="text-center my-3">
           <h4>Mentees List</h4>
+          <p>Total Entries: {totalEntries}</p>
         </div>
         <div className="input-group my-3">
           <input
