@@ -33,7 +33,7 @@ describe(AdminMeetingList, () => {
         fireEvent.click(deleteButton);
     
         // Assert that the axios.post method was called with the correct parameters
-        expect(axios.post).toHaveBeenCalledWith('http://127.0.0.1:8000/deleteMeetingById/', JSON.stringify({ meetingId: 'meetingId' }));
+        expect(axios.post).toHaveBeenCalledWith('https://smpportal.iiitd.edu.in/api/deleteMeetingById/', JSON.stringify({ meetingId: 'meetingId' }));
     
         // Wait for the axios.post method to resolve
         await waitFor(() => {});
@@ -57,7 +57,7 @@ describe(AdminMeetingList, () => {
         fireEvent.click(editButton);
     
         // Assert that the axios.post method was called with the correct parameters
-        expect(axios.post).toHaveBeenCalledWith('http://127.0.0.1:8000/editMeetingById/', JSON.stringify({ meetingId: 'meetingId', schedulerId: 'schedulerId', title: 'title', date: 'date', time: 'time', attendee: [], description: 'description' }));
+        expect(axios.post).toHaveBeenCalledWith('https://smpportal.iiitd.edu.in/api/editMeetingById/', JSON.stringify({ meetingId: 'meetingId', schedulerId: 'schedulerId', title: 'title', date: 'date', time: 'time', attendee: [], description: 'description' }));
     
         // Wait for the axios.post method to resolve
         await waitFor(() => {});

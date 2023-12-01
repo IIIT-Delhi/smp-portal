@@ -52,7 +52,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     };
 
     axios
-      .post('http://127.0.0.1:8000/addMeeting/', meetingData, {
+      .post('https://smpportal.iiitd.edu.in/api/addMeeting/', meetingData, {
         headers: {
           'Content-Type': 'application/json', 
         },

@@ -26,6 +26,7 @@ function App() {
       <Router>
         <div>
           <Routes>
+            <Route path="/" Component={LoginPage} />
             <Route path="/login" Component={LoginPage} />
             <Route path="/google-login" element={<Login />} />
             {/* <Route path="/dashboard/*" element={DashboardPage} /> */}

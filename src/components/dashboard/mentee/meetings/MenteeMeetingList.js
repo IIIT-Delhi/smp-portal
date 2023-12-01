@@ -15,7 +15,7 @@ export default function MenteeMeetingLists() {
   const fetchMeetings = async () => {
     try {
       console.log(userDetails)
-      const response = await axios.post("http://127.0.0.1:8000/getMeetings/",
+      const response = await axios.post("https://smpportal.iiitd.edu.in/api/getMeetings/",
       JSON.stringify({
         id: userDetails.id, 
         role: userDetails.role

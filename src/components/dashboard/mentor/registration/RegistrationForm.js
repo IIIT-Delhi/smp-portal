@@ -21,7 +21,7 @@ export default function RegistrationForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/getFormStatus/"
+          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
@@ -149,7 +149,7 @@ export default function RegistrationForm() {
 
     // Make a POST request to your backend
     axios
-      .post("http://127.0.0.1:8000/addCandidate/", JSON.stringify(formData))
+      .post("https://smpportal.iiitd.edu.in/api/addCandidate/", JSON.stringify(formData))
       .then((response) => {
         console.log("Data sent to the backend:", response.data);
         // Redirect to the next step or do any other necessary actions

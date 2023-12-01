@@ -11,7 +11,7 @@ const FormList = () => {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/getFormStatus/"
+          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         setFormStatus(response.data);
       } catch (error) {
@@ -24,11 +24,11 @@ const FormList = () => {
 
   const handleStatusChange = async (formId, status) => {
     try {
-      await axios.post("http://127.0.0.1:8000/updateFormStatus/", {
+      await axios.post("https://smpportal.iiitd.edu.in/api/updateFormStatus/", {
         formId,
         formStatus: status,
       });
-      const response = await axios.post("http://127.0.0.1:8000/getFormStatus/");
+      const response = await axios.post("https://smpportal.iiitd.edu.in/api/getFormStatus/");
       setFormStatus(response.data);
     } catch (error) {
       console.error("Error updating form status:", error);
@@ -38,7 +38,7 @@ const FormList = () => {
   const handleFormClick =  (formType) => {
     // try {
     //   const response = await axios.post(
-    //     "http://127.0.0.1:8000/getFormResponse/",
+    //     "https://smpportal.iiitd.edu.in/api/getFormResponse/",
     //     {
     //       formType,
     //     }

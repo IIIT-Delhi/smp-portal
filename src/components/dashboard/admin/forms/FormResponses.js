@@ -74,7 +74,7 @@ const FormResponses = () => {
     const fetchFormResponses = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/getFormResponse/",
+          "https://smpportal.iiitd.edu.in/api/getFormResponse/",
           {
             formType: formType,
           }
@@ -115,7 +115,7 @@ const FormResponses = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/createMentorMenteePair/"
+        "https://smpportal.iiitd.edu.in/api/createMentorMenteePair/"
       );
       if (response.data.message === "Mentor-Mentee Mapping is completed!") {
         alert("Mentor-Mentee Mapping is completed!");
@@ -135,7 +135,7 @@ const FormResponses = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/sendConsentEmail/"
+        "https://smpportal.iiitd.edu.in/api/sendConsentEmail/"
       );
       if (response.data.message === "Mail send successfully") {
         alert("Mail sent successfully!!");

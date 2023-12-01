@@ -23,7 +23,7 @@ export default function MenteeForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/getFormStatus/"
+          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         const filteredFormStatus = response.data.filter(
           (status) => status.formId === "3"
@@ -45,7 +45,7 @@ export default function MenteeForm() {
   const submit = async (e) => {
     e.preventDefault();
     axios
-      .post("http://127.0.0.1:8000/menteeFilledFeedback/", formData)
+      .post("https://smpportal.iiitd.edu.in/api/menteeFilledFeedback/", formData)
       .then((response) => {
         console.log("Data sent to the backend:", response.data);
         alert("Feedback Form Submitted Successfully.");

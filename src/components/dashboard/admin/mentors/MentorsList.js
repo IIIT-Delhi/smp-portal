@@ -29,7 +29,7 @@ const MentorsList = () => {
   const fetchMentorList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://127.0.0.1:8000/getAllMentors/"); // Replace with your Django API endpoint
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentors/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
@@ -81,7 +81,7 @@ const MentorsList = () => {
       // Perform mentor deletion logic (API call or other)
       // Update the mentors list after successful deletion
       axios
-        .post("http://127.0.0.1:8000/deleteMentorById/",
+        .post("https://smpportal.iiitd.edu.in/api/deleteMentorById/",
         JSON.stringify({ id : mentorToDelete.id}))
         .then((response) => {
           // If the backend successfully deletes the meeting, update your local state

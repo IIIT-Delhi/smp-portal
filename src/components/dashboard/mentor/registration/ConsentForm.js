@@ -52,7 +52,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
   const sendConsent = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/submitConsentForm/",
+        "https://smpportal.iiitd.edu.in/api/submitConsentForm/",
         JSON.stringify(consentData)
       )
       .then((response) => {

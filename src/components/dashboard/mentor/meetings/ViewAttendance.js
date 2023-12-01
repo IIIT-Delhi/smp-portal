@@ -21,7 +21,7 @@ export default function ViewAttendance({handleClose,meetingId}) {
     const fetchAttendance = useCallback( async () => {
         try {
         //   console.log(userDetails)
-          const response = await axios.post("http://127.0.0.1:8000/getAttendance/",
+          const response = await axios.post("https://smpportal.iiitd.edu.in/api/getAttendance/",
           JSON.stringify({
             meetingId: meetingId,
           }));

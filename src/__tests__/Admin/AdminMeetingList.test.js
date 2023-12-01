@@ -29,7 +29,7 @@ describe(AdminMeetingList, () => {
         await screen.findByText('Upcoming Meetings');
     
         // Assert that the meetings are fetched and displayed
-        expect(axios.post).toHaveBeenCalledWith('http://127.0.0.1:8000/getMeetings/', JSON.stringify({ id: 1, role: 'admin' }));
+        expect(axios.post).toHaveBeenCalledWith('https://smpportal.iiitd.edu.in/api/getMeetings/', JSON.stringify({ id: 1, role: 'admin' }));
         expect(getByText('Upcoming Meetings')).toBeInTheDocument();
         expect(getByText('Previous Meetings')).toBeInTheDocument();
     });

@@ -15,7 +15,7 @@ export default function AdminMeetingList() {
   const fetchMeetings = useCallback( async () => {
     try {
       console.log(userDetails)
-      const response = await axios.post("http://127.0.0.1:8000/getMeetings/",
+      const response = await axios.post("https://smpportal.iiitd.edu.in/api/getMeetings/",
       JSON.stringify({
         id: userDetails.id, 
         role: userDetails.role
@@ -48,7 +48,7 @@ export default function AdminMeetingList() {
   const deleteMeeting = (meetingId) => {
     // Send a request to delete the meeting on the backend
     axios
-      .post("http://127.0.0.1:8000/deleteMeetingById/", JSON.stringify({
+      .post("https://smpportal.iiitd.edu.in/api/deleteMeetingById/", JSON.stringify({
         meetingId: meetingId
       }))
       .then((response) => {
@@ -66,7 +66,7 @@ export default function AdminMeetingList() {
       console.log(meeting.meetingId)
       // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
       const response = await axios
-        .post("http://127.0.0.1:8000/editMeetingById/", JSON.stringify({
+        .post("https://smpportal.iiitd.edu.in/api/editMeetingById/", JSON.stringify({
           meetingId: meeting.meetingId, 
           schedulerId: meeting.schedulerId,
           title: meeting.title,
