@@ -5,6 +5,7 @@ import AuthButton from "../components/auth/AuthButton";
 import bgImage from "../images/iiitdrndblock2.jpeg";
 // import { useAuth } from "../context/AuthContext";
 // import Login from "../components/Login";
+import './LoginPage.css';
 
 const LoginPage = () => {
   // const navigate = useNavigate();
@@ -21,19 +22,17 @@ const LoginPage = () => {
 
   return (
     <div
-      className="container-fluid d-flex flex-row justify-content-center align-items-center"
+      className="container-fluid d-flex flex justify-content-center align-items-center"
       style={{
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
-        color: "white", 
-
+        color: "white",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         height: "100vh", // Set the height to 100% of the viewport height
         width: "100%", 
         boxSizing : "border-box",
         textAlign : "center"
-        
       }}
     >
       <div
@@ -46,8 +45,8 @@ const LoginPage = () => {
           marginRight : '5%'
         }}
       >
-        <h1 style={{color : "#472b50"}}>Student Mentorship Portal</h1>
-        <p className="mt-5" style={{fontSize : '1.1em'}}>
+        <h1 style={{color : "#472b50", fontSize : '2.5vw'}}> <b>Student Mentorship Portal</b></h1>
+        <p className="mt-3" style={{fontSize : '1.4vw'}}>
           <b>
           Student Mentorship Program (SMP) is a program within the IIIT Delhi student community, 
           with the primary objective of enabling constructive and positive interaction, guidance 
@@ -69,10 +68,10 @@ const LoginPage = () => {
           backgroundColor: "rgba(47,191,177, 0.85)",
           borderRadius: "25px",
           padding: "35px",
-          width : '55vh'
+          width : '55vh',
         }}
       >
-        <h2>Login</h2>
+        <h2 style={{fontSize : '2.5vw'}}>Login</h2>
         <AuthButton/>
       </div>
     </div>

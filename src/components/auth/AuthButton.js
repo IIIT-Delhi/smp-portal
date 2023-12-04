@@ -28,7 +28,8 @@ const AuthButton = () => {
         );
         
         setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
-        // console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
+        console.log("here")
+        console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
 
       } catch (error) {
         console.error("Error fetching form status:", error);
@@ -69,7 +70,7 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              style={{ width: "100%", fontSize: "1.2em", borderWidth: "1.5px"}}
+              style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px"}}
               onClick={() => handleGoogleLogin("admin")}
             >
               Login as Admin
@@ -79,7 +80,7 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              style={{ width: "100%",fontSize: "1.2em", borderWidth: "1.5px" }}
+              style={{ width: "100%",fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentee")}
             >
               Login as Mentee
@@ -89,10 +90,10 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              style={{ width: "100%",fontSize: "1.2em", borderWidth: "1.5px" }}
+              style={{ width: "100%",fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentor")}
             >
-              {enrollmentFormStatus===0 ? "Apply For Mentor" : "Login as Mentor"}
+              {enrollmentFormStatus==="1"? "Apply For Mentor" : "Login as Mentor"}
             </button>
           </div>
         </>
