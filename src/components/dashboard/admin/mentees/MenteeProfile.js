@@ -55,19 +55,24 @@ const MenteeProfile = ({ mentee, onClose }) => {
               </div>
               <div className="col-md-6">
                 <h6>Mentor:</h6>
-                <img
-                  src={mentee.mentorImage}
-                  alt="Mentor Profile"
-                  className="img-fluid img-thumbnail mt-4 mb-2"
-                  style={{ maxWidth: "200px", maxHeight: "200px", borderRadius: "10%" }}
-                />
-                {/* Display mentor's profile information here */}
-                <p>Mentor Name: {mentee.mentorName}</p>
-
-                <p>Mentor Roll Number: {mentee.mentorId}</p>
-                <p>Mentor Email: {mentee.mentorEmail}</p>
-                <p>Mnetor Contact: {mentee.mentorContact}</p>
-                {/* Add other mentor profile details */}
+                {mentee.mentorId !== 'NULL' ? (
+                  <>
+                    <img
+                      src={mentee.mentorImage}
+                      alt="Mentor Profile"
+                      className="img-fluid img-thumbnail mt-4 mb-2"
+                      style={{ maxWidth: "200px", maxHeight: "200px", borderRadius: "10%" }}
+                    />
+                    {/* Display mentor's profile information here */}
+                    <p>Mentor Name: {mentee.mentorName}</p>
+                    <p>Mentor Roll Number: {mentee.mentorId}</p>
+                    <p>Mentor Email: {mentee.mentorEmail}</p>
+                    <p>Mentor Contact: {mentee.mentorContact}</p>
+                    {/* Add other mentor profile details */}
+                  </>
+                ) : (
+                  <p>Mentor: Not Assigned</p>
+                )}
               </div>
             </div>
           </div>
