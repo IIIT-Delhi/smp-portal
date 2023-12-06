@@ -5,6 +5,18 @@ import axios from 'axios';
 export default function Attendance({handleClose,handleButtonSave,meetingId}) {
 
     const [attendanceList, setattendanceList] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredAttendanceList, setFilteredAttendanceList] = useState([]);
+
+    useEffect(() => {
+      // Update the filtered list when the search query or attendanceList changes
+      const filteredList = attendanceList.filter(
+        (student) =>
+          student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          student.id.toString().includes(searchQuery)
+      );
+      setFilteredAttendanceList(filteredList);
+    }, [searchQuery, attendanceList]);
 
     const fetchAttendance = useCallback( async () => {
         try {
@@ -61,8 +73,8 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
 
   return (
     <div>
-      <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-        <div className="modal-dialog" role="document">
+      <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+        <div className="modal-dialog modal-lg">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Take Attendance</h5>
@@ -71,20 +83,31 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
               </button>
             </div>
             
-            {attendanceList ? (
+            {filteredAttendanceList ? (
             <div className="modal-body">
+
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by name or roll number"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
                 <table className="table">
                   <thead>
-                    <tr>
-                      <th className='text-center'>Mark Attendance</th>
-                      <th className='text-center'>Roll Number</th>
-                      <th className='text-center'>Name</th>
+                    <tr style={{width : '100%'}}>
+                      <th className='text-center' style={{width : '33%'}}>Mark Attendance</th>
+                      <th className='text-center' style={{width : '33%'}}>Roll Number</th>
+                      <th className='text-center' style={{width : '33%'}}>Name</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {attendanceList.map((student) => (
-                      <tr key={student.id}>
-                        <td className='text-center'>
+        
+                  <tbody style={{maxHeight : '60vh',overflowY : 'auto'}}>
+                    {filteredAttendanceList.map((student) => (
+                      <tr key={student.id} style={{width : '100%'}}>
+                        <td className='text-center' style={{width : '33%'}}>
                           <input
                             className="form-check-input"
                             type="checkbox"
@@ -93,11 +116,12 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
                             onChange={() => handleCheckboxChange(student.id)}
                           />
                         </td>
-                        <td className='text-center'>{student.id}</td>
-                        <td className='text-center'>{student.name}</td>
+                        <td className='text-center' style={{width : '33%'}} >{student.id}</td>
+                        <td className='text-center' style={{width : '33%'}}>{student.name}</td>
                       </tr>
                     ))}
                   </tbody>
+                
                 </table>
 
             </div> ) : (

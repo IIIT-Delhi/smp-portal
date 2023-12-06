@@ -222,7 +222,8 @@ const FormResponses = () => {
                     ))}
                     {formType === "3" && <th>Mentor Id</th>}
                     {formType === "3" && <th>Mentor Name</th>}
-                    {formType === "1" || formType === "2" && <th>Score</th>}
+                    {formType === "1" && <th>Score</th>}
+                    {formType === "2" && <th>Score</th>}
                   </tr>
                 </thead>
                 <tbody>
