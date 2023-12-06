@@ -124,23 +124,31 @@ const MenteeDashboard = () => {
                             <p className="mb-0">Mentor Image</p>
                           </div>
                           <div className="col-sm-9">
-                            <img
-                              src={menteeData.mentorImage}
-                              alt="Mentor Profile"
-                              className="img-fluid img-thumbnail mt-2"  
-                              style={{ maxWidth: "100px", maxHeight: "100px", borderRadius: "10%" }}
-                            />
-                        </div>
+                            {menteeData.mentorId !== 'NULL' ? (
+                              <img
+                                src={menteeData.mentorImage}
+                                alt="Mentor Profile"
+                                className="img-fluid img-thumbnail mt-2"
+                                style={{ maxWidth: "100px", maxHeight: "100px", borderRadius: "10%" }}
+                              />
+                            ) : (
+                              <p>Mentor Not Assigned</p>
+                            )}
+                          </div>
                         </div>
                         <hr />
                         <div className="row">
                           <div className="col-sm-3">
-                            <p className="mb-0">Mentor</p>
+                            <p className="mb-0">Mentor Roll No</p>
                           </div>
                           <div className="col-sm-9">
-                            <p className="text-muted mb-0">
-                              {menteeData.mentorName}
-                            </p>
+                            {menteeData.mentorId !== 'NULL' ? (
+                              <p className="text-muted mb-0">
+                                {menteeData.mentorName}
+                              </p>
+                            ) : (
+                              <p>Mentor Not Assigned</p>
+                            )}
                           </div>
                         </div>
                         <hr />
@@ -150,7 +158,13 @@ const MenteeDashboard = () => {
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {menteeData.mentorEmail}
+                            {menteeData.mentorId !== 'NULL' ? (
+                              <p className="text-muted mb-0">
+                                {menteeData.mentorEmail}
+                              </p>
+                            ) : (
+                              <p>Mentor Not Assigned</p>
+                            )}
                             </p>
                           </div>
                           <hr />
@@ -160,7 +174,13 @@ const MenteeDashboard = () => {
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {menteeData.mentorContact}
+                            {menteeData.mentorId !== 'NULL' ? (
+                              <p className="text-muted mb-0">
+                                {menteeData.mentorContact}
+                              </p>
+                            ) : (
+                              <p>Mentor Not Assigned</p>
+                            )}
                             </p>
                             </div>
                           </div>

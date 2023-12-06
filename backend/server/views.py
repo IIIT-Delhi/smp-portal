@@ -663,16 +663,20 @@ def get_meetings(request):
                 meeting['attendee'] = ['Mentees']
             elif meeting['attendee'] == 3:
                 meeting['attendee'] = ['Mentors', 'Mentees']
-            meeting_date = datetime.strptime(f"{meeting['date']} {meeting['time']}", '%Y-%m-%d %H:%M')
-            if meeting_date < current_datetime:
-                previous_meetings.append(meeting)
-            elif meeting_date > current_datetime:
-                upcoming_meetings.append(meeting)
+            try:
+                meeting_date = datetime.strptime(f"{meeting['date']} {meeting['time']}", '%Y-%m-%d %H:%M')
+                if meeting_date < current_datetime:
+                    previous_meetings.append(meeting)
+                elif meeting_date > current_datetime:
+                    upcoming_meetings.append(meeting)
+            except ValueError:
+                continue
 
         meetings_data = {
             "previousMeeting":  previous_meetings,
             "upcomingMeeting": upcoming_meetings
         }
+        print("here")
         return JsonResponse(meetings_data)
     else:
         return JsonResponse({"message": "Invalid request method"})
