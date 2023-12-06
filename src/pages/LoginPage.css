@@ -1,0 +1,22 @@
+body, html {
+    margin : 0;
+    padding : 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-size:cover; */
+    color: white;
+    /* background-position: center; */
+    /* background-repeat: no-repeat; */
+    height: 100vh;
+    width: 1280px;
+    
+    /* margin: 0; */
+    /* box-sizing: border-box; */
+    text-align: center;
+    background-color: aqua;
+    /* background-image: url(../images/iiitdrndblock2.jpeg); */
+  }
