@@ -50,9 +50,8 @@ const FormResponses = () => {
       const question = consentQuestions.questions.find((q) => q.id === questionId);
       return question ? question.options[response.responses[questionId]] : '';
     }
-  
     // Handle other form types if needed
-    return '';
+    return response.responses[questionId];
   };
 
   const getQuestionSet = (formType) => {
