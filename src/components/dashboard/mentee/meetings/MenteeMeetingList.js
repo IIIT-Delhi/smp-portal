@@ -35,8 +35,8 @@ export default function MenteeMeetingLists() {
         } else if (typeof response.data === "object") {
           console.log("respnse : " + response.data.upcomingMeeting)
 
-          const filteredPreviousMeetings = response.data.previousMeeting.filter(meeting => meeting.schedulerId === userDetails.mentorId);
-          const filteredUpcomingMeetings = response.data.upcomingMeeting.filter(meeting => meeting.schedulerId === userDetails.mentorId);
+          const filteredPreviousMeetings = response.data.previousMeeting;
+          const filteredUpcomingMeetings = response.data.upcomingMeeting;
 
           setpreviousMeeting(filteredPreviousMeetings);
           setupcomingMeeting(filteredUpcomingMeetings);
