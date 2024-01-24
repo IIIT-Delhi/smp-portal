@@ -5,7 +5,6 @@ import AuthButton from "../components/auth/AuthButton";
 import bgImage from "../images/iiitdrndblock2.jpeg";
 // import { useAuth } from "../context/AuthContext";
 // import Login from "../components/Login";
-import './LoginPage.css';
 
 const LoginPage = () => {
   // const navigate = useNavigate();

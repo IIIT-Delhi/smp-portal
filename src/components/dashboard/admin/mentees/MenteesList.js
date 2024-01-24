@@ -11,8 +11,9 @@ const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
   const [mentees, setMentees] = useState([]);
-  const[isFirstTime,setisFirstTime] = useState(true);
+  const [isFirstTime, setisFirstTime] = useState(true);
   const [totalEntries, setTotalEntries] = useState(0);
+  const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState("");
 
   // Function to fetch Mentee list from Django endpoint
   const fetchMenteeList = async () => {
@@ -31,7 +32,10 @@ const MenteesList = () => {
 
   // Call the function to fetch the Mentee list when the component loads
   useEffect(() => {
-    if(isFirstTime){setisFirstTime(false);fetchMenteeList();}
+    if (isFirstTime) {
+      setisFirstTime(false);
+      fetchMenteeList();
+    }
   }, [isFirstTime]);
   const [searchTerm, setSearchTerm] = useState("");
   const [menteeToDelete, setMenteeToDelete] = useState(null);
@@ -96,49 +100,46 @@ const MenteesList = () => {
   const [editMentee, seteditMentee] = useState(null);
   const [currMentee, setcurrMentee] = useState(null);
 
-
   const handleChangeMentor = (mentee) => {
-    console.log(mentee)
+    console.log(mentee);
     seteditMentee({
-      mentorID : '',
-      mentorName : '',
-      menteeId : mentee.id
-    })
-    setcurrMentee(mentee)
-    setshowChangeMentor(true)
-  }
+      mentorID: "",
+      mentorName: "",
+      menteeId: mentee.id,
+    });
+    setcurrMentee(mentee);
+    setshowChangeMentor(true);
+  };
 
-  const editMentor = async() => {
-
+  const editMentor = async () => {
     axios
-      .post('http://127.0.0.1:8000/editMenteeById/', JSON.stringify(
-        {
-          id : editMentee.menteeId,
-          mentorId : editMentee.mentorId,
-          department : currMentee.department
-        }
-      ))
+      .post(
+        "http://127.0.0.1:8000/editMenteeById/",
+        JSON.stringify({
+          id: editMentee.menteeId,
+          mentorId: editMentee.mentorId,
+          department: currMentee.department,
+        })
+      )
       .then((response) => {
         if (response.status === 200) {
           alert(response.data.message);
         }
       })
       .catch((error) => {
-        console.error('Error changing Mentor', error);
+        console.error("Error changing Mentor", error);
       });
-
-  }
+  };
 
   const handleSaveChangeMentor = () => {
-
-    editMentor()
-    setshowChangeMentor(false)
-    fetchMenteeList()
-  }
+    editMentor();
+    setshowChangeMentor(false);
+    fetchMenteeList();
+  };
 
   const handleCloseChangeMentor = () => {
-    setshowChangeMentor(false)
-  }
+    setshowChangeMentor(false);
+  };
 
   const addMenteeOnBackend = async (mentee) => {
     try {
@@ -226,6 +227,29 @@ const MenteesList = () => {
   const handleCloseUploadCSV = () => {
     setmenteeUploadCSV(false);
   };
+  const filteredMentees = mentees.filter((mentee) => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    const lowerName = mentee.name.toLowerCase();
+    const lowerId = mentee.id.toLowerCase();
+    const departmentLabel = departmentOptions[mentee.department] || "";
+    const lowerDepartment = departmentLabel.toLowerCase();
+
+    // Apply department filter
+    const isDepartmentFiltered =
+      !selectedDepartmentFilter ||
+      mentee.department === selectedDepartmentFilter;
+
+    return (
+      isDepartmentFiltered &&
+      (lowerName.includes(lowerSearchTerm) ||
+        lowerId.includes(lowerSearchTerm) ||
+        lowerDepartment.includes(lowerSearchTerm))
+    );
+  });
+  useEffect(() => {
+    // Update filtered total entries when filteredMentors change
+    setTotalEntries(filteredMentees.length);
+  }, [filteredMentees]);
 
   return (
     <div>
@@ -236,17 +260,29 @@ const MenteesList = () => {
           <p>Total Entries: {totalEntries}</p>
         </div>
         <div className="input-group my-3">
+          {/* Search Mentees input */}
           <input
             type="text"
-            className="form-control mx-2"
+            className="form-control"
             placeholder="Search Mentees"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+
+          {/* Department filter dropdown */}
           <div className="input-group-append mx-2">
-            <button className="btn btn-outline-secondary" type="button">
-              Search
-            </button>
+            <select
+              className="form-control"
+              value={selectedDepartmentFilter}
+              onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
+            >
+              <option value="">All Departments</option>
+              {Object.keys(departmentOptions).map((department) => (
+                <option key={department} value={department}>
+                  {departmentOptions[department]}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <button
@@ -317,17 +353,20 @@ const MenteesList = () => {
                     />
                   </div>
                   <div className="form-group">
-                  <label>Contact *</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={menteeForm.contact}
-                    onChange={(e) =>
-                      setMenteeForm({ ...menteeForm, contact: e.target.value })
-                    }
-                    required
-                  />
-                </div>
+                    <label>Contact *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={menteeForm.contact}
+                      onChange={(e) =>
+                        setMenteeForm({
+                          ...menteeForm,
+                          contact: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
                   <div className="mb-3">
                     <label className="form-label">Department</label>
                     <select
@@ -421,59 +460,45 @@ const MenteesList = () => {
           >
             <table className="table table-hover mb-4 mx-2" border="1">
               <tbody>
-                {mentees
-                  .filter((mentee) => {
-                    const lowerSearchTerm = searchTerm.toLowerCase();
-                    const lowerName = mentee.name.toLowerCase();
-                    const lowerId = mentee.id.toLowerCase();
-                    const departmentLabel =
-                      departmentOptions[mentee.department] || "";
-                    const lowerDepartment = departmentLabel.toLowerCase();
-                    return (
-                      lowerName.includes(lowerSearchTerm) ||
-                      lowerId.includes(lowerSearchTerm) ||
-                      lowerDepartment.includes(lowerSearchTerm)
-                    );
-                  })
-                  .map((mentee) => (
-                    <tr
-                      className=""
-                      key={mentee.id}
-                      // onClick={() => openMenteeProfile(mentee)}
-                      style={{ cursor: "pointer" }}
+                {filteredMentees.map((mentee) => (
+                  <tr
+                    className=""
+                    key={mentee.id}
+                    // onClick={() => openMenteeProfile(mentee)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td
+                      style={{
+                        width: headerColumnWidths["name"],
+                      }}
                     >
-                      <td
-                        style={{
-                          width: headerColumnWidths["name"],
-                        }}
+                      <button
+                        className="btn btn-link"
+                        onClick={() => openMenteeProfile(mentee)}
                       >
-                        <button
-                          className="btn btn-link"
-                          onClick={() => openMenteeProfile(mentee)}
-                        >
-                          {mentee.name}
-                        </button>
-                      </td>
-                      <td
-                        style={{
-                          width: headerColumnWidths["id"],
-                        }}
-                      >
-                        {mentee.id}
-                      </td>
-                      <td
-                        style={{
-                          width: headerColumnWidths["department"],
-                        }}
-                      >
-                        {departmentOptions[mentee.department]}
-                      </td>
-                      <td
-                        style={{
-                          width: headerColumnWidths["actions"],
-                        }}
-                      >
-                        <div className="d-flex">
+                        {mentee.name}
+                      </button>
+                    </td>
+                    <td
+                      style={{
+                        width: headerColumnWidths["id"],
+                      }}
+                    >
+                      {mentee.id}
+                    </td>
+                    <td
+                      style={{
+                        width: headerColumnWidths["department"],
+                      }}
+                    >
+                      {departmentOptions[mentee.department]}
+                    </td>
+                    <td
+                      style={{
+                        width: headerColumnWidths["actions"],
+                      }}
+                    >
+                      <div className="d-flex">
                         <button
                           className="btn btn-sm mr-2"
                           onClick={() => handleDeleteConfirmation(mentee)}
@@ -484,15 +509,16 @@ const MenteesList = () => {
                             style={{ width: "20px", height: "20px" }}
                           />
                         </button>
-                        <button className="btn btn-sm btn-outline-dark ml-4"
+                        <button
+                          className="btn btn-sm btn-outline-dark ml-4"
                           onClick={() => handleChangeMentor(mentee)}
                         >
                           Change Mentor
                         </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             {/* Mentee Profile Popup */}
@@ -569,16 +595,14 @@ const MenteesList = () => {
           />
         )}
 
-        { showChangeMentor && (
-
+        {showChangeMentor && (
           <ChangeMentor
             handleSave={handleSaveChangeMentor}
             handleClose={handleCloseChangeMentor}
-            editMentee = {editMentee}
-            seteditMentee = {seteditMentee}
-            currMentee = {currMentee}
+            editMentee={editMentee}
+            seteditMentee={seteditMentee}
+            currMentee={currMentee}
           />
-
         )}
       </div>
     </div>
