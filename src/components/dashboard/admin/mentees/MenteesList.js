@@ -68,13 +68,6 @@ const MenteesList = () => {
     mentorId: "",
     contact: "",
   });
-  // Define the fixed widths for the header columns
-  const headerColumnWidths = {
-    name: "30%",
-    id: "20%",
-    department: "30%",
-    actions: "20%",
-  };
 
   const headerColumns = [
     { label: "Name", key: "name" },
@@ -436,29 +429,29 @@ const MenteesList = () => {
         <button className="btn btn-primary mx-2" onClick={handleOpenUploadCSV}>
           Upload CSV
         </button>
-
-        <div className="table-container text-left">
-          <div className="table-headers">
-            <table className="table mt-4 mx-2" border="1">
-              <thead>
-                <tr>
+          <div
+          className="table-container text-center my-2"
+          style={{ overflow: "auto", maxHeight: "400px" }}
+        >
+          <div className="table-body">
+            <table className="table table-bordered table-hover mb-4 mx-2" border="1">
+              <thead
+                style={{
+                  position: "sticky",
+                  top: "0",
+                  backgroundColor: "white",
+                  zIndex: "1",
+                }}
+              ><tr>
                   {headerColumns.map((column) => (
                     <th
                       key={column.key}
-                      style={{ width: headerColumnWidths[column.key] }}
                     >
                       {column.label}
                     </th>
                   ))}
                 </tr>
               </thead>
-            </table>
-          </div>
-          <div
-            className="table-body"
-            style={{ maxHeight: "250px", overflowY: "scroll" }}
-          >
-            <table className="table table-hover mb-4 mx-2" border="1">
               <tbody>
                 {filteredMentees.map((mentee) => (
                   <tr
@@ -468,9 +461,6 @@ const MenteesList = () => {
                     style={{ cursor: "pointer" }}
                   >
                     <td
-                      style={{
-                        width: headerColumnWidths["name"],
-                      }}
                     >
                       <button
                         className="btn btn-link"
@@ -480,23 +470,14 @@ const MenteesList = () => {
                       </button>
                     </td>
                     <td
-                      style={{
-                        width: headerColumnWidths["id"],
-                      }}
                     >
                       {mentee.id}
                     </td>
                     <td
-                      style={{
-                        width: headerColumnWidths["department"],
-                      }}
                     >
                       {departmentOptions[mentee.department]}
                     </td>
                     <td
-                      style={{
-                        width: headerColumnWidths["actions"],
-                      }}
                     >
                       <div className="d-flex">
                         <button

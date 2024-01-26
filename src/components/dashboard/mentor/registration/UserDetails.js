@@ -25,7 +25,17 @@ function UserDetails(props) {
       return;
     }
 
-    if (isNaN(Number(inputValues.contact)) || inputValues.contact.length !== 10) {
+    // Check if the name is valid (no numbers or special characters)
+    const nameRegex = /^[a-zA-Z]+$/; // Allow only letters
+    if (!nameRegex.test(inputValues.name)) {
+      alert("Please enter a valid name without numbers or special characters.");
+      return;
+    }
+
+    if (
+      isNaN(Number(inputValues.contact)) ||
+      inputValues.contact.length !== 10
+    ) {
       alert("Please enter a valid 10-digit contact number.");
       return;
     }

@@ -10,6 +10,14 @@ const MentorsList = () => {
   // const { userDetails } = useAuth();
   const [mentors, setMentors] = useState([]);
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState("");
+  const [totalEntries, setTotalEntries] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [mentorToDelete, setMentorToDelete] = useState(null);
+  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [uniqueTotalMentees, setUniqueTotalMentees] = useState([]);
+  const [selectedTotalMenteesFilter, setSelectedTotalMenteesFilter] =
+    useState("");
+
   const departmentOptions = {
     "B-CSB": "CSB (B.Tech.)",
     "B-CSSS": "CSSS (B.Tech.)",
@@ -24,7 +32,6 @@ const MentorsList = () => {
     "M-CB": "CB (M.Tech.)",
   };
 
-  const [totalEntries, setTotalEntries] = useState(0);
 
   // Function to fetch Mentor list from Django endpoint
   const fetchMentorList = async () => {
@@ -44,13 +51,6 @@ const MentorsList = () => {
   useEffect(() => {
     fetchMentorList();
   }, []);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [mentorToDelete, setMentorToDelete] = useState(null);
-  const [selectedMentor, setSelectedMentor] = useState(null);
-
-  const [uniqueTotalMentees, setUniqueTotalMentees] = useState([]);
-  const [selectedTotalMenteesFilter, setSelectedTotalMenteesFilter] =
-    useState("");
 
   useEffect(() => {
     // Extract unique values of "Total Mentees"
@@ -90,15 +90,6 @@ const MentorsList = () => {
     // Update filtered total entries when filteredMentors change
     setTotalEntries(filteredMentors.length);
   }, [filteredMentors]);
-
-  // Define the fixed widths for the header columns
-  const headerColumnWidths = {
-    name: "30%",
-    id: "20%",
-    department: "25%",
-    actions: "15%",
-    totalMentees: "10%",
-  };
 
   const headerColumns = [
     { label: "Name", key: "name" },
@@ -207,29 +198,30 @@ const MentorsList = () => {
           </div>
         </div>
 
-        <div className="table-container text-left">
-          <div className="table-headers">
-            <table className="table mt-4 mx-2" border="1">
-              <thead>
+        <div
+          className="table-container text-center my-2"
+          style={{ overflow: "auto", maxHeight: "400px" }}
+        >
+          <div className="table-body">
+            <table
+              className="table table-bordered table-hover mb-4 mx-2"
+              border="1"
+            >
+              <thead
+                style={{
+                  position: "sticky",
+                  top: "0",
+                  backgroundColor: "white",
+                  zIndex: "1",
+                }}
+              >
                 <tr>
                   {headerColumns.map((column) => (
-                    <th
-                      key={column.key}
-                      style={{ width: headerColumnWidths[column.key] }}
-                    >
-                      {column.label}
-                    </th>
+                    <th key={column.key}>{column.label}</th>
                   ))}
                   <th>Mentees</th>
                 </tr>
               </thead>
-            </table>
-          </div>
-          <div
-            className="table-body"
-            style={{ maxHeight: "250px", overflowY: "scroll" }}
-          >
-            <table className="table table-hover mb-4 mx-2" border="1">
               <tbody>
                 {filteredMentors.map((mentor) => (
                   <tr
@@ -238,11 +230,7 @@ const MentorsList = () => {
                     // onClick={() => openMentorProfile(mentor)}
                     style={{ cursor: "pointer" }}
                   >
-                    <td
-                      style={{
-                        width: headerColumnWidths["name"],
-                      }}
-                    >
+                    <td>
                       <button
                         className="btn btn-link"
                         onClick={() => openMentorProfile(mentor)}
@@ -250,25 +238,9 @@ const MentorsList = () => {
                         {mentor.name}
                       </button>
                     </td>
-                    <td
-                      style={{
-                        width: headerColumnWidths["id"],
-                      }}
-                    >
-                      {mentor.id}
-                    </td>
-                    <td
-                      style={{
-                        width: headerColumnWidths["department"],
-                      }}
-                    >
-                      {departmentOptions[mentor.department]}
-                    </td>
-                    <td
-                      style={{
-                        width: headerColumnWidths["actions"],
-                      }}
-                    >
+                    <td>{mentor.id}</td>
+                    <td>{departmentOptions[mentor.department]}</td>
+                    <td>
                       <button
                         className="btn btn-sm"
                         onClick={() => handleDeleteConfirmation(mentor)}
