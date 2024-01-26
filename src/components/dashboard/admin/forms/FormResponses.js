@@ -187,6 +187,36 @@ const FormResponses = () => {
       case "treats-min-to-max":
         sortedResponses.sort((a, b) => a.responses.fq2 - b.responses.fq2);
         break;
+      case "submitter-name-a-to-z":
+        sortedResponses.sort((a, b) =>
+          a.submitterName.localeCompare(b.submitterName)
+        );
+        break;
+      case "submitter-name-z-to-a":
+        sortedResponses.sort((a, b) =>
+          b.submitterName.localeCompare(a.submitterName)
+        );
+        break;
+      case "mentor-name-a-to-z":
+        sortedResponses.sort((a, b) =>
+          a.response.mentorName.localeCompare(b.response.mentorName)
+        );
+        break;
+      case "mentor-name-z-to-a":
+        sortedResponses.sort((a, b) =>
+          b.response.mentorName.localeCompare(a.response.mentorName)
+        );
+        break;
+      case "mentor-id-min-to-max":
+        sortedResponses.sort(
+          (a, b) => a.response.mentorId - b.response.mentorId
+        );
+        break;
+      case "mentor-id-max-to-min":
+        sortedResponses.sort(
+          (a, b) => b.response.mentorId - a.response.mentorId
+        );
+        break;
       default:
         break;
     }
@@ -265,14 +295,10 @@ const FormResponses = () => {
                 </option>
               )}
               {formType === "3" && (
-                <option value="treats-min-to-max">
-                  Treats (Min to Max)
-                </option>
+                <option value="treats-min-to-max">Treats (Min to Max)</option>
               )}
               {formType === "3" && (
-                <option value="treats-max-to-min">
-                  Treats (Max to Min)
-                </option>
+                <option value="treats-max-to-min">Treats (Max to Min)</option>
               )}
             </select>
           </div>
