@@ -18,6 +18,8 @@ const FormResponses = () => {
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [expandedResponse, setExpandedResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [totalEntries, setTotalEntries] = useState(0);
+  const [sortOption, setSortOption] = useState("default");
 
   const handleExpandQuestion = (index) => {
     setExpandedQuestion((prevIndex) => (prevIndex === index ? null : index));
@@ -36,19 +38,22 @@ const FormResponses = () => {
       if (questionId === "score") {
         return response.responses[questionId];
       }
-      const question = registrationQuestions.questions.find((q) => q.id === questionId);
-      return question ? question.options[response.responses[questionId]] : '';
+      const question = registrationQuestions.questions.find(
+        (q) => q.id === questionId
+      );
+      return question ? question.options[response.responses[questionId]] : "";
     } else if (formType === "2") {
       if (questionId === "score") {
-        if(response.responses[questionId] === 0){
+        if (response.responses[questionId] === 0) {
           return "Accepted";
-        }
-        else{
-          return 'rejected';
+        } else {
+          return "rejected";
         }
       }
-      const question = consentQuestions.questions.find((q) => q.id === questionId);
-      return question ? question.options[response.responses[questionId]] : '';
+      const question = consentQuestions.questions.find(
+        (q) => q.id === questionId
+      );
+      return question ? question.options[response.responses[questionId]] : "";
     }
     // Handle other form types if needed
     return response.responses[questionId];
@@ -66,8 +71,11 @@ const FormResponses = () => {
         return [];
     }
   };
-  
-  const [totalEntries, setTotalEntries] = useState(0);
+
+  useEffect(() => {
+    // Update filtered total entries when filteredMentors change
+    setTotalEntries(filteredResponses.length);
+  }, [filteredResponses]);
 
   useEffect(() => {
     const fetchFormResponses = async () => {
@@ -79,7 +87,6 @@ const FormResponses = () => {
           }
         );
         setFormResponses(response.data.formResponses);
-      setTotalEntries(response.data.formResponses.length);
       } catch (error) {
         console.error("Error fetching form responses:", error);
       }
@@ -140,20 +147,87 @@ const FormResponses = () => {
         alert("Mail sent successfully!!");
       } else {
         alert(response.data.message);
-      }        
+      }
     } catch (error) {
       console.error("Error calling Mentor-Mentee Mapping API:", error);
       alert(error.message);
     } finally {
       setLoading(false);
     }
-  }; 
+  };
+
+  const handleSort = (option) => {
+    setSortOption(option);
+
+    // Perform sorting logic based on the selected option
+    let sortedResponses = [...filteredResponses];
+
+    switch (option) {
+      case "submitter-id-min-to-max":
+        sortedResponses.sort((a, b) => a.submitterId - b.submitterId);
+        break;
+      case "submitter-id-max-to-min":
+        sortedResponses.sort((a, b) => b.submitterId - a.submitterId);
+        break;
+      case "score-max-to-min":
+        sortedResponses.sort((a, b) => b.responses.score - a.responses.score);
+        break;
+      case "score-min-to-max":
+        sortedResponses.sort((a, b) => a.responses.score - b.responses.score);
+        break;
+      case "meetings-max-to-min":
+        sortedResponses.sort((a, b) => b.responses.fq1 - a.responses.fq1);
+        break;
+      case "meetings-min-to-max":
+        sortedResponses.sort((a, b) => a.responses.fq1 - b.responses.fq1);
+        break;
+      case "treats-max-to-min":
+        sortedResponses.sort((a, b) => b.responses.fq1 - a.responses.fq1);
+        break;
+      case "treats-min-to-max":
+        sortedResponses.sort((a, b) => a.responses.fq2 - b.responses.fq2);
+        break;
+      case "submitter-name-a-to-z":
+        sortedResponses.sort((a, b) =>
+          a.submitterName.localeCompare(b.submitterName)
+        );
+        break;
+      case "submitter-name-z-to-a":
+        sortedResponses.sort((a, b) =>
+          b.submitterName.localeCompare(a.submitterName)
+        );
+        break;
+      case "mentor-name-a-to-z":
+        sortedResponses.sort((a, b) =>
+          a.response.mentorName.localeCompare(b.response.mentorName)
+        );
+        break;
+      case "mentor-name-z-to-a":
+        sortedResponses.sort((a, b) =>
+          b.response.mentorName.localeCompare(a.response.mentorName)
+        );
+        break;
+      case "mentor-id-min-to-max":
+        sortedResponses.sort(
+          (a, b) => a.response.mentorId - b.response.mentorId
+        );
+        break;
+      case "mentor-id-max-to-min":
+        sortedResponses.sort(
+          (a, b) => b.response.mentorId - a.response.mentorId
+        );
+        break;
+      default:
+        break;
+    }
+
+    setFilteredResponses(sortedResponses);
+  };
 
   return (
     <div>
       <Navbar className="fixed-top" />
       <div className="container mt-3">
-      <p>Total Entries: {totalEntries}</p>
         {formType === "2" && (
           <div className="text-center mb-4">
             <button
@@ -178,7 +252,7 @@ const FormResponses = () => {
             </button>
           </div>
         )}
-        <h1 className="text-center mb-4">Form Responses</h1>
+        {/* <h1 className="text-center mb-4">Form Responses</h1> */}
         <h4 className="text-center mb-4">{formNames[formType]}</h4>
 
         <div className="input-group my-3">
@@ -190,18 +264,63 @@ const FormResponses = () => {
             onChange={handleSearch}
           />
           <div className="input-group-append mx-2">
-            <button className="btn btn-outline-secondary" type="button">
-              Search
-            </button>
+            <select
+              className="form-control"
+              value={sortOption}
+              onChange={(e) => handleSort(e.target.value)}
+            >
+              <option value="default" disabled={true}>
+                Sort By
+              </option>
+              {/* <option value="submitter-id-min-to-max">
+                Submitter Id (Min to Max)
+              </option>
+              <option value="submitter-id-max-to-min">
+                Submitter Id (Max to Min)
+              </option> */}
+              {(formType === "1" || formType === "2") && (
+                <option value="score-max-to-min">Score (Max to Min)</option>
+              )}
+              {(formType === "1" || formType === "2") && (
+                <option value="score-min-to-max">Score (Min to Max)</option>
+              )}
+              {formType === "3" && (
+                <option value="meetings-min-to-max">
+                  Meetings (Min to Max)
+                </option>
+              )}
+              {formType === "3" && (
+                <option value="meetings-max-to-min">
+                  Meetings (Max to Min)
+                </option>
+              )}
+              {formType === "3" && (
+                <option value="treats-min-to-max">Treats (Min to Max)</option>
+              )}
+              {formType === "3" && (
+                <option value="treats-max-to-min">Treats (Max to Min)</option>
+              )}
+            </select>
           </div>
         </div>
+        <p>Total Entries: {totalEntries}</p>
         {filteredResponses.length === 0 ? (
           <p>No responses found for this form.</p>
         ) : (
-          <div className="table-container text-left">
+          <div
+            className="table-container text-left"
+            style={{ overflow: "auto", maxHeight: "400px" }}
+          >
             <div className="table-body">
               <table className="table table-bordered">
-                <thead>
+                <thead
+                  style={{
+                    position: "sticky",
+                    top: "0",
+                    backgroundColor: "white",
+                    zIndex: "1",
+                  }}
+                >
                   <tr>
                     <th>Submitter ID</th>
                     <th>Submitter Name</th>
@@ -234,13 +353,20 @@ const FormResponses = () => {
                         <td key={idx}>
                           <span
                             className="truncated"
-                            title={getAnswerForQuestion(key, response, formType)}
+                            title={getAnswerForQuestion(
+                              key,
+                              response,
+                              formType
+                            )}
                             onClick={() => handleExpandResponse(idx)}
                             style={{ cursor: "pointer" }}
                           >
                             {expandedResponse === idx
                               ? getAnswerForQuestion(key, response, formType)
-                              : truncateText(getAnswerForQuestion(key, response, formType), 15)}
+                              : truncateText(
+                                  getAnswerForQuestion(key, response, formType),
+                                  15
+                                )}
                           </span>
                         </td>
                       ))}

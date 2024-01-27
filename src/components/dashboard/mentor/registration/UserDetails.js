@@ -25,7 +25,25 @@ function UserDetails(props) {
       return;
     }
 
-    if (isNaN(Number(inputValues.contact)) || inputValues.contact.length !== 10) {
+    // Check if the name is valid (no numbers or special characters)
+    const nameRegex = /^[a-zA-Z\s]+$/; // Allow only letters
+    if (!nameRegex.test(inputValues.name)) {
+      alert("Please enter a valid name without numbers or special characters.");
+      return;
+    }
+
+    // Modify the name to the desired format
+    const formattedName = inputValues.name
+      .toLowerCase() // Convert to lowercase
+      .replace(/\s+/g, " ") // Replace multiple spaces with a single space
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
+
+    inputValues.name = formattedName;
+
+    if (
+      isNaN(Number(inputValues.contact)) ||
+      inputValues.contact.length !== 10
+    ) {
       alert("Please enter a valid 10-digit contact number.");
       return;
     }
