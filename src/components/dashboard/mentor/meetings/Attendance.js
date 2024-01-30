@@ -30,6 +30,7 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
 
           if (response.status === 200) {
             setattendanceList(response.data.attendees)
+            // console.log(response.data.attendees)
           }
         } catch (error) {
           console.error("Error fetching Attendance:", error);
@@ -71,74 +72,79 @@ export default function Attendance({handleClose,handleButtonSave,meetingId}) {
       };
 
 
-  return (
-    <div>
-      <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Take Attendance</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleClose}>
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            
-            {filteredAttendanceList ? (
-            <div className="modal-body">
-
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search by name or roll number"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+      return (
+        <div>
+          <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+            <div className="modal-dialog modal-lg">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Take Attendance</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleClose}>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
                 </div>
-
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th className='text-center'>Mark Attendance</th>
-                      <th className='text-center'>Roll Number</th>
-                      <th className='text-center'>Name</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredAttendanceList.map((student) => (
-                      <tr key={student.id}>
-                        <td className='text-center'>
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`attendanceCheckbox${student.id}`}
-                            checked={student.attendance === 1}
-                            onChange={() => handleCheckboxChange(student.id)}
-                          />
-                        </td>
-                        <td className='text-center'>{student.id}</td>
-                        <td className='text-center'>{student.name}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-            </div> ) : (
-                <p>Loading Attendance....</p>
-            )}
-
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>
-                Close
-              </button>
-              <button type="button" className="btn btn-primary" onClick={handleSave}>
-                Save Details
-              </button>
+    
+                {filteredAttendanceList ? (
+                  <div className="modal-body">
+                    <div className="mb-3">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search by name or roll number"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                    <div className="table-header">
+                      <table className="table">
+                        <thead>
+                          <tr style={{ width: '100%' }}>
+                            <th className='text-center' style={{ width: '33%' }}>Mark Attendance</th>
+                            <th className='text-center' style={{ width: '33%' }}>Roll Number</th>
+                            <th className='text-center' style={{ width: '33%' }}>Name</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    {/* Make the table body scrollable */}
+                    <div className="table-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+                      <table className="table">
+                        <tbody>
+                          {filteredAttendanceList.map((student) => (
+                            <tr key={student.id} style={{ width: '100%' }}>
+                              <td className='text-center' style={{ width: '33%' }}>
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`attendanceCheckbox${student.id}`}
+                                  checked={student.attendance === 1}
+                                  onChange={() => handleCheckboxChange(student.id)}
+                                />
+                              </td>
+                              <td className='text-center' style={{ width: '33%' }}>{student.id}</td>
+                              <td className='text-center' style={{ width: '33%' }}>{student.name}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <p>Loading Attendance....</p>
+                )}
+    
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>
+                    Close
+                  </button>
+                  <button type="button" className="btn btn-primary" onClick={handleSave}>
+                    Save Details
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
+      );
 }
 

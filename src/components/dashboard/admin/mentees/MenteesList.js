@@ -429,7 +429,7 @@ const MenteesList = () => {
         <button className="btn btn-primary mx-2" onClick={handleOpenUploadCSV}>
           Upload CSV
         </button>
-          <div
+        <div
           className="table-container text-center my-2"
           style={{ overflow: "auto", maxHeight: "400px" }}
         >
