@@ -31,8 +31,6 @@ export default function RegistrationForm() {
         );
         setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
         setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
-        console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
-        console.log(filteredConsentFormStatus[0]["formStatus"]);
       } catch (error) {
         console.error("Error fetching form status:", error);
       }
@@ -151,7 +149,6 @@ export default function RegistrationForm() {
     axios
       .post("http://127.0.0.1:8000/addCandidate/", JSON.stringify(formData))
       .then((response) => {
-        console.log("Data sent to the backend:", response.data);
         // Redirect to the next step or do any other necessary actions
         logout();
         alert("Enrollment Form Submitted Successfully. You are logged out.");
@@ -159,7 +156,6 @@ export default function RegistrationForm() {
       })
       .catch((error) => {
         console.error("Error sending data to the backend:", error);
-        console.log(formData);
         // Handle the error as needed
       });
   };

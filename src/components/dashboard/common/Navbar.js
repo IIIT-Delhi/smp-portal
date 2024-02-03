@@ -90,7 +90,7 @@ const Navbar = () => {
                   (e.target.style.backgroundColor = "transparent")
                 }
               >
-                Form and Responses
+                Feedback Form
               </Link>
             </li>
             {/* Add more mentee-specific tabs here */}

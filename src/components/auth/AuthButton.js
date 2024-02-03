@@ -28,8 +28,6 @@ const AuthButton = () => {
         );
         
         setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
-        console.log("here")
-        console.log(filteredEnrollmentFormStatus[0]["formStatus"]);
 
       } catch (error) {
         console.error("Error fetching form status:", error);
