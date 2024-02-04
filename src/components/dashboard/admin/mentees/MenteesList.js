@@ -24,12 +24,10 @@ const MenteesList = () => {
       // Update the state with the fetched Mentee list
       setMentees(response.data);
       setTotalEntries(response.data.length);
-      console.log(mentees);
     } catch (error) {
       console.error("Error fetching Mentee list:", error);
     }
   };
-
   // Call the function to fetch the Mentee list when the component loads
   useEffect(() => {
     if (isFirstTime) {
@@ -220,6 +218,46 @@ const MenteesList = () => {
   const handleCloseUploadCSV = () => {
     setmenteeUploadCSV(false);
   };
+
+  const handleDownloadCSV = () => {
+    try {
+      // Filter out keys you want to exclude from the CSV
+      const excludedKeys = ["imgSrc", "mentorImage","f3"];
+      const filteredData = mentees.map((entry) => {
+        const filteredEntry = { ...entry };
+        excludedKeys.forEach((key) => delete filteredEntry[key]);
+        return filteredEntry;
+      });
+
+      const csvData = convertToCSV(filteredData);
+
+      // Create a Blob containing the CSV data
+      const blob = new Blob([csvData], { type: "text/csv" });
+
+      // Create a link element to trigger the download
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "mentee_list.csv";
+
+      // Append the link to the document
+      document.body.appendChild(link);
+
+      // Trigger the download
+      link.click();
+
+      // Remove the link from the document
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error creating CSV and downloading:", error);
+    }
+  };
+
+  const convertToCSV = (data) => {
+    const header = Object.keys(data[0]).join(",");
+    const rows = data.map((entry) => Object.values(entry).join(","));
+    return `${header}\n${rows.join("\n")}`;
+  };
+
   const filteredMentees = mentees.filter((mentee) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
     const lowerName = mentee.name.toLowerCase();
@@ -427,14 +465,20 @@ const MenteesList = () => {
         </div>
 
         <button className="btn btn-primary mx-2" onClick={handleOpenUploadCSV}>
-          Upload CSV
+          Upload New CSV
+        </button>
+        <button className="btn btn-primary mx-2" onClick={handleDownloadCSV}>
+          Download CSV
         </button>
         <div
           className="table-container text-center my-2"
           style={{ overflow: "auto", maxHeight: "400px" }}
         >
           <div className="table-body">
-            <table className="table table-bordered table-hover mb-4 mx-2" border="1">
+            <table
+              className="table table-bordered table-hover mb-4 mx-2"
+              border="1"
+            >
               <thead
                 style={{
                   position: "sticky",
@@ -442,13 +486,10 @@ const MenteesList = () => {
                   backgroundColor: "white",
                   zIndex: "1",
                 }}
-              ><tr>
+              >
+                <tr>
                   {headerColumns.map((column) => (
-                    <th
-                      key={column.key}
-                    >
-                      {column.label}
-                    </th>
+                    <th key={column.key}>{column.label}</th>
                   ))}
                 </tr>
               </thead>
@@ -460,8 +501,7 @@ const MenteesList = () => {
                     // onClick={() => openMenteeProfile(mentee)}
                     style={{ cursor: "pointer" }}
                   >
-                    <td
-                    >
+                    <td>
                       <button
                         className="btn btn-link"
                         onClick={() => openMenteeProfile(mentee)}
@@ -469,16 +509,9 @@ const MenteesList = () => {
                         {mentee.name}
                       </button>
                     </td>
-                    <td
-                    >
-                      {mentee.id}
-                    </td>
-                    <td
-                    >
-                      {departmentOptions[mentee.department]}
-                    </td>
-                    <td
-                    >
+                    <td>{mentee.id}</td>
+                    <td>{departmentOptions[mentee.department]}</td>
+                    <td>
                       <div className="d-flex">
                         <button
                           className="btn btn-sm mr-2"

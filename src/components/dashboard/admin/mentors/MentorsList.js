@@ -142,6 +142,46 @@ const MentorsList = () => {
   const handleCancelDelete = () => {
     setMentorToDelete(null); // Clear the mentor to delete
   };
+  
+  // Download CSV
+  const handleDownloadCSV = () => {
+    try {
+      // Filter out keys you want to exclude from the CSV
+      const excludedKeys = ["imgSrc","status"];
+      const filteredData = mentors.map((entry) => {
+        const filteredEntry = { ...entry };
+        excludedKeys.forEach((key) => delete filteredEntry[key]);
+        return filteredEntry;
+      });
+
+      const csvData = convertToCSV(filteredData);
+
+      // Create a Blob containing the CSV data
+      const blob = new Blob([csvData], { type: "text/csv" });
+
+      // Create a link element to trigger the download
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "mentor_list.csv";
+
+      // Append the link to the document
+      document.body.appendChild(link);
+
+      // Trigger the download
+      link.click();
+
+      // Remove the link from the document
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error creating CSV and downloading:", error);
+    }
+  };
+
+  const convertToCSV = (data) => {
+    const header = Object.keys(data[0]).join(",");
+    const rows = data.map((entry) => Object.values(entry).join(","));
+    return `${header}\n${rows.join("\n")}`;
+  };
 
   const editMentorProfile = () => {
     console.log(`Edit Clicked for ${selectedMentor.name}`);
@@ -197,6 +237,9 @@ const MentorsList = () => {
             </select>
           </div>
         </div>
+        <button className="btn btn-primary mx-2" onClick={handleDownloadCSV}>
+          Download CSV
+        </button>
 
         <div
           className="table-container text-center my-2"
