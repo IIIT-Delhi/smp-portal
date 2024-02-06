@@ -112,6 +112,7 @@ const FormResponses = () => {
 
   useEffect(() => {
     setQuestionSet(getQuestionSet(formType)["questions"]);
+    console.log(formResponses);
     const filtered = formResponses.filter((response) => {
       const values = Object.values(response.responses);
       const includesTerm = values.some((value) =>
@@ -130,7 +131,7 @@ const FormResponses = () => {
 
       return (
         isDepartmentFiltered &&
-        isStatusFiltered &&
+        (isStatusFiltered || formType !== "2") &&
         (response.submitterId
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
@@ -141,7 +142,13 @@ const FormResponses = () => {
       );
     });
     setFilteredResponses(filtered);
-  }, [formResponses, searchTerm, formType, selectedDepartmentFilter, selectedStatusFilter]);
+  }, [
+    formResponses,
+    searchTerm,
+    formType,
+    selectedDepartmentFilter,
+    selectedStatusFilter,
+  ]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -386,6 +393,7 @@ const FormResponses = () => {
                   <tr>
                     <th>Submitter ID</th>
                     <th>Submitter Name</th>
+                    <th>Department</th>
                     {questionSet.map((question, index) => (
                       <th key={index}>
                         <span
@@ -411,6 +419,7 @@ const FormResponses = () => {
                     <tr key={index}>
                       <td>{response.submitterId}</td>
                       <td>{response.submitterName}</td>
+                      <td>{departmentOptions[response.department]}</td>
                       {Object.keys(response.responses).map((key, idx) => (
                         <td key={idx}>
                           <span

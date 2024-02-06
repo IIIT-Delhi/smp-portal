@@ -162,7 +162,7 @@ const MentorsList = () => {
       // Create a link element to trigger the download
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = "mentor_list.csv";
+      link.download = "Mentors_AY_.csv";
 
       // Append the link to the document
       document.body.appendChild(link);
