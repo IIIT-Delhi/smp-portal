@@ -925,13 +925,16 @@ def get_form_response(request):
                 if int(form_type) == 1 or int(form_type) == 2:
                     if len(Candidate.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
+                        department = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
                 if int(form_type) == 3:
                     if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
+                        department = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
                 response_data = {
                     "submitterId": form_response_obj['submitterId'],
                     "submiterName": summiter_name,
                     "responses": form_response_obj['responses'],
+                    "department": department,
                 }
 
                 if summiter_name != '':
@@ -1035,6 +1038,7 @@ def send_consent_email(request):
                             subject = "Consent Form Activated"
                             message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
                             message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
+                            print(send_emails_to)
                             thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
                             thread.start()
                     else: 
