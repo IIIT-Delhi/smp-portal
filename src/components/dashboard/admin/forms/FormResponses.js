@@ -20,6 +20,8 @@ const FormResponses = () => {
   const [loading, setLoading] = useState(false);
   const [totalEntries, setTotalEntries] = useState(0);
   const [sortOption, setSortOption] = useState("default");
+  const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState("");
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState("");
 
   const handleExpandQuestion = (index) => {
     setExpandedQuestion((prevIndex) => (prevIndex === index ? null : index));
@@ -44,11 +46,7 @@ const FormResponses = () => {
       return question ? question.options[response.responses[questionId]] : "";
     } else if (formType === "2") {
       if (questionId === "score") {
-        if (response.responses[questionId] === 0) {
-          return "Accepted";
-        } else {
-          return "rejected";
-        }
+        return statusOptions[response.responses[questionId]];
       }
       const question = consentQuestions.questions.find(
         (q) => q.id === questionId
@@ -70,6 +68,23 @@ const FormResponses = () => {
       default:
         return [];
     }
+  };
+  const departmentOptions = {
+    "B-CSB": "CSB (B.Tech.)",
+    "B-CSSS": "CSSS (B.Tech.)",
+    "B-CSD": "CSD (B.Tech.)",
+    "B-CSE": "CSE (B.Tech.)",
+    "B-CSAI": "CSAI (B.Tech.)",
+    "B-CSAM": "CSAM (B.Tech.)",
+    "B-ECE": "ECE (B.Tech.)",
+    "B-EVE": "EVE (B.Tech.)",
+    "M-CSE": "CSE (M.Tech.)",
+    "M-ECE": "ECE (M.Tech.)",
+    "M-CB": "CB (M.Tech.)",
+  };
+  const statusOptions = {
+    0: "Accepted",
+    1: "Rejected",
   };
 
   useEffect(() => {
@@ -97,21 +112,43 @@ const FormResponses = () => {
 
   useEffect(() => {
     setQuestionSet(getQuestionSet(formType)["questions"]);
+    console.log(formResponses);
     const filtered = formResponses.filter((response) => {
       const values = Object.values(response.responses);
       const includesTerm = values.some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase())
       );
+      // Apply department filter
+      const isDepartmentFiltered =
+        !selectedDepartmentFilter ||
+        response["department"] === selectedDepartmentFilter;
+
+      // Apply Status filter (only when formType is "2")
+      const isStatusFiltered =
+        formType === "2" &&
+        (!selectedStatusFilter ||
+          response.responses["score"].toString() === selectedStatusFilter);
+
       return (
-        response.submitterId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        response.submitterName
+        isDepartmentFiltered &&
+        (isStatusFiltered || formType !== "2") &&
+        (response.submitterId
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) ||
-        includesTerm
+          response.submitterName
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          includesTerm)
       );
     });
     setFilteredResponses(filtered);
-  }, [formResponses, searchTerm, formType]);
+  }, [
+    formResponses,
+    searchTerm,
+    formType,
+    selectedDepartmentFilter,
+    selectedStatusFilter,
+  ]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -266,42 +303,74 @@ const FormResponses = () => {
           <div className="input-group-append mx-2">
             <select
               className="form-control"
-              value={sortOption}
-              onChange={(e) => handleSort(e.target.value)}
+              value={selectedDepartmentFilter}
+              onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
             >
-              <option value="default" disabled={true}>
-                Sort By
-              </option>
-              {/* <option value="submitter-id-min-to-max">
+              <option value="">All Departments</option>
+              {Object.keys(departmentOptions).map((department) => (
+                <option key={department} value={department}>
+                  {departmentOptions[department]}
+                </option>
+              ))}
+            </select>
+          </div>
+          {formType === "2" && (
+            <div className="input-group-append">
+              <select
+                className="form-control"
+                value={selectedStatusFilter}
+                onChange={(e) => setSelectedStatusFilter(e.target.value)}
+              >
+                <option value="">All Status</option>
+                {Object.keys(statusOptions).map((status) => (
+                  <option key={status} value={status}>
+                    {statusOptions[status]}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          {(formType === "1" || formType === "3") && (
+            <div className="input-group-append mx-2">
+              <select
+                className="form-control"
+                value={sortOption}
+                onChange={(e) => handleSort(e.target.value)}
+              >
+                <option value="default" disabled={true}>
+                  Sort By
+                </option>
+                {/* <option value="submitter-id-min-to-max">
                 Submitter Id (Min to Max)
               </option>
               <option value="submitter-id-max-to-min">
                 Submitter Id (Max to Min)
               </option> */}
-              {(formType === "1" || formType === "2") && (
-                <option value="score-max-to-min">Score (Max to Min)</option>
-              )}
-              {(formType === "1" || formType === "2") && (
-                <option value="score-min-to-max">Score (Min to Max)</option>
-              )}
-              {formType === "3" && (
-                <option value="meetings-min-to-max">
-                  Meetings (Min to Max)
-                </option>
-              )}
-              {formType === "3" && (
-                <option value="meetings-max-to-min">
-                  Meetings (Max to Min)
-                </option>
-              )}
-              {formType === "3" && (
-                <option value="treats-min-to-max">Treats (Min to Max)</option>
-              )}
-              {formType === "3" && (
-                <option value="treats-max-to-min">Treats (Max to Min)</option>
-              )}
-            </select>
-          </div>
+                {formType === "1" && (
+                  <option value="score-max-to-min">Score (Max to Min)</option>
+                )}
+                {formType === "1" && (
+                  <option value="score-min-to-max">Score (Min to Max)</option>
+                )}
+                {formType === "3" && (
+                  <option value="meetings-min-to-max">
+                    Meetings (Min to Max)
+                  </option>
+                )}
+                {formType === "3" && (
+                  <option value="meetings-max-to-min">
+                    Meetings (Max to Min)
+                  </option>
+                )}
+                {formType === "3" && (
+                  <option value="treats-min-to-max">Treats (Min to Max)</option>
+                )}
+                {formType === "3" && (
+                  <option value="treats-max-to-min">Treats (Max to Min)</option>
+                )}
+              </select>
+            </div>
+          )}
         </div>
         <p>Total Entries: {totalEntries}</p>
         {filteredResponses.length === 0 ? (
@@ -324,6 +393,7 @@ const FormResponses = () => {
                   <tr>
                     <th>Submitter ID</th>
                     <th>Submitter Name</th>
+                    <th>Department</th>
                     {questionSet.map((question, index) => (
                       <th key={index}>
                         <span
@@ -341,7 +411,7 @@ const FormResponses = () => {
                     {formType === "3" && <th>Mentor Id</th>}
                     {formType === "3" && <th>Mentor Name</th>}
                     {formType === "1" && <th>Score</th>}
-                    {formType === "2" && <th>Score</th>}
+                    {formType === "2" && <th>Status</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -349,6 +419,7 @@ const FormResponses = () => {
                     <tr key={index}>
                       <td>{response.submitterId}</td>
                       <td>{response.submitterName}</td>
+                      <td>{departmentOptions[response.department]}</td>
                       {Object.keys(response.responses).map((key, idx) => (
                         <td key={idx}>
                           <span
