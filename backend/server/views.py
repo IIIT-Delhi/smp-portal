@@ -926,6 +926,7 @@ def get_form_response(request):
                     if len(Candidate.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                         department = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
+                        status = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['status']
                 if int(form_type) == 3:
                     if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
@@ -937,21 +938,35 @@ def get_form_response(request):
                     "department": department,
                 }
 
+                if int(status) == 1:
+                    form_status = 0
+                elif int(status) == 2:
+                    form_status = 1
+                elif int(status) == 3:
+                    form_status = 0
+                elif int(status) == 2:
+                    form_status = 1
+
                 if summiter_name != '':
                     if int(form_type) in [1, 2]:
                         mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
                         response_data["submitterName"] = mentor_obj.name
                         response_data["submitterEmail"] = mentor_obj.email
+                        response_data["Year"] = mentor_obj.year
+                        response_data["Contact"] = mentor_obj.contact
+                        response_data["Image"] = mentor_obj.imgSrc
+                        response_data["formStatus"] = form_status
 
                     elif int(form_type) == 3:
                         mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
-                        response_data["submitterName"] = mentee_obj.name
-                        response_data["submitterEmail"] = mentee_obj.email
+                        response_data["MenteeName"] = mentee_obj.name
+                        response_data["MenteeEmail"] = mentee_obj.email
+                        response_data["Contact"] = mentee_obj.contact
                     
                 # response_data.update(form_response_obj['responses'])
                     form_responses_data.append(response_data)
 
-            # print({"formResponses": form_responses_data})
+            print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
 
         except FormResponses.DoesNotExist:
