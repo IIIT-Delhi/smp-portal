@@ -6,6 +6,7 @@ import MenteeProfile from "./MenteeProfile";
 import MenteeUpload from "./MenteeUpload";
 import axios from "axios";
 import ChangeMentor from "./ChangeMentor";
+import departmentOptions from "../../../../data/departmentOptions.json";
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
@@ -42,19 +43,6 @@ const MenteesList = () => {
 
   // State for controlling the "Add Mentee" pop-up
   const [addMenteeModalVisible, setAddMenteeModalVisible] = useState(false);
-  const departmentOptions = {
-    "B-CSB": "CSB (B.Tech.)",
-    "B-CSSS": "CSSS (B.Tech.)",
-    "B-CSD": "CSD (B.Tech.)",
-    "B-CSE": "CSE (B.Tech.)",
-    "B-CSAI": "CSAI (B.Tech.)",
-    "B-CSAM": "CSAM (B.Tech.)",
-    "B-ECE": "ECE (B.Tech.)",
-    "B-EVE": "EVE (B.Tech.)",
-    "M-CSE": "CSE (M.Tech.)",
-    "M-ECE": "ECE (M.Tech.)",
-    "M-CB": "CB (M.Tech.)",
-  };
   // State for mentee form fields
   const [menteeForm, setMenteeForm] = useState({
     name: "",

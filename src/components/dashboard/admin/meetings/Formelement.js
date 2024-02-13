@@ -1,23 +1,10 @@
 import React from 'react'
+import departmentOptions from "../../../../data/departmentOptions.json";
 
-export default function Formelement({currmeeting, handletitle,handledate, handletime,handleattendees,handleDescription,formValid,handleBranch}) {
+export default function Formelement({currmeeting, handletitle,handledate, handletime,handleattendees,handleDescription,formValid,handleBranch,handleAllBranchesChange}) {
 
   const handleButtonClick = (e) => {
     e.stopPropagation();
-  };
-
-  const Departments = {
-    "B-CSB": "CSB (B.Tech.)",
-    "B-CSSS": "CSSS (B.Tech.)",
-    "B-CSD": "CSD (B.Tech.)",
-    "B-CSE": "CSE (B.Tech.)",
-    "B-CSAI": "CSAI (B.Tech.)",
-    "B-CSAM": "CSAM (B.Tech.)",
-    "B-ECE": "ECE (B.Tech.)",
-    "B-EVE": "EVE (B.Tech.)",
-    "M-CSE": "CSE (M.Tech.)",
-    "M-ECE": "ECE (M.Tech.)",
-    "M-CB": "CB (M.Tech.)",
   };
 
   return (
@@ -56,9 +43,25 @@ export default function Formelement({currmeeting, handletitle,handledate, handle
                 {currmeeting.attendee.includes('Mentors') && (
                   <div className="form-group">
                     <label>Mentor Branches</label>
+
                     <div>
-                      {Object.entries(Departments).map(([key, label]) => (
-                        <div key={key} className="form-check">
+
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value="allBranches"
+                          id="allBranchesCheck"
+                          checked={currmeeting.mentorBranches.length === Object.keys(departmentOptions).length}
+                          onChange={handleAllBranchesChange}
+                        />
+                        <label className="form-check-label" htmlFor="allBranchesCheck">
+                          All Branches
+                        </label>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                      {Object.entries(departmentOptions).map(([key, label]) => (
+                        <div key={key} className="form-check mx-3">
                           <input
                             className="form-check-input"
                             type="checkbox"
@@ -72,6 +75,7 @@ export default function Formelement({currmeeting, handletitle,handledate, handle
                           </label>
                         </div>
                       ))}
+                      </div>
                     </div>
                   </div>
                 )}

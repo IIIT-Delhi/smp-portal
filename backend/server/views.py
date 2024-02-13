@@ -944,7 +944,7 @@ def get_form_response(request):
                     form_status = 1
                 elif int(status) == 3:
                     form_status = 0
-                elif int(status) == 2:
+                elif int(status) == 5:
                     form_status = 1
 
                 if summiter_name != '':
@@ -966,7 +966,7 @@ def get_form_response(request):
                 # response_data.update(form_response_obj['responses'])
                     form_responses_data.append(response_data)
 
-            print({"formResponses": form_responses_data})
+            # print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
 
         except FormResponses.DoesNotExist:
