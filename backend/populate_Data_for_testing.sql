@@ -63,7 +63,7 @@ VALUES
 
 -- step 4
 DELETE FROM server_meetings;
-INSERT INTO server_meetings ("meetingId", "schedulerId", "title", "date", "time", "attendee", "description", "menteeBranches", "menteeBranches", "menteeList")
+INSERT INTO server_meetings ("meetingId", "schedulerId", "title", "date", "time", "attendee", "description", "mentorBranches", "menteeBranches", "menteeList")
 VALUES
     ('3', '1', 'SetForMentors', '2023-11-10', '02:30', 1, 'Test Meeting from AdminId=1','["B-CSB","B-CSAI"]', '["B-CSB"]', '[]'),
     ('4', '1', 'SetForMentees', '2023-12-11', '03:30', 2, 'Test Meeting from AdminId=1', '["B-CSB"]', '["B-CSB"]', '[]'),
