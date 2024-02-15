@@ -1,5 +1,6 @@
 from io import StringIO
 import math
+import os
 import random
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
@@ -14,6 +15,7 @@ from django.conf import settings
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import threading
+from .MailContent import mail_content
 
 
 def get_all_admins(request):
@@ -1040,48 +1042,50 @@ def update_form_status(request):
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
 @csrf_exempt
-def send_consent_email(request):
+def send_consent_form(request):
     if request.method == "POST":
         try:
-            departments = Candidate.objects.values_list('department', flat=True).distinct()
-            noMenteeBranch = []
-            consent_responses_count = {department: 0 for department in departments}
-            form_responses = FormResponses.objects.filter(FormType='2')
-            for form_response in form_responses:
-                submitter_id = form_response.submitterId
-                department = Candidate.objects.get(id=submitter_id).department
-                consent_responses_count[department] += 1
+            data = json.loads(request.body.decode('utf-8'))
+            subject = data.get('subject')
+            message = data.get('body')
+            candidate_ids = data.get('Id', [])
 
-            for department in departments:
-                mentees = Mentee.objects.filter(department=department, mentorId='')
-                mentee_batch_size = math.ceil(len(mentees) / 5.0)
-                remaining_candidates_needed = mentee_batch_size - consent_responses_count[department]
-                if(mentee_batch_size):
-                    candidates = Candidate.objects.filter(status=1, department=department).order_by('-score')[:remaining_candidates_needed]
-                    remaining_candidates_emails =  [candidate.email for candidate in candidates] 
-                    if len(remaining_candidates_emails) == remaining_candidates_needed:
-                        formStatus = FormStatus.objects.get(formId=2).formStatus
-                        if int(formStatus) == 1:
-                            emails = [candidate.email for candidate in candidates]
-                            Candidate.objects.filter(id__in=candidates.values_list('id', flat=True)).update(status='2')
-                            subject = "Consent Form Activated"
-                            message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
-                            message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
-                            print(send_emails_to)
-                            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
-                            thread.start()
-                    else: 
-                        noMenteeBranch.append(department)
-            if len(noMenteeBranch):
-                return JsonResponse({'message': 'Not enough candidate for branches : '+ str(noMenteeBranch)})
-            else:
-                return JsonResponse({'message': "Mail send successfully"})
+            if not all([subject, message, candidate_ids]):
+                return JsonResponse({"error": "Missing required data"}, status=400)
+
+            emails = []
+            for candidate_id in candidate_ids:
+                candidate = Candidate.objects.get(id=candidate_id)
+                candidate.status = '3'
+                candidate.save()
+                emails.append(candidate.email)
+
+            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            thread.start()
+
+            return JsonResponse({'message': "Mail sent successfully"})
         except Exception as e:
             print(e)
             return JsonResponse({'message': str(e)})
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
-    
+
+@csrf_exempt
+def get_mail_subject_and_body(request):
+    if request.method == "POST":
+        requested_type = json.loads(request.body.decode('utf-8')).get('type')
+        for entry in mail_content:
+            if entry.get('type') == requested_type:
+                subject = entry.get('subject')
+                body = entry.get('body')
+                print({"subject": subject, "body": body})
+                return JsonResponse({"subject": subject, "body": body})
+
+        # If no match found
+        return JsonResponse({"message": "Type not found in MailContent"}, status=404)
+    else:
+        return JsonResponse({"message": "Invalid request method"}, status=400)
+
 #Done
 def send_emails_to_attendees(meeting, type):
     """
