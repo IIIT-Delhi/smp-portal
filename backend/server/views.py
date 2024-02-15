@@ -533,6 +533,8 @@ def add_meeting(request):
         attendeelist = data.get('attendee')
         attendeevalue = -1
         mentorBranches = data.get('mentorBranches', [])
+        menteeBranches = data.get('menteeBranches', [])
+        menteeList = data.get('menteeList', [])
 
         if "Mentees" in attendeelist and "Mentors" in attendeelist:
             attendeevalue = 3
@@ -558,7 +560,9 @@ def add_meeting(request):
                 time=time,
                 attendee=attendeevalue,
                 description=data.get('description'),
-                mentorBranches=mentorBranches 
+                mentorBranches=mentorBranches, 
+                menteeBranches = menteeBranches,
+                menteeList = menteeList,
             )
             new_meeting.save()
             thread = threading.Thread(target=send_emails_to_attendees, args=(new_meeting, 1))
@@ -591,6 +595,8 @@ def edit_meeting_by_id(request):
         meeting.attendee = attendeevalue
         meeting.description = data.get('description')
         meeting.mentorBranches = data.get('mentorBranches', [])
+        meeting.menteeBranches = data.get('menteeBranches', [])
+        meeting.menteeList = data.get('menteeList', [])
         existing_meeting = Meetings.objects.filter(
             schedulerId=data.get('schedulerId'),
             date=data.get('date'),
@@ -643,10 +649,17 @@ def get_meetings(request):
             ).values()
             all_meetings = organized_meetings | attendee_meetings
         elif user_type == "mentee":
+            try:
+                mentee_department = Mentee.objects.get(id=user_id).department
+            except Mentee.DoesNotExist:
+                return JsonResponse({"error": "Mentee not found"})
+            
             # Return meetings organized by the mentee's mentor and meetings where the mentee is an attendee
             mentor = Mentee.objects.get(id=user_id).mentorId
-            mentor_meetings = Meetings.objects.filter(schedulerId=mentor).values()
-            attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3]).values()  # Include 2 (mentee) and 3 (both mentor and mentee)
+            mentor_meetings = Meetings.objects.filter(schedulerId=mentor, 
+                    menteeList__contains=[user_id]).values()
+            attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3],
+                menteeBranches__contains=[mentee_department]).values()  # Include 2 (mentee) and 3 (both mentor and mentee)
             all_meetings = mentor_meetings | attendee_meetings
         else:
             return JsonResponse({"message": "Invalid user type"})
@@ -716,7 +729,7 @@ def get_attendance(request):
                     attendees_list.append(attendee_info)
 
             elif attendees == 2:  # Mentee
-                mentees = Mentee.objects.all().values()
+                mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
                 for mentee in mentees:
                     attendee_info = {}
                     attendee_info["id"] = mentee['id']
@@ -745,7 +758,7 @@ def get_attendance(request):
                         attendee_info["attendance"] = 0  # Attendee is 
                     attendees_list.append(attendee_info)
 
-                mentees = Mentee.objects.all().values()
+                mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
                 for mentee in mentees:
                     attendee_info = {}
                     attendee_info["id"] = mentee['id']
@@ -761,7 +774,8 @@ def get_attendance(request):
         except Admin.DoesNotExist:
             # Mentor scheduler, get all mentees of the mentor
             try:
-                mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id).values()
+                mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id,
+                                                       id__in=meeting.menteeList).values()
                 attendees = [mentee['id'] for mentee in mentor_mentees]
                 for attendee_id in attendees:
                         attendee_info = {}
@@ -944,7 +958,7 @@ def get_form_response(request):
                     form_status = 1
                 elif int(status) == 3:
                     form_status = 0
-                elif int(status) == 2:
+                elif int(status) == 5:
                     form_status = 1
 
                 if summiter_name != '':
@@ -1094,7 +1108,7 @@ def send_emails_to_attendees(meeting, type):
                 attendees_list.append(mentor['email'])
 
         elif attendees == 2:  # Mentee
-            mentees = Mentee.objects.all().values()
+            mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
             for mentee in mentees:
                 attendees_list.append(mentee['email'])
 
@@ -1104,14 +1118,15 @@ def send_emails_to_attendees(meeting, type):
             for mentor in mentors:
                 attendees_list.append(mentor['email'])
 
-            mentees = Mentee.objects.all().values()
+            mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
             for mentee in mentees:
                 attendees_list.append(mentee['email'])
                    
     except Admin.DoesNotExist:
         # Mentor scheduler, get all mentees of the mentor
         try:
-            mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id).values()
+            mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id,
+                                                       id__in=meeting.menteeList).values()
             attendees = [mentee['id'] for mentee in mentor_mentees]
             for attendee_id in attendees:
                     attendee_info = {}
@@ -1172,3 +1187,4 @@ def send_emails_to(subject, message, from_email, emails):
             invalid_emails.append({"email": email, "error": "Invalid email address"})
         except Exception as e:
             invalid_emails.append({"email": email, "error": str(e)})
+    
