@@ -80,6 +80,8 @@ class Meetings(models.Model):
     time = models.CharField(max_length=255)
     attendee = models.IntegerField()
     mentorBranches = models.JSONField(default=list)
+    menteeBranches = models.JSONField(default=list)
+    menteeList = models.JSONField(default=list)
     """
     1: mentor 
     2: mentee

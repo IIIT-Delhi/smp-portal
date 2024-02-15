@@ -1,5 +1,6 @@
 from io import StringIO
 import math
+import os
 import random
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
@@ -14,6 +15,7 @@ from django.conf import settings
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import threading
+from .MailContent import mail_content
 
 
 def get_all_admins(request):
@@ -533,6 +535,8 @@ def add_meeting(request):
         attendeelist = data.get('attendee')
         attendeevalue = -1
         mentorBranches = data.get('mentorBranches', [])
+        menteeBranches = data.get('menteeBranches', [])
+        menteeList = data.get('menteeList', [])
 
         if "Mentees" in attendeelist and "Mentors" in attendeelist:
             attendeevalue = 3
@@ -558,7 +562,9 @@ def add_meeting(request):
                 time=time,
                 attendee=attendeevalue,
                 description=data.get('description'),
-                mentorBranches=mentorBranches 
+                mentorBranches=mentorBranches, 
+                menteeBranches = menteeBranches,
+                menteeList = menteeList,
             )
             new_meeting.save()
             thread = threading.Thread(target=send_emails_to_attendees, args=(new_meeting, 1))
@@ -591,6 +597,8 @@ def edit_meeting_by_id(request):
         meeting.attendee = attendeevalue
         meeting.description = data.get('description')
         meeting.mentorBranches = data.get('mentorBranches', [])
+        meeting.menteeBranches = data.get('menteeBranches', [])
+        meeting.menteeList = data.get('menteeList', [])
         existing_meeting = Meetings.objects.filter(
             schedulerId=data.get('schedulerId'),
             date=data.get('date'),
@@ -643,10 +651,17 @@ def get_meetings(request):
             ).values()
             all_meetings = organized_meetings | attendee_meetings
         elif user_type == "mentee":
+            try:
+                mentee_department = Mentee.objects.get(id=user_id).department
+            except Mentee.DoesNotExist:
+                return JsonResponse({"error": "Mentee not found"})
+            
             # Return meetings organized by the mentee's mentor and meetings where the mentee is an attendee
             mentor = Mentee.objects.get(id=user_id).mentorId
-            mentor_meetings = Meetings.objects.filter(schedulerId=mentor).values()
-            attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3]).values()  # Include 2 (mentee) and 3 (both mentor and mentee)
+            mentor_meetings = Meetings.objects.filter(schedulerId=mentor, 
+                    menteeList__contains=[user_id]).values()
+            attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3],
+                menteeBranches__contains=[mentee_department]).values()  # Include 2 (mentee) and 3 (both mentor and mentee)
             all_meetings = mentor_meetings | attendee_meetings
         else:
             return JsonResponse({"message": "Invalid user type"})
@@ -716,7 +731,7 @@ def get_attendance(request):
                     attendees_list.append(attendee_info)
 
             elif attendees == 2:  # Mentee
-                mentees = Mentee.objects.all().values()
+                mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
                 for mentee in mentees:
                     attendee_info = {}
                     attendee_info["id"] = mentee['id']
@@ -745,7 +760,7 @@ def get_attendance(request):
                         attendee_info["attendance"] = 0  # Attendee is 
                     attendees_list.append(attendee_info)
 
-                mentees = Mentee.objects.all().values()
+                mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
                 for mentee in mentees:
                     attendee_info = {}
                     attendee_info["id"] = mentee['id']
@@ -761,7 +776,8 @@ def get_attendance(request):
         except Admin.DoesNotExist:
             # Mentor scheduler, get all mentees of the mentor
             try:
-                mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id).values()
+                mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id,
+                                                       id__in=meeting.menteeList).values()
                 attendees = [mentee['id'] for mentee in mentor_mentees]
                 for attendee_id in attendees:
                         attendee_info = {}
@@ -1026,48 +1042,50 @@ def update_form_status(request):
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
 @csrf_exempt
-def send_consent_email(request):
+def send_consent_form(request):
     if request.method == "POST":
         try:
-            departments = Candidate.objects.values_list('department', flat=True).distinct()
-            noMenteeBranch = []
-            consent_responses_count = {department: 0 for department in departments}
-            form_responses = FormResponses.objects.filter(FormType='2')
-            for form_response in form_responses:
-                submitter_id = form_response.submitterId
-                department = Candidate.objects.get(id=submitter_id).department
-                consent_responses_count[department] += 1
+            data = json.loads(request.body.decode('utf-8'))
+            subject = data.get('subject')
+            message = data.get('body')
+            candidate_ids = data.get('Id', [])
 
-            for department in departments:
-                mentees = Mentee.objects.filter(department=department, mentorId='')
-                mentee_batch_size = math.ceil(len(mentees) / 5.0)
-                remaining_candidates_needed = mentee_batch_size - consent_responses_count[department]
-                if(mentee_batch_size):
-                    candidates = Candidate.objects.filter(status=1, department=department).order_by('-score')[:remaining_candidates_needed]
-                    remaining_candidates_emails =  [candidate.email for candidate in candidates] 
-                    if len(remaining_candidates_emails) == remaining_candidates_needed:
-                        formStatus = FormStatus.objects.get(formId=2).formStatus
-                        if int(formStatus) == 1:
-                            emails = [candidate.email for candidate in candidates]
-                            Candidate.objects.filter(id__in=candidates.values_list('id', flat=True)).update(status='2')
-                            subject = "Consent Form Activated"
-                            message = "Dear Students,\nWe would like to inform you that the consent form for the recently filled registration form is now activated."
-                            message = message + " Your prompt action in filling out the consent form is crucial for the successful completion of the process. \n\n\tAction Required: Fill Consent Form"
-                            print(send_emails_to)
-                            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
-                            thread.start()
-                    else: 
-                        noMenteeBranch.append(department)
-            if len(noMenteeBranch):
-                return JsonResponse({'message': 'Not enough candidate for branches : '+ str(noMenteeBranch)})
-            else:
-                return JsonResponse({'message': "Mail send successfully"})
+            if not all([subject, message, candidate_ids]):
+                return JsonResponse({"error": "Missing required data"}, status=400)
+
+            emails = []
+            for candidate_id in candidate_ids:
+                candidate = Candidate.objects.get(id=candidate_id)
+                candidate.status = '3'
+                candidate.save()
+                emails.append(candidate.email)
+
+            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            thread.start()
+
+            return JsonResponse({'message': "Mail sent successfully"})
         except Exception as e:
             print(e)
             return JsonResponse({'message': str(e)})
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
-    
+
+@csrf_exempt
+def get_mail_subject_and_body(request):
+    if request.method == "POST":
+        requested_type = json.loads(request.body.decode('utf-8')).get('type')
+        for entry in mail_content:
+            if entry.get('type') == requested_type:
+                subject = entry.get('subject')
+                body = entry.get('body')
+                print({"subject": subject, "body": body})
+                return JsonResponse({"subject": subject, "body": body})
+
+        # If no match found
+        return JsonResponse({"message": "Type not found in MailContent"}, status=404)
+    else:
+        return JsonResponse({"message": "Invalid request method"}, status=400)
+
 #Done
 def send_emails_to_attendees(meeting, type):
     """
@@ -1094,7 +1112,7 @@ def send_emails_to_attendees(meeting, type):
                 attendees_list.append(mentor['email'])
 
         elif attendees == 2:  # Mentee
-            mentees = Mentee.objects.all().values()
+            mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
             for mentee in mentees:
                 attendees_list.append(mentee['email'])
 
@@ -1104,14 +1122,15 @@ def send_emails_to_attendees(meeting, type):
             for mentor in mentors:
                 attendees_list.append(mentor['email'])
 
-            mentees = Mentee.objects.all().values()
+            mentees = Mentee.objects.filter(department__in=meeting.menteeBranches).values()
             for mentee in mentees:
                 attendees_list.append(mentee['email'])
                    
     except Admin.DoesNotExist:
         # Mentor scheduler, get all mentees of the mentor
         try:
-            mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id).values()
+            mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id,
+                                                       id__in=meeting.menteeList).values()
             attendees = [mentee['id'] for mentee in mentor_mentees]
             for attendee_id in attendees:
                     attendee_info = {}
@@ -1172,3 +1191,4 @@ def send_emails_to(subject, message, from_email, emails):
             invalid_emails.append({"email": email, "error": "Invalid email address"})
         except Exception as e:
             invalid_emails.append({"email": email, "error": str(e)})
+    

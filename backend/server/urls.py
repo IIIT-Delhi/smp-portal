@@ -48,5 +48,80 @@ urlpatterns = [
     path('getFormStatus/', views.get_form_status, name='getFormStatus'),
     path('updateFormStatus/', views.update_form_status, name='updateFormStatus'),
     path('menteeFilledFeedback/', views.mentee_filled_feedback, name='menteeFilledFeedback'),
-    path('sendConsentEmail/', views.send_consent_email, name='sendConsentEmail'),
+    path('sendConsentForm/', views.send_consent_form, name='sendConsentForm'),
+
+
+    path('getMailSubjectAndBody/', views.get_mail_subject_and_body, name="getMailSubjectAndBody"),
 ]
+
+
+
+"""
+
+Yes, you can certainly organize your Django views into multiple files to keep your codebase modular and more manageable. Here's an example of how you can achieve this:
+
+1. **Create a `views` directory:**
+   Inside your Django app directory, create a new directory named `views`.
+
+   ```
+   your_app/
+   ├── __init__.py
+   ├── views/
+   │   ├── __init__.py
+   │   ├── view_file1.py
+   │   ├── view_file2.py
+   │   └── ...
+   ├── models.py
+   ├── urls.py
+   └── ...
+   ```
+
+2. **Organize views into separate files:**
+   Inside the `views` directory, create individual Python files for different sections or functionalities of your views. For example:
+
+   - `view_file1.py`
+   ```python
+   from django.shortcuts import render
+
+   def section1_view(request):
+       # code for section 1
+       return render(request, 'section1_template.html', context)
+   ```
+
+   - `view_file2.py`
+   ```python
+   from django.shortcuts import render
+
+   def section2_view(request):
+       # code for section 2
+       return render(request, 'section2_template.html', context)
+   ```
+
+3. **Import and use in the main view file:**
+   In your main view file (e.g., `views.py`), you can import the functions from the subfiles and use them.
+
+   ```python
+   from .views.view_file1 import section1_view
+   from .views.view_file2 import section2_view
+
+   def my_view(request):
+       result1 = section1_view(request)
+       result2 = section2_view(request)
+       # Combine results and return response
+   ```
+
+4. **Update URL patterns:**
+   If you've organized your views into subfiles, you need to make sure your URL patterns in `urls.py` are updated accordingly.
+
+   ```python
+   from django.urls import path
+   from .views import my_view
+
+   urlpatterns = [
+       path('my-view/', my_view, name='my_view'),
+       # Add other URL patterns as needed
+   ]
+   ```
+
+By organizing your views into separate files, you can maintain a cleaner and more modular code structure, making it easier to understand, maintain, and extend your Django application.
+"""
