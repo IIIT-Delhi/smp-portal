@@ -1059,7 +1059,7 @@ def send_consent_form(request):
             emails = []
             for candidate_id in candidate_ids:
                 candidate = Candidate.objects.get(id=candidate_id)
-                candidate.status = '2 '
+                candidate.status = '2'
                 candidate.save()
                 emails.append(candidate.email)
 
