@@ -954,14 +954,16 @@ def get_form_response(request):
                     "department": department,
                 }
 
+                consent_status = None
+                mapping_status = None
                 if int(status) == 1:
-                    form_status = 0
+                    consent_status = 0
                 elif int(status) == 2:
-                    form_status = 1
+                    consent_status = 1
                 elif int(status) == 3:
-                    form_status = 0
+                    mapping_status = 0
                 elif int(status) == 5:
-                    form_status = 1
+                    mapping_status = 1
 
                 if summiter_name != '':
                     if int(form_type) in [1, 2]:
@@ -971,7 +973,8 @@ def get_form_response(request):
                         response_data["Year"] = mentor_obj.year
                         response_data["Contact"] = mentor_obj.contact
                         response_data["Image"] = mentor_obj.imgSrc
-                        response_data["formStatus"] = form_status
+                        response_data["consent_status"] = consent_status
+                        response_data["mapping_status"] = mapping_status
 
                     elif int(form_type) == 3:
                         mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
@@ -1056,7 +1059,7 @@ def send_consent_form(request):
             emails = []
             for candidate_id in candidate_ids:
                 candidate = Candidate.objects.get(id=candidate_id)
-                candidate.status = '3'
+                candidate.status = '2 '
                 candidate.save()
                 emails.append(candidate.email)
 
