@@ -37,7 +37,7 @@ def create_mentor_mentee_pairs(request):
             candidate_ids = data.get('Id', [])
 
             if not all([subject, message, candidate_ids]):
-                return JsonResponse({"error": "Missing required data"}, status=400)
+                return JsonResponse({"error": "Please Select Students"}, status=400)
 
             departments = Mentee.objects.values_list('department', flat=True).distinct()
             department_dict = {department: [] for department in departments}

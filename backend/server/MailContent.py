@@ -20,6 +20,11 @@ mail_content = [
         "body" : "Feedback form successfully filled."
     },
     {
+        "type" : "mappping",
+        "subject" : "Mentor Assigned",
+        "body" : "Dear Students,\nWe would like to inform you that you have been selected as a mentor"
+        }
+    {
         "type" : "feedback_open",
         "subject" : "Feedback Form Activated",
         "body" : "Dear Students,\nWe would like to inform you that the mentor feedback form has been activated by the admin. Your prompt action in filling out the feedback form is crucial."
