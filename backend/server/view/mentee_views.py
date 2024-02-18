@@ -1,3 +1,6 @@
+import csv
+from http.client import HTTPResponse
+from io import StringIO
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -6,7 +9,28 @@ from server.models import *
 
 @csrf_exempt
 def add_mentee(request):
-    # returns json ; {"message": "//message//"}
+    """
+    Adds a new mentee based on the provided data.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - id (str): Mentee ID.
+                - name (str): Mentee name.
+                - email (str): Mentee email.
+                - department (str): Mentee department.
+                - mentorId (str): ID of the mentor to whom the mentee is assigned.
+                - imgSrc (str, optional): Image source for the mentee.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of adding a mentee.
+            Possible responses:
+                - {"message": "Mentee with this ID already exist"}: If a mentee with the given ID already exists.
+                - {"message": "Mentor Not Found"}: If the specified mentor is not found.
+                - {"message": "Mentee added successfully"}: If the mentee is added successfully.
+                - {"message": "Invalid request method"} (status 400): If the request method is not POST.
+    """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
@@ -28,6 +52,19 @@ def add_mentee(request):
 
 @csrf_exempt
 def upload_CSV(request):
+    """
+    Uploads a CSV file, processes the data, and adds Mentee objects to the database.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Data: CSV file in the 'csvFile' field.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of the operation.
+            Example response:
+                {"message": "//message//"}
+    """
     if request.method == 'POST':
         # Check if a file was uploaded
         if 'csvFile' in request.FILES:
@@ -70,14 +107,23 @@ def upload_CSV(request):
             return JsonResponse({'message': 'No file was uploaded'}, status=400)
     else:
         return JsonResponse({'message': 'Unsupported HTTP method'}, status=405)
-    
-def index(request):
-    return HttpResponse("home")
 
 
 @csrf_exempt
 def edit_mentee_by_id(request):
-    # returns json ; {"message": "//message//"}
+    """
+    Edits the details of a mentee based on the provided data.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Data: JSON data containing the details to be edited.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of the operation.
+            Example response:
+                {"message": "//message//"}
+    """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
@@ -95,9 +141,20 @@ def edit_mentee_by_id(request):
         return JsonResponse({"message": "Invalid request method"})
 
 
-
 def get_all_mentees(request):
-    # returns list of json ; [{details}, {details}, ...]
+    """
+    Retrieves details of all mentees.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: GET
+
+    Returns:
+        JsonResponse: A JSON response containing the details of all mentees.
+            Example response:
+                [{"id": "mentee_id1", "name": "mentee_name1", "email": "mentee_email1", ...},
+                 {"id": "mentee_id2", "name": "mentee_name2", "email": "mentee_email2", ...}, ...]
+    """
     if request.method == "GET":
         mentees = Mentee.objects.all().values()
         for mentee in mentees:
@@ -124,7 +181,20 @@ def get_all_mentees(request):
 
 
 def get_mentee_by_id(request):
-    # returns list of json with one element; [{details}]
+    """
+    Retrieves details of a mentee by their ID.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: GET
+            Parameters:
+                - id: The ID of the mentee.
+
+    Returns:
+        JsonResponse: A JSON response containing the details of the mentee.
+            Example response:
+                [{"id": "mentee_id", "name": "mentee_name", "email": "mentee_email", ...}]
+    """
     if request.method == "GET":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         mentees = Mentee.objects.filter(id=id_to_search).values()
@@ -152,7 +222,18 @@ def get_mentee_by_id(request):
 
 
 def delete_all_mentees(request):
-    # returns json ; {"message": "//message//"}
+    """
+    Deletes all mentees from the database.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: GET
+
+    Returns:
+        JsonResponse: A JSON response indicating the result of the deletion.
+            Example response:
+                {"message": "deleted //number// database entries"}
+    """
     if request.method == "GET":
         deleted = Mentee.objects.all().delete()
         return JsonResponse({"message": "deleted "+str(deleted[0])+" database entries"})
@@ -162,7 +243,20 @@ def delete_all_mentees(request):
 
 @csrf_exempt
 def delete_mentee_by_id(request):
-    # returns json ; {"message": "//message//"}
+    """
+    Deletes a mentee by ID.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - id (str): Mentee ID to be deleted.
+
+    Returns:
+        JsonResponse: A JSON response indicating the result of the deletion.
+            Example response:
+                {"message": "deleted //number// database entries"}
+    """
     if request.method == "POST":
         id_to_search = json.loads(request.body.decode()).get('id')
         deleted = Mentee.objects.filter(id=str(id_to_search)).delete()

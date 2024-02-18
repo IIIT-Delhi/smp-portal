@@ -1,5 +1,23 @@
-#Done
+from django.http import JsonResponse
+from server.models import *
+from django.core.mail import send_mail
+from django.conf import settings
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from server.MailContent import mail_content
+
 def send_emails_to_attendees(meeting, type):
+    """
+    Sends emails to meeting attendees based on the meeting type.
+
+    Args:
+        meeting (object): The meeting object containing information about the meeting.
+        type (int): Type of the meeting (1: new meeting, 2: meeting edited, 3: deleted).
+
+    Returns:
+        None
+    """
+
     """
     1: new meeting
     2: meeting edited
@@ -83,13 +101,23 @@ def send_emails_to_attendees(meeting, type):
 
 #Done
 def send_emails_to(subject, message, from_email, emails):
+    """
+    Sends emails to the specified list of email addresses.
+
+    Args:
+        subject (str): Subject of the email.
+        message (str): Body content of the email.
+        from_email (str): Sender's email address.
+        emails (list): List of email addresses to which the emails should be sent.
+
+    Returns:
+        None
+    """
     invalid_emails = []
 
     for email in emails:
         try:
-            # Validate the email address (add more sophisticated validation if needed)
             validate_email(email)
-
             # Send email
             send_mail(
                 subject,
@@ -104,3 +132,20 @@ def send_emails_to(subject, message, from_email, emails):
         except Exception as e:
             invalid_emails.append({"email": email, "error": str(e)})
     
+
+def get_mail_content(type):
+    """
+    Retrieves the content for email based on the specified type.
+
+    Args:
+        type (str): Type of email content to retrieve.
+
+    Returns:
+        dict or None: A dictionary containing email subject and body, or None if the type is not found.
+    """
+    for entry in mail_content:
+        if entry.get('type') == type:
+            subject = entry.get('subject')
+            body = entry.get('body')
+            return {"subject": subject, "body": body}
+    return None

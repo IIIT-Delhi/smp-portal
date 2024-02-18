@@ -4,10 +4,34 @@ from django.views.decorators.csrf import csrf_exempt
 from server.models import *
 from datetime import datetime
 import threading
+from server.view.helper_functions import send_emails_to_attendees
 
 @csrf_exempt
 def add_meeting(request):
-    # returns json ; {"message": "//message//"}
+    """
+    Adds a new meeting based on the provided data.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - schedulerId (str): ID of the scheduler.
+                - date (str): Date of the meeting.
+                - time (str): Time of the meeting.
+                - title (str): Title of the meeting.
+                - attendee (list): List of attendees ("Mentors", "Mentees", or both).
+                - description (str): Description of the meeting.
+                - mentorBranches (list, optional): List of mentor branches.
+                - menteeBranches (list, optional): List of mentee branches.
+                - menteeList (list, optional): List of mentee IDs.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of adding a meeting.
+            Possible responses:
+                - {"error": "Meeting already scheduled at the same date and time"}: If a meeting with the same scheduler_id, date, and time already exists.
+                - {"message": "Data added successfully"}: If the meeting is added successfully.
+                - {"error": "Invalid request method"} (status 400): If the request method is not POST.
+    """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         scheduler_id = data.get('schedulerId')
@@ -55,11 +79,33 @@ def add_meeting(request):
         return JsonResponse({"error": "Invalid request method"})
 
 
-#Done
 @csrf_exempt
 def edit_meeting_by_id(request):
-    # returns json ; {"message": "//message//"}
-    
+    """
+    Edits an existing meeting based on the provided data.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - meetingId (int): ID of the meeting to be edited.
+                - title (str): New title of the meeting.
+                - schedulerId (str): New scheduler ID.
+                - date (str): New date of the meeting.
+                - time (str): New time of the meeting.
+                - attendee (list): List of attendees ("Mentors", "Mentees", or both).
+                - description (str): New description of the meeting.
+                - mentorBranches (list, optional): List of new mentor branches.
+                - menteeBranches (list, optional): List of new mentee branches.
+                - menteeList (list, optional): List of new mentee IDs.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of editing a meeting.
+            Possible responses:
+                - {"message": "Meeting already scheduled at the same date and time"}: If a meeting with the same scheduler_id, date, and time already exists.
+                - {"message": "Data added successfully"}: If the meeting is edited successfully.
+                - {"message": "Invalid request method"}: If the request method is not POST.
+    """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         meeting = Meetings.objects.get(meetingId=data.get('meetingId'))
@@ -94,9 +140,23 @@ def edit_meeting_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
     
-#Done
 @csrf_exempt
 def delete_meeting_by_id(request):
+    """
+    Deletes a meeting based on the provided meeting ID.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - meetingId (int): ID of the meeting to be deleted.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of deleting a meeting.
+            Possible responses:
+                - {"message": "deleted X database entries"}: If the meeting is deleted successfully (X is the number of entries deleted).
+                - {"message": "Invalid request method"}: If the request method is not POST.
+    """
     if request.method == "POST":
         id_to_search = json.loads(request.body.decode('utf-8')).get('meetingId')
         meeting = Meetings.objects.get(meetingId=id_to_search)
@@ -107,9 +167,27 @@ def delete_meeting_by_id(request):
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-#Done
+
 @csrf_exempt
 def get_meetings(request):
+    """
+    Retrieves meetings based on user type and ID.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - role (str): User type (admin, mentor, mentee).
+                - id (int): User ID.
+
+    Returns:
+        JsonResponse: A JSON response containing categorized meetings.
+            Example response:
+                {
+                    "previousMeeting": [...],
+                    "upcomingMeeting": [...]
+                }
+    """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         user_type = data.get('role')

@@ -1,37 +1,53 @@
-from io import StringIO
-import math
-import os
-import random
-from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from server.models import *
-import csv
-from datetime import datetime
-from django.db import transaction
-from django.core.mail import send_mail
 from django.conf import settings
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
 import threading
-from .MailContent import mail_content
+from server.view.helper_functions import send_emails_to, get_mail_content
 
-
- 
-#Done
 
 @csrf_exempt
 def get_form_status(request):
+    """
+    Retrieves the status of forms.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+
+    Returns:
+        JsonResponse: A JSON response containing the status of forms.
+            Example response: [{"id": 1, "status": "Approved"}, {"id": 2, "status": "Pending"}]
+
+            Possible response:
+                - {"message": "Invalid request method"} (status 400): If the request method is not POST.
+    """
     if request.method == "POST":
         form = FormStatus.objects.all().values()
         return JsonResponse(list(form), safe=False)
     else:
-        return JsonResponse({"message": "Invalid request method"})
+        return JsonResponse({"message": "Invalid request method"}, status=400)
 
-#Done
+
 @csrf_exempt
 def update_form_status(request):
+    """
+    Updates the status of a specific form and triggers email notifications based on the form status.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - formStatus (int): Updated status of the form (e.g., 0 for Pending, 1 for Approved, etc.).
+                - formId (int): ID of the form to be updated.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of the form status update.
+            Possible responses:
+                - {"message": "Form status updated successfully"}: If the form status is successfully updated.
+                - {"error": "Invalid request method"} (status 400): If the request method is not POST.
+    """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         formStatus = data.get('formStatus')
@@ -39,40 +55,66 @@ def update_form_status(request):
         form = FormStatus.objects.get(formId=formId)
         form.formStatus = formStatus
         form.save()
-        subject = ""
-        message = ""
         emails = []
-        if int(formId) == 2 and int(formStatus) == 0:
-            candidates_with_status_2 = Candidate.objects.filter(status=2).values("email")
-            emails = [candidate['email'] for candidate in candidates_with_status_2]
-            Candidate.objects.filter(status=2).update(status=1) 
-            subject = "Closure of Consent Form Submission"
-            message = "Dear Students,\nWe would like to inform you that the submission window for the consent form has now closed. We appreciate your prompt response to this step in our process."
-            message = message + "If you have successfully submitted your consent form, we would like to express our gratitude for your cooperation."
-            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
-            thread.start()
+        # if int(formId) == 2 and int(formStatus) == 0:
+        #     candidates_with_status_2 = Candidate.objects.filter(status=2).values("email")
+        #     emails = [candidate['email'] for candidate in candidates_with_status_2]
+        #     Candidate.objects.filter(status=2).update(status=1) 
         if int(formId) == 3 and int(formStatus) == 1:
             mentee_list = Mentee.objects.filter().values("email")
             emails = [candidate['email'] for candidate in mentee_list]
-            subject = "Feedback Form Activated"
-            message = "Dear Students,\nWe would like to inform you that the mentor feedback form has been activated by the admin. Your prompt action in filling out the feedback form is crucial."
-            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            mail_content = get_mail_content("feedback_open")
+            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER, emails))
             thread.start()
         elif int(formId) == 3 and int(formStatus) == 0:
             mentee_list = Mentee.objects.filter().values("email")
             emails = [candidate['email'] for candidate in mentee_list]
-            subject = "Closure of Feedback Form"
-            message = "Dear Students,\nWe would like to inform you that the submission window for the Feedback form has now closed. We appreciate your prompt response to this step in our process."
-            message = message + "If you have successfully submitted your consent form, we would like to express our gratitude for your cooperation."
-            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            mail_content = get_mail_content("feedback_close")
+            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER, emails))
             thread.start()
         return JsonResponse({"message": "Form status updated successfully"})
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
 
+
 @csrf_exempt
 def get_form_response(request):
+    """
+    Retrieves the responses submitted for a specific form type.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - formType (int): Type of the form for which responses are to be retrieved.
+
+    Returns:
+        JsonResponse: A JSON response containing the form responses.
+            Example response: 
+            {
+                "formResponses": [
+                    {
+                        "submitterId": 1,
+                        "submiterName": "John Doe",
+                        "responses": {"question1": "answer1", "question2": "answer2"},
+                        "department": "Computer Science",
+                        "submitterEmail": "john@example.com",
+                        "Year": 3,
+                        "Contact": "1234567890",
+                        "Image": "image_url",
+                        "consent_status": 0,
+                        "mapping_status": 1
+                    },
+                    ...
+                ]
+            }
+
+            Possible responses:
+                - {"error": "FormResponses not found for the given formType"} (status 404):
+                  If there are no form responses for the provided form type.
+                - {"error": "Invalid request method"} (status 400): If the request method is not POST.
+    """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         form_type = data.get("formType")
@@ -126,7 +168,6 @@ def get_form_response(request):
                         response_data["MenteeEmail"] = mentee_obj.email
                         response_data["Contact"] = mentee_obj.contact
                     
-                # response_data.update(form_response_obj['responses'])
                     form_responses_data.append(response_data)
 
             print({"formResponses": form_responses_data})
@@ -139,9 +180,26 @@ def get_form_response(request):
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
 
-
 @csrf_exempt
 def submit_consent_form(request):
+    """
+    Submits the consent form and updates the candidate's information and status accordingly.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - id (int): ID of the candidate submitting the consent form.
+                - cq1 to cq11 (int): Responses to consent questions, with values 0 or 1.
+                - imgSrc (str): Image source for the candidate.
+                - size (int): Size information for the candidate.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of the consent form submission.
+            Possible responses:
+                - {"message": "Consent form submitted successfully"}: If the consent form is successfully submitted.
+                - {"message": "Invalid request method"}: If the request method is not POST.
+    """
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         user_id = data.get('id')
@@ -169,18 +227,39 @@ def submit_consent_form(request):
             Candidate.objects.filter(id=user_id).update(status=3)
         else:
             Candidate.objects.filter(id=user_id).update(status=4)
-        subject = "Consent From Filled"
-        message = "Consent form successfully filled. Please wait for furter Instructions"
-        thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER,[candidate.email]))
+        
+        mail_content = get_mail_content("consent_filled")
+        thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,[candidate.email]))
         thread.start()
         
         return JsonResponse({"message": "Consent form submitted successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
 
-# Done
+
 @csrf_exempt
 def mentee_filled_feedback(request):
+    """
+    Submits the feedback form filled by a mentee.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - id (int): ID of the mentee submitting the feedback form.
+                - mentorId (int): ID of the mentor associated with the feedback.
+                - mentorName (str): Name of the mentor.
+                - fq1 (int): Response to feedback question 1.
+                - fq2 (int): Response to feedback question 2.
+                - fq3 (int): Response to feedback question 3.
+                - fq4 (int): Response to feedback question 4.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of the feedback form submission.
+            Possible responses:
+                - {"message": "Feedback form submitted successfully"}: If the feedback form is successfully submitted.
+                - {"message": "Invalid request method"}: If the request method is not POST.
+    """
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         responses = {
@@ -197,13 +276,36 @@ def mentee_filled_feedback(request):
             FormType='3',
             responses=responses
         )
+        mentee = Mentee.objects.get(id=data.get('id'))
         new_responses.save()
+        mail_content = get_mail_content("feedback_filled")
+        thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,[mentee.email]))
+        thread.start()
         return JsonResponse({"message": "Feedback form submitted successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
 
+
 @csrf_exempt
 def send_consent_form(request):
+    """
+    Sends consent forms to candidates and updates their status.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - subject (str): Subject of the email.
+                - body (str): Body content of the email.
+                - Id (list): List of candidate IDs to whom the consent forms should be sent.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of sending consent forms.
+            Possible responses:
+                - {"message": "Mail sent successfully"}: If the consent forms are successfully sent.
+                - {"error": "Missing required data"} (status 400): If required data is missing in the request.
+                - {"error": "Invalid request method"} (status 400): If the request method is not POST.
+    """
     if request.method == "POST":
         try:
             data = json.loads(request.body.decode('utf-8'))

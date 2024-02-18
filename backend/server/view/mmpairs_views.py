@@ -1,25 +1,34 @@
-from io import StringIO
 import math
-import os
 import random
-from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from server.models import *
-import csv
-from datetime import datetime
-from django.db import transaction
-from django.core.mail import send_mail
 from django.conf import settings
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
 import threading
-from .MailContent import mail_content
+from server.view.helper_functions import send_emails_to
 
 
 @csrf_exempt
 def create_mentor_mentee_pairs(request):
+    """
+    Creates mentor-mentee pairs and sends emails to the mentors.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - subject (str): Subject of the email.
+                - body (str): Body content of the email.
+                - Id (list): List of candidate IDs.
+
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of creating pairs and sending emails.
+            Possible responses:
+                - {"message": "Missing required data"} (status 400): If required data is missing in the request.
+                - {"message": "Mail sent successfully"}: If pairs are created and emails are sent successfully.
+                - {"error": "Invalid request method"} (status 400): If the request method is not POST.
+    """
     if request.method == "POST":
         try:
             data = json.loads(request.body.decode('utf-8'))
@@ -47,7 +56,6 @@ def create_mentor_mentee_pairs(request):
                 candidates_dict = {candidate.id: 0 for candidate in candidates}
                 if len(candidates_dict) == 0: 
                     continue
-                print("here 4")
                 mentee_batch_size = math.ceil(len(mentees) / len(candidates_dict))
                 for mentee in mentees:
                     candidate_id = random.choice([key for key, value in candidates_dict.items() if value < mentee_batch_size])
