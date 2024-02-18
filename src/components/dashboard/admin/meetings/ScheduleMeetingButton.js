@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 // import Formelement from './Formelement';
 import TakeMeetingDetails from './TakeMeetingDetails';
 import axios from 'axios'; // Import Axios
+import departmentOptions from "../../../../data/departmentOptions.json";
 
 const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
   const [showModal, setShowModal] = useState(false);
@@ -137,6 +138,27 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     });
   }
 
+  const handleAllBranchesChange = (e) => {
+    const isChecked = e.target.checked;
+    const allBranches = Object.keys(departmentOptions);
+  
+    setcurrmeeting((prevDetails) => {
+      if (isChecked) {
+        // If "All Branches" is checked, set mentorBranches to all branch keys
+        return {
+          ...prevDetails,
+          mentorBranches: allBranches,
+        };
+      } else {
+        // Set mentorBranches to an empty array if no individual branch is selected
+        return {
+          ...prevDetails,
+          mentorBranches: [],
+        };
+      }
+    });
+  };
+
   return (
     <div>
       {/* <i class="bi bi-plus-circle"></i> */}
@@ -170,6 +192,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
           handletitle={handletitle}
           handleDescription={handleDescription}
           handleBranch={handleBranch}
+          handleAllBranchesChange={handleAllBranchesChange}
         />
       )}
     </div>

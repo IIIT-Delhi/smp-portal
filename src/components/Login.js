@@ -36,6 +36,10 @@ const Login = () => {
     const userObject = {
       role: currRole,
       email: decoded.email,
+      // email: "vishesh20550@iiitd.ac.in", //Mentor
+      // email: "aishwary20490@iiitd.ac.in", //Admin
+      // email: "mohit20086@iiitd.ac.in", //Mentee
+      // email : "Ayush20133@iiitd.ac.in"
     };
     // setUserObject(userObjectTemp);
     login(userObject);

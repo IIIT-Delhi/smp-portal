@@ -3,6 +3,7 @@ import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 import Attendance from './Attendance';
 import ViewAttendance from './ViewAttendance';
+import departmentOptions from "../../../../data/departmentOptions.json";
 
 export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails, isPreviousMeeting}) {
   const handleButtonClick = (e) => {
@@ -66,22 +67,6 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     });
   };
 
-  // const handleattendee = (e) => {
-  //   const value = e.target.value;
-  //   const isChecked = e.target.checked;
-
-  //   setEditedMeeting((prevDetails) => {
-  //     const updatedattendee = isChecked
-  //       ? [...prevDetails.attendee, value]
-  //       : prevDetails.attendee.filter((attendee) => attendee !== value);
-
-  //     return {
-  //       ...prevDetails,
-  //       attendee: updatedattendee,
-  //     };
-  //   });
-  // };
-
   const handleattendees = (e) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
@@ -119,6 +104,27 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     });
   }
 
+  const handleAllBranchesChange = (e) => {
+    const isChecked = e.target.checked;
+    const allBranches = Object.keys(departmentOptions);
+  
+    setEditedMeeting((prevDetails) => {
+      if (isChecked) {
+        // If "All Branches" is checked, set mentorBranches to all branch keys
+        return {
+          ...prevDetails,
+          mentorBranches: allBranches,
+        };
+      } else {
+        // Set mentorBranches to an empty array if no individual branch is selected
+        return {
+          ...prevDetails,
+          mentorBranches: [],
+        };
+      }
+    });
+  };
+
 
   const handleDescription = (e) => {
     setEditedMeeting({
@@ -134,20 +140,6 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
   const handleConfirmDelete = () => {
     ondelete(meet.meetingId);
     setconfirmdelete(false);
-  };
-
-  const Departments = {
-    "B-CSB": "CSB (B.Tech.)",
-    "B-CSSS": "CSSS (B.Tech.)",
-    "B-CSD": "CSD (B.Tech.)",
-    "B-CSE": "CSE (B.Tech.)",
-    "B-CSAI": "CSAI (B.Tech.)",
-    "B-CSAM": "CSAM (B.Tech.)",
-    "B-ECE": "ECE (B.Tech.)",
-    "B-EVE": "EVE (B.Tech.)",
-    "M-CSE": "CSE (M.Tech.)",
-    "M-ECE": "ECE (M.Tech.)",
-    "M-CB": "CB (M.Tech.)",
   };
 
   const handleShowAttendance = () => {
@@ -186,6 +178,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
             >
               {meet.title} - Date: {meet.date}, Time: {meet.time}
             </button>
+            {/* <button> hello </button> */}
           </h2>
           <div
             id={meetingId}
@@ -211,13 +204,20 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 )}
                 Mentor Branches:
                 <br />
-                {Array.isArray(meet.mentorBranches) ? (
-                  meet.mentorBranches.map((branch, index) => (
-                    <li key={index}>{Departments[branch]}</li>
-                  ))
-                ) : (
-                  <li>{meet.mentorBranches}</li>
-                )}
+                <p>
+                  {Array.isArray(meet.mentorBranches) ? (
+                    meet.mentorBranches.map((branch, index) => (
+                      // <li key={index}>{departmentOptions[branch]}</li>
+                      <span key={index}>
+                        {departmentOptions[branch]}
+                        {index < meet.mentorBranches.length - 1 && ', '}
+                      </span>
+                    ))
+                  ) : (
+                    // <li>{meet.mentorBranches}</li>
+                    <span>{meet.mentorBranches}</span>
+                  )}
+                </p>
               </p>
 
               <p>
@@ -273,6 +273,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handleattendees={handleattendees}
               handleDescription={handleDescription}
               handleBranch={handleBranch}
+              handleAllBranchesChange={handleAllBranchesChange}
             />
           )}
 
