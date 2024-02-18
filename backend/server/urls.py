@@ -1,9 +1,10 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from server import views
 
 urlpatterns = [
     path('', views.index, name="home"),
+     path('', include('views.urls')),
     # path('try/', views.trying, name='try'),
     # get apis
     path('getAllAdmins/', views.get_all_admins, name='getAllAdmins'),
