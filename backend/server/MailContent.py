@@ -23,7 +23,7 @@ mail_content = [
         "type" : "mappping",
         "subject" : "Mentor Assigned",
         "body" : "Dear Students,\nWe would like to inform you that you have been selected as a mentor"
-        }
+    },
     {
         "type" : "feedback_open",
         "subject" : "Feedback Form Activated",
