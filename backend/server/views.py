@@ -41,13 +41,9 @@ def get_all_mentors(request):
     if request.method == "GET":
         mentors_from_candidates = Candidate.objects.filter(status=5).values()
         for mentor in mentors_from_candidates:
-            # adding other 'goodiesStatus' details
-            id_to_search = mentor['id']
-            other_details = Mentor.objects.filter(id=id_to_search).values()
-            mentor.update({'goodiesStatus': other_details[0]['goodiesStatus']})
             # adding menteesToMentors list
             menteesToMentors = []
-            mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
+            mentees = Mentee.objects.filter(mentorId=str(mentor.id)).values()
             
             for mentee in mentees:
                 menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
@@ -63,12 +59,6 @@ def get_mentor_by_id(request):
     if request.method == "POST":
         id_to_search = json.loads(request.body.decode('utf-8')).get('id')
         mentor = Candidate.objects.filter(status=5, id=id_to_search).values()
-
-        # adding 'goodiesStatus' details
-        other_details = Mentor.objects.filter(id=id_to_search).values()
-        if len(mentor) == 0:
-            return JsonResponse({"message": "Mentor Not Found"})
-        mentor[0].update({'goodiesStatus': other_details[0]['goodiesStatus']})
         # adding menteesToMentors list
         menteesToMentors = []
         mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
@@ -207,7 +197,6 @@ def delete_all_mentors(request):
     # returns json ; {"message": "//message//"}
     if request.method == "GET":
         deleted = Candidate.objects.filter(status=5).delete()
-        deleted = Mentor.objects.all().delete()
         return JsonResponse({"message": "deleted "+str(deleted[0])+" database entries"})
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -228,7 +217,6 @@ def delete_mentor_by_id(request):
                 return JsonResponse({"message": "No new mentor to replace"})
             highest_score_mentor = highest_score_mentor[0]
             Mentee.objects.filter(mentorId=mentor_id).update(mentorId=highest_score_mentor["id"])
-            deleted = Mentor.objects.filter(id=mentor_id).delete()
             candidate = Candidate.objects.get(id=mentor_id)
             candidate.status = -1
             candidate.save()
@@ -236,8 +224,6 @@ def delete_mentor_by_id(request):
             candidate_new = Candidate.objects.get(id=highest_score_mentor_id)
             candidate_new.status = 5
             candidate_new.save()
-            mentor = Mentor(id = highest_score_mentor["id"], goodiesStatus = 0)
-            mentor.save()
             return JsonResponse({"message": f"Repalced Mentor ID: {highest_score_mentor_id}"})
         except Candidate.DoesNotExist:
             return JsonResponse({"message": "Mentor not found"})
@@ -286,9 +272,6 @@ def add_mentor(request):
                           size=data.get('size'), score=data.get('score'),contact=data.get('contact'),
                           status=5, imgSrc=data.get('imgSrc'))
         new_candidate.save()
-        
-        new_mentor = Mentor(id=data.get('id'), goodiesStatus=data.get('goodiesStatus'))
-        new_mentor.save()
         
         for mentee_id in data.get('menteesToMentors'):
             mentee = Mentee.objects.get(id=mentee_id)
@@ -412,7 +395,6 @@ def edit_mentor_by_id(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
         candidate = Candidate.objects.get(id=data.get('id'))
-        mentor = Mentor.objects.get(id=data.get('id'))
 
         if(data.get('fieldName')=="name"):
             candidate.name = data.get('newValue')
@@ -430,15 +412,12 @@ def edit_mentor_by_id(request):
             candidate.score = data.get('newValue')
         elif(data.get('fieldName')=="contact"):
             candidate.contact = data.get('newValue')
-        elif(data.get('fieldName')=="goodiesStatus"):
-            mentor.goodiesStatus = data.get('newValue')
         elif(data.get('fieldName')=="menteesToMentors"):
             for mentee_id in data.get('newValue'):
                 mentee = Mentee.objects.get(id=mentee_id)
                 mentee.mentorId = data.get('id')
 
         candidate.save()
-        mentor.save()
         return JsonResponse({"message": "data added successfully"})
     else:
         return JsonResponse({"message": "Invalid request method"})
@@ -867,8 +846,6 @@ def create_mentor_mentee_pairs(request):
                     candidates_dict[candidate_id] += 1
                 
                 for candidate in candidates:
-                    mentor = Mentor(id=candidate.id, goodiesStatus = 0)
-                    mentor.save()
                     candidate.status = 5
                     candidate.save()
 
