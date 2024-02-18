@@ -6,6 +6,7 @@ import registrationQuestions from "../../../../data/registrationQuestions.json";
 import consentQuestions from "../../../../data/consentQuestions.json";
 import menteeFeedbackQuestions from "../../../../data/menteeFeedbackQuestions.json";
 import formNames from "../../../../data/formNames.json";
+import departmentOptions from "../../../../data/departmentOptions.json";
 
 const FormResponses = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const FormResponses = () => {
   const [sortOption, setSortOption] = useState("default");
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState("");
   const [selectedStatusFilter, setSelectedStatusFilter] = useState("");
+  const [newlySelectedStudents, setNewlySelectedStudents] = useState([]);
 
   const handleExpandQuestion = (index) => {
     setExpandedQuestion((prevIndex) => (prevIndex === index ? null : index));
@@ -69,19 +71,7 @@ const FormResponses = () => {
         return [];
     }
   };
-  const departmentOptions = {
-    "B-CSB": "CSB (B.Tech.)",
-    "B-CSSS": "CSSS (B.Tech.)",
-    "B-CSD": "CSD (B.Tech.)",
-    "B-CSE": "CSE (B.Tech.)",
-    "B-CSAI": "CSAI (B.Tech.)",
-    "B-CSAM": "CSAM (B.Tech.)",
-    "B-ECE": "ECE (B.Tech.)",
-    "B-EVE": "EVE (B.Tech.)",
-    "M-CSE": "CSE (M.Tech.)",
-    "M-ECE": "ECE (M.Tech.)",
-    "M-CB": "CB (M.Tech.)",
-  };
+  
   const statusOptions = {
     0: "Accepted",
     1: "Rejected",
@@ -102,9 +92,14 @@ const FormResponses = () => {
           }
         );
         setFormResponses(response.data.formResponses);
+
+        console.log(response.data.formResponses)
       } catch (error) {
         console.error("Error fetching form responses:", error);
       }
+
+      // console.log("Here")
+
     };
 
     fetchFormResponses();
@@ -112,7 +107,7 @@ const FormResponses = () => {
 
   useEffect(() => {
     setQuestionSet(getQuestionSet(formType)["questions"]);
-    console.log(formResponses);
+    // console.log(formResponses);
     const filtered = formResponses.filter((response) => {
       const values = Object.values(response.responses);
       const includesTerm = values.some((value) =>
@@ -141,6 +136,7 @@ const FormResponses = () => {
           includesTerm)
       );
     });
+    // console.log(filtered)
     setFilteredResponses(filtered);
   }, [
     formResponses,
@@ -259,6 +255,25 @@ const FormResponses = () => {
     }
 
     setFilteredResponses(sortedResponses);
+  };
+
+  const handleCheckboxChange = (studentId, formStatus) => {
+    setFilteredResponses((prevResponse) => {
+      return prevResponse.map((response) => {
+        if (response.submitterId === studentId) {
+          return { ...response, formStatus: response.formStatus === 0 ? 1 : 0 };
+        }
+        return response;
+      });
+    });
+
+    setNewlySelectedStudents((prevList) => {
+      if (!prevList.includes(studentId)) {
+        return [...prevList, studentId];
+      } else {
+        return prevList.filter((id) => id !== studentId);
+      }
+    });
   };
 
   return (
@@ -391,6 +406,7 @@ const FormResponses = () => {
                   }}
                 >
                   <tr>
+                    <th>Select Student</th>
                     <th>Submitter ID</th>
                     <th>Submitter Name</th>
                     <th>Department</th>
@@ -417,6 +433,16 @@ const FormResponses = () => {
                 <tbody>
                   {filteredResponses.map((response, index) => (
                     <tr key={index}>
+                      <td className='text-center'>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={response.submitterId}
+                          checked={response.formStatus === 1}
+                          disabled = {response.formStatus === 1 && !newlySelectedStudents.includes(response.submitterId)}
+                          onChange={() => handleCheckboxChange(response.submitterId, response.formStatus)}
+                        />
+                      </td>
                       <td>{response.submitterId}</td>
                       <td>{response.submitterName}</td>
                       <td>{departmentOptions[response.department]}</td>
