@@ -43,19 +43,6 @@ class Mentee(models.Model):
     class Meta:
         app_label = 'server'
 
-class Mentor(models.Model):
-    id = models.CharField(primary_key=True)
-    goodiesStatus = models.IntegerField()
-    """
-    0 - not collected 
-    1 - collected 
-    """
-
-    def __str__(self):
-        return self.id
-    
-    class Meta:
-        app_label = 'server'
 
 class Admin(models.Model):
     id = models.CharField(primary_key=True)
