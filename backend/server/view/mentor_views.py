@@ -7,7 +7,6 @@ from server.view.helper_functions import send_emails_to, get_mail_content
 import threading
 
 
-
 @csrf_exempt
 def add_candidate(request):
     """
@@ -63,15 +62,9 @@ def add_candidate(request):
         scores = {key: scoring_rules[key][value] for key, value in responses.items()}
         score = sum(scores.values())
         responses["score"] = score
-        form = FormStatus.objects.get(formId=2)
-        if form.formStatus == '1': 
-            status=2
-        else:
-            status=1
-        new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
-                          department=data.get('department'), year=data.get('year'), contact=data.get('contact'),
-                          score=score,
-                          status=status)
+        new_candidate = Candidate(id = data.get('id'), name = data.get('name'), email = data.get('email'),
+                          department = data.get('department'), year = data.get('year'), contact = data.get('contact'),
+                          score = score, status = 1)
         if(data.get('imgSrc')):
             new_candidate.imgSrc = data.get('imgSrc')
         new_candidate.save()
@@ -89,7 +82,6 @@ def add_candidate(request):
         mail_content = get_mail_content("registration")
         thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER, [new_candidate.email]))
         thread.start()
-        
         
         return JsonResponse({"message": "data added successfully"})
     else:

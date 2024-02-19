@@ -21,7 +21,7 @@ mail_content = [
     },
     {
         "type" : "mappping",
-        "subject" : "Mentor Assigned",
+        "subject" : "Mentee Assigned",
         "body" : "Dear Students,\nWe would like to inform you that you have been selected as a mentor"
     },
     {
