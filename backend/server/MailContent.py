@@ -20,8 +20,8 @@ mail_content = [
         "body" : "Feedback form successfully filled."
     },
     {
-        "type" : "mappping",
-        "subject" : "Mentor Assigned",
+        "type" : "mapping",
+        "subject" : "Mentee Assigned",
         "body" : "Dear Students,\nWe would like to inform you that you have been selected as a mentor"
     },
     {
