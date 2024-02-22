@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from server.models import *
 from django.conf import settings
 import threading
-from server.view.helper_functions import send_emails_to
+from server.view.helper_functions import get_mail_content, send_emails_to
 
 
 @csrf_exempt
@@ -42,13 +42,14 @@ def create_mentor_mentee_pairs(request):
             departments = Mentee.objects.values_list('department', flat=True).distinct()
             department_dict = {department: [] for department in departments}
 
-            emails = []
+            emails_mentor = []
+            emails_mentees = []
             for candidate_id in candidate_ids:
                 candidate = Candidate.objects.get(id=candidate_id)
                 candidate.status = '5'
                 department_dict[candidate.department].append(candidate)
                 candidate.save()
-                emails.append(candidate.email)
+                emails_mentor.append(candidate.email)
 
             for department in departments:
                 mentees = Mentee.objects.filter(department=department, mentorId='')
@@ -60,14 +61,18 @@ def create_mentor_mentee_pairs(request):
                 for mentee in mentees:
                     candidate_id = random.choice([key for key, value in candidates_dict.items() if value < mentee_batch_size])
                     mentee.mentorId = candidate_id
+                    emails_mentees.append(mentee.email)
                     mentee.save()
                     candidates_dict[candidate_id] += 1
                 
                 for candidate in candidates:
-                    candidate.status = 5
+                    candidate.status = '5'
                     candidate.save()
 
-            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails))
+            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails_mentor))
+            thread.start()
+            mail_content = get_mail_content("mentor_Assigned")
+            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,emails_mentees))
             thread.start()
 
             return JsonResponse({'message': "Mail sent successfully"})

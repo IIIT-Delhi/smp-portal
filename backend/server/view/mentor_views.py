@@ -203,7 +203,7 @@ def get_all_mentors(request):
         for mentor in mentors_from_candidates:
             # adding menteesToMentors list
             menteesToMentors = []
-            mentees = Mentee.objects.filter(mentorId=str(mentor.id)).values()
+            mentees = Mentee.objects.filter(mentorId=str(mentor['id'])).values()
             
             for mentee in mentees:
                 menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
@@ -235,8 +235,9 @@ def get_mentor_by_id(request):
         mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
         for mentee in mentees:
             menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
-        mentor[0].update({'menteesToMentors': menteesToMentors})
-        return JsonResponse(mentor[0], safe=False)
+        mentor_dict = dict(mentor[0])
+        mentor_dict.update({'menteesToMentors': menteesToMentors})
+        return JsonResponse(mentor_dict, safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
 

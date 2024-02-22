@@ -34,6 +34,11 @@ mail_content = [
         "subject" : "Closure of Feedback Form",
         "body" : "Dear Students,\nWe would like to inform you that the submission window for the Feedback form has now closed. We appreciate your prompt response to this step in our process. If you have successfully submitted your consent form, we would like to express our gratitude for your cooperation."
     },
+    {
+        "type" : "mentor_Assigned",
+        "subject" : "Mentor Assigned",
+        "body" : "Dear Students,\nWe would like to inform you that we have assigned you a mentor"
+  },
     
     
 ]
