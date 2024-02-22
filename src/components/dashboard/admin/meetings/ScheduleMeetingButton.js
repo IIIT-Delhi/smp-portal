@@ -14,7 +14,9 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     title: "",
     description: "",
     attendee: [],
-    mentorBranches : []
+    mentorBranches : [],
+    menteeBranches  : [],
+    menteeList : []
   });
 
   const handleScheduleClick = () => {
@@ -26,7 +28,9 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
       title: "",
       description: "",
       attendee: [],
-      mentorBranches : []
+      mentorBranches : [],
+      menteeBranches : [],
+      menteeList : []
     });
     setShowModal(true);
   };
@@ -49,7 +53,9 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
       time: newMeeting.time,
       attendee: newMeeting.attendee,
       description: newMeeting.description,
-      mentorBranches: newMeeting.mentorBranches
+      mentorBranches: newMeeting.mentorBranches,
+      menteeBranches: newMeeting.menteeBranches,
+      menteeList: newMeeting.menteeList
     };
 
     axios
@@ -117,44 +123,58 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings }) => {
     setcurrmeeting({ ...currmeeting, description: e.target.value });
   };
 
-  const handleBranch = (e) => {
+  const handleBranch = (e,val) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
 
     setcurrmeeting((prevDetails) => {
       if (isChecked) {
-        return {
+        return val === "Mentor" ? {
           ...prevDetails,
           mentorBranches: [...prevDetails.mentorBranches, value],
-        };
+        } : {
+          ...prevDetails,
+          menteeBranches: [...prevDetails.menteeBranches, value],
+        }
       } else {
-        return {
+        return val === "Mentor" ? {
           ...prevDetails,
           mentorBranches: prevDetails.mentorBranches.filter(
             (mentorBranches) => mentorBranches !== value
-          ),
-        };
+          )
+        } : {
+          ...prevDetails,
+          menteeBranches: prevDetails.menteeBranches.filter(
+            (menteeBranches) => menteeBranches !== value
+          )
+        }
       }
     });
   }
 
-  const handleAllBranchesChange = (e) => {
+  const handleAllBranchesChange = (e,val) => {
     const isChecked = e.target.checked;
     const allBranches = Object.keys(departmentOptions);
   
     setcurrmeeting((prevDetails) => {
       if (isChecked) {
         // If "All Branches" is checked, set mentorBranches to all branch keys
-        return {
+        return val === "Mentor" ? {
           ...prevDetails,
           mentorBranches: allBranches,
-        };
+        } : {
+          ...prevDetails,
+          menteeBranches: allBranches,
+        }
       } else {
         // Set mentorBranches to an empty array if no individual branch is selected
-        return {
+        return val === "Mentor" ? {
           ...prevDetails,
           mentorBranches: [],
-        };
+        } : {
+          ...prevDetails,
+          menteeBranches: [],
+        }
       }
     });
   };

@@ -7,6 +7,9 @@ import { useAuth } from "../../../../context/AuthContext";
 import Navbar from "../../common/Navbar";
 import Questions from "./Questions";
 import registrationQuestions from "../../../../data/registrationQuestions.json";
+import initialDepartmentOptions from "../../../../data/departmentOptions.json";
+import yearOptions from "../../../../data/yearOptions.json";
+import sizeOptions from "../../../../data/sizeOptions.json";
 import axios from "axios";
 
 export default function RegistrationForm() {
@@ -54,39 +57,9 @@ export default function RegistrationForm() {
     contact: "",
   });
 
-  const initialDepartmentOptions = {
-    "B-CSB": "CSB (B.Tech.)",
-    "B-CSSS": "CSSS (B.Tech.)",
-    "B-CSD": "CSD (B.Tech.)",
-    "B-CSE": "CSE (B.Tech.)",
-    "B-CSAI": "CSAI (B.Tech.)",
-    "B-CSAM": "CSAM (B.Tech.)",
-    "B-ECE": "ECE (B.Tech.)",
-    "B-EVE": "EVE (B.Tech.)",
-    "M-CSE": "CSE (M.Tech.)",
-    "M-ECE": "ECE (M.Tech.)",
-    "M-CB": "CB (M.Tech.)",
-  };
   const [departmentOptions, setDepartmentOptions] = useState(
     initialDepartmentOptions
   );
-
-  const yearOptions = {
-    // B1: "B.Tech. 1st year",
-    // B2: "B.Tech. 2nd year",
-    B3: "B.Tech. 3rd year",
-    B4: "B.Tech. 4th year",
-    // M1: "M.Tech. 1st year",
-    M2: "M.Tech. 2nd year",
-  };
-
-  const sizeOptions = {
-    S: "Small",
-    M: "Medium",
-    L: "Large",
-    XL: "Extra Large",
-    XXL: "XXL",
-  };
 
   const nextStep = () => {
     setStep(step + 1);
@@ -134,18 +107,6 @@ export default function RegistrationForm() {
 
   const saveAndContinue = (e) => {
     e.preventDefault();
-    // Create a JSON object from the formData
-    // const formDataJSON = {
-    //   id: formData.id,
-    //   name: formData.name,
-    //   email: formData.email,
-    //   department: formData.department,
-    //   year: formData.year,
-    //   contact: formData.contact,
-    //   size: "",
-    // };
-
-    // Make a POST request to your backend
     axios
       .post("http://127.0.0.1:8000/addCandidate/", JSON.stringify(formData))
       .then((response) => {

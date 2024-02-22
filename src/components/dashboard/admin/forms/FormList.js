@@ -7,18 +7,17 @@ import formNames from "../../../../data/formNames.json";
 const FormList = () => {
   const [formStatus, setFormStatus] = useState([]);
   const navigate = useNavigate();
+  const fetchFormStatus = async () => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/getFormStatus/"
+      );
+      setFormStatus(response.data);
+    } catch (error) {
+      console.error("Error fetching form status:", error);
+    }
+  };
   useEffect(() => {
-    const fetchFormStatus = async () => {
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:8000/getFormStatus/"
-        );
-        setFormStatus(response.data);
-      } catch (error) {
-        console.error("Error fetching form status:", error);
-      }
-    };
-
     fetchFormStatus();
   }, []);
 
@@ -28,27 +27,13 @@ const FormList = () => {
         formId,
         formStatus: status,
       });
-      const response = await axios.post("http://127.0.0.1:8000/getFormStatus/");
-      setFormStatus(response.data);
+      fetchFormStatus();
     } catch (error) {
       console.error("Error updating form status:", error);
     }
   };
 
   const handleFormClick =  (formType) => {
-    // try {
-    //   const response = await axios.post(
-    //     "http://127.0.0.1:8000/getFormResponse/",
-    //     {
-    //       formType,
-    //     }
-    //   );
-    //   console.log("Form Responses:", response.data);
-    //   // Redirect to FormResponses.js passing the responses as props
-    //   // Example: <Link to={{ pathname: "/form-responses", state: { responses: response.data } }}>Go to Form Responses</Link>
-    // } catch (error) {
-    //   console.error("Error fetching form responses:", error);
-    // }
     navigate("/dashboard/admin/form-responses/", {
       state: { formType: formType },
     });

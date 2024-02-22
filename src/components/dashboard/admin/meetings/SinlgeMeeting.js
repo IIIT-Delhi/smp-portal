@@ -88,39 +88,58 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     });
   };
 
-  const handleBranch = (e) => {
+  const handleBranch = (e,val) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
 
     setEditedMeeting((prevDetails) => {
-      const updatedbranch = isChecked
-        ? [...prevDetails.mentorBranches, value]
-        : prevDetails.mentorBranches.filter((branch) => branch !== value);
-
-      return {
-        ...prevDetails,
-        mentorBranches: updatedbranch,
-      };
+      if (isChecked) {
+        return val === "Mentor" ? {
+          ...prevDetails,
+          mentorBranches: [...prevDetails.mentorBranches, value],
+        } : {
+          ...prevDetails,
+          menteeBranches: [...prevDetails.menteeBranches, value],
+        }
+      } else {
+        return val === "Mentor" ? {
+          ...prevDetails,
+          mentorBranches: prevDetails.mentorBranches.filter(
+            (mentorBranches) => mentorBranches !== value
+          )
+        } : {
+          ...prevDetails,
+          menteeBranches: prevDetails.menteeBranches.filter(
+            (menteeBranches) => menteeBranches !== value
+          )
+        }
+      }
     });
   }
 
-  const handleAllBranchesChange = (e) => {
+  const handleAllBranchesChange = (e,val) => {
     const isChecked = e.target.checked;
     const allBranches = Object.keys(departmentOptions);
   
     setEditedMeeting((prevDetails) => {
       if (isChecked) {
         // If "All Branches" is checked, set mentorBranches to all branch keys
-        return {
+        return val === "Mentor" ? {
           ...prevDetails,
           mentorBranches: allBranches,
-        };
+        } : {
+          ...prevDetails,
+          menteeBranches: allBranches,
+        }
       } else {
         // Set mentorBranches to an empty array if no individual branch is selected
-        return {
+        return val === "Mentor" ? {
           ...prevDetails,
           mentorBranches: [],
-        };
+        } : {
+          ...prevDetails,
+          menteeBranches: [],
+        }
       }
     });
   };
@@ -202,7 +221,9 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 ) : (
                   <li>{meet.attendee}</li>
                 )}
-                Mentor Branches:
+                {meet.attendee.includes("Mentors") && (
+                  <>Mentor Branches:</>
+                )}
                 <br />
                 <p>
                   {Array.isArray(meet.mentorBranches) ? (
@@ -216,6 +237,23 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                   ) : (
                     // <li>{meet.mentorBranches}</li>
                     <span>{meet.mentorBranches}</span>
+                  )}
+                </p>
+                {meet.attendee.includes("Mentees") && (
+                  <>Mentee Branches:</>
+                )}
+                <p>
+                  {Array.isArray(meet.menteeBranches) ? (
+                    meet.menteeBranches.map((branch, index) => (
+                      // <li key={index}>{departmentOptions[branch]}</li>
+                      <span key={index}>
+                        {departmentOptions[branch]}
+                        {index < meet.menteeBranches.length - 1 && ', '}
+                      </span>
+                    ))
+                  ) : (
+                    // <li>{meet.mentorBranches}</li>
+                    <span>{meet.menteeBranches}</span>
                   )}
                 </p>
               </p>
