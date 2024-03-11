@@ -1,3 +1,4 @@
+# add link to the mail for each form
 mail_content = [
     {
         "type" : "registration",

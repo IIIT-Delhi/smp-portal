@@ -209,6 +209,11 @@ def get_meetings(request):
                 mentorBranches__contains=[mentor_department]
             ).values()
             all_meetings = organized_meetings | attendee_meetings
+            for meeting in all_meetings:
+                mentee_ids = meeting.get('menteeList', [])
+                mentee_names = Mentee.objects.filter(id__in=mentee_ids).values_list('id', 'name')
+                meeting.update({'menteeList': [{'id': id, 'name': name} for id, name in mentee_names]})
+
         elif user_type == "mentee":
             try:
                 mentee_department = Mentee.objects.get(id=user_id).department
@@ -250,7 +255,6 @@ def get_meetings(request):
             "previousMeeting":  previous_meetings,
             "upcomingMeeting": upcoming_meetings
         }
-        print("here")
         return JsonResponse(meetings_data)
     else:
         return JsonResponse({"message": "Invalid request method"})
