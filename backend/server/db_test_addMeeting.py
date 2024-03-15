@@ -15,7 +15,10 @@ class TestAddMeeting(TestCase):
             "attendee": ["Mentors"],
             "title": "Meeting Title",
             "description": "Meeting Description",
-            "mentorBranches": ["Branch1", "Branch2"]
+            "mentorBranches": ["Branch1", "Branch2"],
+            "menteeBranches": ["Branch1", "Branch2"],
+            "menteeList": []
+            
         }
         response = self.client.post(reverse('addMeeting'), json.dumps(data), content_type='application/json')
 
