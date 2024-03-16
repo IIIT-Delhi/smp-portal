@@ -17,6 +17,7 @@ import Login from "./components/Login";
 import RegistrationForm from "./components/dashboard/mentor/registration/RegistrationForm";
 import PrivateRoute from "./routes/PrivateRoute";
 import FormResponses from "./components/dashboard/admin/forms/FormResponses";
+import MeetingList from "./components/dashboard/Meetings/MeetingList";
 // import MenteeProfile from "./components/dashboard/admin/mentees/MenteeProfile";
 // import MentorProfile from "./components/dashboard/admin/mentors/MentorProfile";
 
@@ -43,14 +44,14 @@ function App() {
               }
             />
             <Route
-              path="/dashboard/mentor/meetings"
+              path="/dashboard/mentor/Meetings"
               element={
                 <PrivateRoute
-                  path="/dashboard/mentor/meetings"
+                  path="/dashboard/mentor/Meetings"
                   allowedRole={"mentor"}
                   requiredStatus={5}
                 >
-                  <MentorMeetingList />
+                  <MeetingList />
                 </PrivateRoute>
               }
             />
@@ -75,13 +76,13 @@ function App() {
               }
             />
             <Route
-              path="/dashboard/mentee/meetings"
+              path="/dashboard/mentee/Meetings"
               element={
                 <PrivateRoute
-                  path="/dashboard/mentee/meetings"
+                  path="/dashboard/mentee/Meetings"
                   allowedRole={"mentee"}
                 >
-                  <MenteeMeetingList />
+                  <MeetingList />
                 </PrivateRoute>
               }
             />
@@ -109,13 +110,13 @@ function App() {
               }
             />
             <Route
-              path="/dashboard/admin/meetings"
+              path="/dashboard/admin/Meetings"
               element={
                 <PrivateRoute
-                  path="/dashboard/admin/meetings"
+                  path="/dashboard/admin/Meetings"
                   allowedRole={"admin"}
                 >
-                  <AdminMeetingList />
+                  <MeetingList />
                 </PrivateRoute>
               }
             />
