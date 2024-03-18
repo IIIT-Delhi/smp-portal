@@ -152,24 +152,6 @@ const FormResponses = () => {
 
   const handleMentorMenteeMapping = async () => {
     setshowConsentModal(true)
-
-    // setLoading(true);
-    // try {
-    //   const response = await axios.post(
-    //     "http://127.0.0.1:8000/createMentorMenteePair/"
-    //   );
-    //   if (response.data.message === "Mentor-Mentee Mapping is completed!") {
-    //     alert("Mentor-Mentee Mapping is completed!");
-    //     navigate("/dashboard/admin/mentors");
-    //   } else {
-    //     alert(response.data.message);
-    //   }
-    // } catch (error) {
-    //   console.error("Error calling Mentor-Mentee Mapping API:", error);
-    //   alert(error.message);
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   const handleClose = () => {
@@ -183,23 +165,6 @@ const FormResponses = () => {
   const handleSendConsentEmail = async () => {
 
     setshowConsentModal(true)
-
-    // setLoading(true);
-    // try {
-    //   const response = await axios.post(
-    //     "http://127.0.0.1:8000/sendConsentEmail/"
-    //   );
-    //   if (response.data.message === "Mail send successfully") {
-    //     alert("Mail sent successfully!!");
-    //   } else {
-    //     alert(response.data.message);
-    //   }
-    // } catch (error) {
-    //   console.error("Error calling Mentor-Mentee Mapping API:", error);
-    //   alert(error.message);
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   const handleSort = (option) => {

@@ -9,9 +9,7 @@ const FormList = () => {
   const navigate = useNavigate();
   const fetchFormStatus = async () => {
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/getFormStatus/"
-      );
+      const response = await axios.post("http://127.0.0.1:8000/getFormStatus/");
       setFormStatus(response.data);
     } catch (error) {
       console.error("Error fetching form status:", error);
@@ -33,7 +31,7 @@ const FormList = () => {
     }
   };
 
-  const handleFormClick =  (formType) => {
+  const handleFormClick = (formType) => {
     navigate("/dashboard/admin/form-responses/", {
       state: { formType: formType },
     });
