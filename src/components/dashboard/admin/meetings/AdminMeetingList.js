@@ -74,7 +74,9 @@ export default function AdminMeetingList() {
           time: meeting.time,
           attendee: meeting.attendee,
           description: meeting.description,
-          mentorBranches: meeting.mentorBranches
+          mentorBranches: meeting.mentorBranches,
+          menteeBranches: meeting.menteeBranches,
+          menteeList: meeting.menteeList
         }))
 
         console.log(response.data.message)

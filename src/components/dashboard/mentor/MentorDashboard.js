@@ -3,6 +3,7 @@ import Navbar from "../common/Navbar";
 import { useAuth } from "../../../context/AuthContext";
 import Table from "./Table";
 import axios from "axios";
+import deparmentOptions from "../../../data/departmentOptions.json"
 // import mentorList from "../../../data/mentorList.json"; 
 // import menteeList from "../../../data/menteeList.json";
 
@@ -16,19 +17,7 @@ const MentorDashboard = () => {
   "email": "",
   "contact":"",
   }
-  const branchOptions = {
-    "B-CSB": "CSB",
-    "B-CSSS": "CSSS",
-    "B-CSD": "CSD",
-    "B-CSE": "CSE",
-    "B-CSAI": "CSAI",
-    "B-CSAM": "CSAM",
-    "B-ECE": "ECE",
-    "B-EVE": "EVE",
-    "M-CSE": "CSE",
-    "M-ECE": "ECE",
-    "M-CB": "CB",
-  };
+  
   const yearOptions = {
     B3: "3rd",
     B4: "4th",
@@ -220,12 +209,12 @@ const MentorDashboard = () => {
                           </div>
                           <div className="col-sm-9">
                             <p className="text-muted mb-0">
-                              {branchOptions[mentorData.department]}
+                              {deparmentOptions[mentorData.department]}
                             </p>
                           </div>
                         </div>
                         <hr />
-                        <div className="row">
+                        {/* <div className="row">
                           <div className="col-sm-3">
                             <p className="mb-0">Goodies Status</p>
                           </div>
@@ -234,7 +223,7 @@ const MentorDashboard = () => {
                               {mentorData.goodiesStatus}
                             </p>
                           </div>
-                        </div>
+                        </div> */}
                         <hr />
                         <div className="container p-2">
                           <div className="row">

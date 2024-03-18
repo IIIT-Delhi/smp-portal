@@ -71,7 +71,7 @@ const MentorProfile = ({ mentor, onClose }) => {
                   Programme:{mentor.department.startsWith("B") ? "B.Tech" : "M.Tech"}
                 </p>
                 <p>Branch: {branchOptions[mentor.department]}</p>
-                <p>Goodies Status: {mentor.goodiesStatus}</p>
+                {/* <p>Goodies Status: {mentor.goodiesStatus}</p> */}
                 {/* Add more mentor profile details here */}
               </div>
               {/* Mentees table column (60%) */}

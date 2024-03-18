@@ -36,10 +36,13 @@ const Login = () => {
     const userObject = {
       role: currRole,
       email: decoded.email,
-      // email: "vishesh20550@iiitd.ac.in", //Mentor
+      // email: "vishesh20550@iiitd.ac.in"
+      // email: "john12345@iiitd.ac.in", //Mentor
       // email: "aishwary20490@iiitd.ac.in", //Admin
       // email: "mohit20086@iiitd.ac.in", //Mentee
       // email : "Ayush20133@iiitd.ac.in"
+      // email: "sarthak20403@iiitd.ac.in"
+      // email: "abcd@iiitd.ac.in"
     };
     // setUserObject(userObjectTemp);
     login(userObject);
@@ -48,6 +51,18 @@ const Login = () => {
   useEffect(() => {
     if (userDetails) {
       const id = userDetails.id;
+      if(id === -2 && currRole === "mentor"){
+        setvaliduser(false);
+          const interval = setInterval(() => {
+            setTimer((prevTimer) => prevTimer - 1);
+          }, 1000);
+
+          setTimeout(() => {
+            clearInterval(interval);
+            navigate("/login"); // Redirect to login page
+          }, 3000); // Wait for 3 seconds before redirecting
+      }
+
       if (id === -1) {
         // console.log(id);
         if (currRole === "admin" || currRole === "mentee") {

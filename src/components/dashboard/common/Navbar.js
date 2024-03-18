@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { useAuth,  } from '../../../context/AuthContext';
 import iiitdLogo from '../../../images/iiitd_logo.png';
+import { queryByRole } from '@testing-library/react';
 
 const Navbar = () => {
   const { userDetails, logout } = useAuth();
@@ -61,7 +62,7 @@ const Navbar = () => {
               </li>
               <li className="nav-item">
                 <Link
-                  to={`/dashboard/${role}/meetings`}
+                  to={`/dashboard/${role}/Meetings`}
                   className="nav-link"
                   style={{ color: "white" }}
                   onMouseEnter={(e) =>

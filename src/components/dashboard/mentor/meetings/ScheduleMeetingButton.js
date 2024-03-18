@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 import axios from 'axios';
 
-const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
+const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees}) => {
     const [showModal, setShowModal] = useState(false);
     const [currmeeting, setcurrmeeting] = useState({
         id : null,
@@ -12,7 +12,8 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
         date : '',
         title : '',
         descriptoin : '',
-        attendee: 'Mentees'
+        attendee: 'Mentees',
+        menteeList : []
     });
 
 
@@ -25,7 +26,8 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
             date: '',
             title: '',
             descriptoin : '',
-            attendee: 'Mentees'
+            attendee: 'Mentees',
+            menteeList : []
           });
         setShowModal(true);
     };
@@ -44,6 +46,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
             time: newMeeting.time,
             attendee: newMeeting.attendee,
             description: newMeeting.description,
+            menteeList: newMeeting.menteeList
         };
 
         axios
@@ -93,25 +96,28 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
         )
       }
 
-    // const handleattendees = (e) => {
-    //     const value = e.target.value;
-    //     const isChecked = e.target.checked;
-    
-    //     setcurrmeeting((prevDetails) => {
-    //       if (isChecked) {
-    //         return {
-    //           ...prevDetails,
-    //           attendees: [...prevDetails.attendees, value],
-    //         };
-    //       } else {
-    //         return {
-    //           ...prevDetails,
-    //           attendees: prevDetails.attendees.filter((attendee) => attendee !== value),
-    //         };
-    //       }
-    //     });
-    // };
-    
+    const handleMentee = (e) => {
+        let value = e.target.value
+        let isChecked = e.target.checked
+        
+        setcurrmeeting((prevDetails) => {
+            if(isChecked){
+                return {
+                    ...currmeeting,
+                    menteeList : [...prevDetails.menteeList, value]
+                }
+            }
+            else{
+                return{
+                    ...currmeeting,
+                    menteeList : prevDetails.menteeList.filter(
+                        (mentee) => mentee !== value
+                    )
+                }
+            }
+        })
+
+    }
 
     return (
         <div>
@@ -127,7 +133,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
                     width="100%"
                     height="100%"
                     fill="currentColor"
-                    class="bi bi-plus-circle"
+                    className="bi bi-plus-circle"
                     viewBox="0 0 16 16"
                 >
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -144,6 +150,8 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings}) => {
                     handletime={handletime}
                     handletitle={handletitle}
                     handleDescription = {handleDescription}
+                    mentees = {mentees}
+                    handleMentee={handleMentee}
                 />
             )}
         </div>
