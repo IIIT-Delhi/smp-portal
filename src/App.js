@@ -21,7 +21,6 @@ function App() {
           <Routes>
             <Route path="/login" Component={LoginPage} />
             <Route path="/google-login" element={<Login />} />
-            {/* <Route path="/dashboard/*" element={DashboardPage} /> */}
             {/*------------------- Mentor BELOW--------------------------------*/}
             <Route
               path="/dashboard/mentor/profile"
