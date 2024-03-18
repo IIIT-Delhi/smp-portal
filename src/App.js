@@ -2,13 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
-// import DashboardPage from "./pages/DashboardPage";
-import MenteeDashboard from "./components/dashboard/mentee/MenteeDashboard";
-import MentorDashboard from "./components/dashboard/mentor/MentorDashboard";
-import AdminDashboard from "./components/dashboard/admin/AdminDashboard";
-import AdminMeetingList from "./components/dashboard/admin/meetings/AdminMeetingList";
-import MentorMeetingList from "./components/dashboard/mentor/meetings/MentorMeetingList";
-import MenteeMeetingList from "./components/dashboard/mentee/meetings/MenteeMeetingList";
+import Dashboard from "./components/dashboard/Dashboard";
 import MenteesList from "./components/dashboard/admin/mentees/MenteesList";
 import MentorsList from "./components/dashboard/admin/mentors/MentorsList";
 import FormList from "./components/dashboard/admin/forms/FormList";
@@ -18,8 +12,6 @@ import RegistrationForm from "./components/dashboard/mentor/registration/Registr
 import PrivateRoute from "./routes/PrivateRoute";
 import FormResponses from "./components/dashboard/admin/forms/FormResponses";
 import MeetingList from "./components/dashboard/Meetings/MeetingList";
-// import MenteeProfile from "./components/dashboard/admin/mentees/MenteeProfile";
-// import MentorProfile from "./components/dashboard/admin/mentors/MentorProfile";
 
 function App() {
   return (
@@ -39,7 +31,7 @@ function App() {
                   allowedRole={"mentor"}
                   requiredStatus={5}
                 >
-                  <MentorDashboard />
+                  <Dashboard />
                 </PrivateRoute>
               }
             />
@@ -71,7 +63,7 @@ function App() {
                   path="/dashboard/mentee/profile"
                   allowedRole={"mentee"}
                 >
-                  <MenteeDashboard />
+                  <Dashboard />
                 </PrivateRoute>
               }
             />
@@ -105,7 +97,7 @@ function App() {
                   path="/dashboard/admin/profile"
                   allowedRole={"admin"}
                 >
-                  <AdminDashboard />
+                  <Dashboard />
                 </PrivateRoute>
               }
             />

@@ -1,5 +1,6 @@
 import React from "react";
-
+import yearOptions from "../../../../data/yearOptions.json";
+import branchOptions from "../../../../data/departmentOptions.json";
 const MentorProfile = ({ mentor, onClose }) => {
   if (!mentor) {
     return null;
@@ -20,25 +21,6 @@ const MentorProfile = ({ mentor, onClose }) => {
       </tr>
     );
   });
-
-  const yearOptions = {
-    B3: "3rd",
-    B4: "4th",
-    M2: "2nd",
-  };
-  const branchOptions = {
-    "B-CSB": "CSB",
-    "B-CSSS": "CSSS",
-    "B-CSD": "CSD",
-    "B-CSE": "CSE",
-    "B-CSAI": "CSAI",
-    "B-CSAM": "CSAM",
-    "B-ECE": "ECE",
-    "B-EVE": "EVE",
-    "M-CSE": "CSE",
-    "M-ECE": "ECE",
-    "M-CB": "CB",
-  };
 
   return (
     <div className="modal fade show" style={{ display: "block" }}>

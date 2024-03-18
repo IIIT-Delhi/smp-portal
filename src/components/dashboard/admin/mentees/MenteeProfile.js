@@ -1,22 +1,10 @@
 import React from "react";
+import branchOptions from "../../../../data/departmentOptions.json"
 
 const MenteeProfile = ({ mentee, onClose }) => {
   if (!mentee) {
     return null;
   }
-  const branchOptions = {
-    "B-CSB": "CSB",
-    "B-CSSS": "CSSS",
-    "B-CSD": "CSD",
-    "B-CSE": "CSE",
-    "B-CSAI": "CSAI",
-    "B-CSAM": "CSAM",
-    "B-ECE": "ECE",
-    "B-EVE": "EVE",
-    "M-CSE": "CSE",
-    "M-ECE": "ECE",
-    "M-CB": "CB",
-  };
 
   return (
     <div className="modal fade show" style={{ display: "block" }}>
