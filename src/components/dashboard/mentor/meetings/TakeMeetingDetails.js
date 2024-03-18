@@ -2,7 +2,7 @@ import React from 'react'
 import Formelement from './Formelement';
 import { useState } from 'react';
 
-export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,handletitle,handletime,handledate,handleDescription}) {
+export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,handletitle,handletime,handledate,handleDescription,mentees,handleMentee}) {
 
     const [formValid, setFormValid] = useState(true);
 
@@ -35,6 +35,8 @@ export default function TakeMeetingDetails({currmeeting,handleClose,handleSave,h
                             handletitle={handletitle}
                             handleDescription = {handleDescription}
                             formValid = {formValid}
+                            mentees = {mentees}
+                            handleMentee={handleMentee}
                         />
                     </div>
                     <div className="modal-footer">

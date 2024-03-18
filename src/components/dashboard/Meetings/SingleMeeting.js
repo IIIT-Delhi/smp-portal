@@ -2,10 +2,9 @@ import React from 'react'
 import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 import Attendance from './Attendance';
-import ViewAttendance from './ViewAttendance';
-import departmentOptions from "../../../../data/departmentOptions.json";
+import departmentOptions from "../../../data/departmentOptions.json";
 
-export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails, isPreviousMeeting}) {
+export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails, isPreviousMeeting, mentees}) {
   const handleButtonClick = (e) => {
     e.stopPropagation();
   };
@@ -13,21 +12,24 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
   const meetingId = `meeting-${meet.meetingId}`;
 
   const [isEditing, setIsEditing] = useState(false);
-
   const [confirmdelete, setconfirmdelete] = useState(false);
-
   const [editedMeeting, setEditedMeeting] = useState(meet);
-
   const [showAttendance, setshowAttendance] = useState(false);
-
   const [viewAttendance, setviewAttendance] = useState(false);
 
 
   const handleEditClick = () => {
     // Add your edit functionality here
+    if(userDetails.role === 'mentor'){
+      const updatedMenteeList = meet.menteeList.map(mentee => mentee.id);
+
+      // Updating only the menteelist key inside editedMeeting with the updated array of IDs
+      setEditedMeeting(prevState => ({
+        ...prevState,
+        menteeList: updatedMenteeList
+      }));
+    }
     setIsEditing(true);
-    console.log("Edit clicked for meeting ID:", meet.meetingId);
-    console.log(editedMeeting)
   };
 
   const handleEditSave = () => {
@@ -181,6 +183,28 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
     setviewAttendance(false)
   }
 
+  const handleMentee = (e) => {
+    let value = e.target.value
+    let isChecked = e.target.checked
+    
+    setEditedMeeting((prevDetails) => {
+        if(isChecked){
+            return {
+                ...editedMeeting,
+                menteeList : [...prevDetails.menteeList, value]
+            }
+        }
+        else{
+            return{
+                ...editedMeeting,
+                menteeList : prevDetails.menteeList.filter(
+                    (mentee) => mentee !== value
+                )
+            }
+        }
+    })
+  }
+
   return (
     <div className="mb-2" style={{ width: "100%" }}>
       <div className="accordion" id="accordionExample">
@@ -221,10 +245,12 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                 ) : (
                   <li>{meet.attendee}</li>
                 )}
+              </p>
                 {meet.attendee.includes("Mentors") && (
+                  <>
                   <>Mentor Branches:</>
+                  </>
                 )}
-                <br />
                 <p>
                   {Array.isArray(meet.mentorBranches) ? (
                     meet.mentorBranches.map((branch, index) => (
@@ -239,9 +265,13 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                     <span>{meet.mentorBranches}</span>
                   )}
                 </p>
-                {meet.attendee.includes("Mentees") && (
+
+                {(meet.attendee.includes("Mentees") && meet.menteeList.length ===0) ? (
                   <>Mentee Branches:</>
+                ) : meet.menteeList.length !==0 && (
+                  <>Name of the Mentees:</>
                 )}
+
                 <p>
                   {Array.isArray(meet.menteeBranches) ? (
                     meet.menteeBranches.map((branch, index) => (
@@ -255,8 +285,18 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                     // <li>{meet.mentorBranches}</li>
                     <span>{meet.menteeBranches}</span>
                   )}
+                  {Array.isArray(meet.menteeList) ? (
+                    meet.menteeList
+                      .map((mentee, index) => (
+                        <span key={index}>
+                          {mentee.name}
+                          {index < meet.menteeList.length - 1 && ', '}
+                        </span>
+                      ))
+                  ) : (
+                    <span>{meet.menteeList}</span>
+                  )}
                 </p>
-              </p>
 
               <p>
                 Description:
@@ -265,7 +305,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               </p>
 
               <div className="mt-2">
-                {!isPreviousMeeting && (
+                {!isPreviousMeeting && (userDetails.id === meet.schedulerId ) && (
                   <button
                     className="btn btn-danger mx-2"
                     onClick={handleDeleteClick}
@@ -281,19 +321,21 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
                     Edit
                   </button>
                 )}
-                  <button
+                {(meet.schedulerId === userDetails.id) && ( 
+                <button
                     className="btn btn-primary mx-2"
                     onClick={handleShowAttendance}
                   >
                     Take Attendance
-                  </button>
+                </button>
+                )}
                   
-                  <button
+                <button
                     className="btn btn-primary mx-2"
                     onClick={handleViewAttendance}
-                  >
+                >
                     View Attendance
-                  </button>
+                </button>
 
               </div>
 
@@ -312,6 +354,9 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handleDescription={handleDescription}
               handleBranch={handleBranch}
               handleAllBranchesChange={handleAllBranchesChange}
+              handleMentee = {handleMentee}
+              mentees = {mentees}
+
             />
           )}
 
@@ -321,15 +366,17 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handleClose={handleCloseAttendance}
               handleButtonSave = {handleSaveAttendance}
               meetingId = {meet.meetingId}
+              type = "take"
             />
 
           )}
 
           {viewAttendance && (
 
-          <ViewAttendance
+          <Attendance
             handleClose={handleCloseViewAttendance}
             meetingId = {meet.meetingId}
+            type = "view"
           />
 
           )}

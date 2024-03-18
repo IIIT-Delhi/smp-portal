@@ -136,7 +136,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
             </select>
           </div>
           <div className="mb-3">
-            <label className="form-label">Passport-size Photo</label>
+            <label className="form-label">{"Passport-size Photo (Max size - 200KB)"}</label>
             <input
               type="file"
               className="form-control"

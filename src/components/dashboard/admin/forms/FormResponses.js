@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../common/Navbar";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import registrationQuestions from "../../../../data/registrationQuestions.json";
 import consentQuestions from "../../../../data/consentQuestions.json";
 import menteeFeedbackQuestions from "../../../../data/menteeFeedbackQuestions.json";
 import formNames from "../../../../data/formNames.json";
 import departmentOptions from "../../../../data/departmentOptions.json";
+import SendMail from "./SendMail";
 
 const FormResponses = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { formType } = location.state || { formType: 1 };
   const [formResponses, setFormResponses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,6 +24,7 @@ const FormResponses = () => {
   const [selectedDepartmentFilter, setSelectedDepartmentFilter] = useState("");
   const [selectedStatusFilter, setSelectedStatusFilter] = useState("");
   const [newlySelectedStudents, setNewlySelectedStudents] = useState([]);
+  const [showConsentModal, setshowConsentModal] = useState(false);
 
   const handleExpandQuestion = (index) => {
     setExpandedQuestion((prevIndex) => (prevIndex === index ? null : index));
@@ -83,6 +84,7 @@ const FormResponses = () => {
   }, [filteredResponses]);
 
   useEffect(() => {
+    console.log(formType);
     const fetchFormResponses = async () => {
       try {
         const response = await axios.post(
@@ -92,14 +94,11 @@ const FormResponses = () => {
           }
         );
         setFormResponses(response.data.formResponses);
+        console.log(response)
 
-        console.log(response.data.formResponses)
       } catch (error) {
         console.error("Error fetching form responses:", error);
       }
-
-      // console.log("Here")
-
     };
 
     fetchFormResponses();
@@ -136,7 +135,8 @@ const FormResponses = () => {
           includesTerm)
       );
     });
-    // console.log(filtered)
+
+    console.log(filtered)
     setFilteredResponses(filtered);
   }, [
     formResponses,
@@ -151,42 +151,20 @@ const FormResponses = () => {
   };
 
   const handleMentorMenteeMapping = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/createMentorMenteePair/"
-      );
-      if (response.data.message === "Mentor-Mentee Mapping is completed!") {
-        alert("Mentor-Mentee Mapping is completed!");
-        navigate("/dashboard/admin/mentors");
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error("Error calling Mentor-Mentee Mapping API:", error);
-      alert(error.message);
-    } finally {
-      setLoading(false);
-    }
+    setshowConsentModal(true)
   };
 
+  const handleClose = () => {
+    setshowConsentModal(false)
+  }
+
+  const handleSave = () => {
+    setshowConsentModal(false)
+  }
+
   const handleSendConsentEmail = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/sendConsentEmail/"
-      );
-      if (response.data.message === "Mail send successfully") {
-        alert("Mail sent successfully!!");
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      console.error("Error calling Mentor-Mentee Mapping API:", error);
-      alert(error.message);
-    } finally {
-      setLoading(false);
-    }
+
+    setshowConsentModal(true)
   };
 
   const handleSort = (option) => {
@@ -257,11 +235,16 @@ const FormResponses = () => {
     setFilteredResponses(sortedResponses);
   };
 
-  const handleCheckboxChange = (studentId, formStatus) => {
+  const handleCheckboxChange = (studentId, formType) => {
     setFilteredResponses((prevResponse) => {
       return prevResponse.map((response) => {
         if (response.submitterId === studentId) {
-          return { ...response, formStatus: response.formStatus === 0 ? 1 : 0 };
+          if(formType === '1'){
+          return { ...response, consent_status: response.consent_status === 0 ? 1 : 0 };
+          }
+          else{
+            return { ...response, mapping_status: response.mapping_status === 0 ? 1 : 0 };
+          }
         }
         return response;
       });
@@ -288,7 +271,7 @@ const FormResponses = () => {
               onClick={handleMentorMenteeMapping}
               disabled={loading}
             >
-              {loading ? "Mapping in Progress..." : "Mentor-Mentee Mapping"}
+              Mentor-Mentee Mapping
             </button>
           </div>
         )}
@@ -298,9 +281,8 @@ const FormResponses = () => {
               className="btn btn-outline-dark"
               data-mdb-ripple-color="dark"
               onClick={handleSendConsentEmail}
-              disabled={loading}
             >
-              {loading ? "Sending mail..." : "Send Consent Form"}
+              Send Consent Form
             </button>
           </div>
         )}
@@ -406,9 +388,19 @@ const FormResponses = () => {
                   }}
                 >
                   <tr>
+                    { formType !== '3' && (
                     <th>Select Student</th>
-                    <th>Submitter ID</th>
-                    <th>Submitter Name</th>
+                    )}
+                    <th>Roll Number</th>
+                    { formType !== '3' && (
+                    <th>Applicant Name</th>
+                    )}
+                    { formType == '3' && (
+                    <th>Mentee Name</th>
+                    )}
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Year</th>
                     <th>Department</th>
                     {questionSet.map((question, index) => (
                       <th key={index}>
@@ -420,7 +412,7 @@ const FormResponses = () => {
                         >
                           {expandedQuestion === index
                             ? question.question
-                            : truncateText(question.question, 15)}
+                            : truncateText(question.question, 3)}
                         </span>
                       </th>
                     ))}
@@ -433,18 +425,23 @@ const FormResponses = () => {
                 <tbody>
                   {filteredResponses.map((response, index) => (
                     <tr key={index}>
+                      {formType !== '3' && (
                       <td className='text-center'>
                         <input
                           className="form-check-input"
                           type="checkbox"
                           id={response.submitterId}
-                          checked={response.formStatus === 1}
-                          disabled = {response.formStatus === 1 && !newlySelectedStudents.includes(response.submitterId)}
-                          onChange={() => handleCheckboxChange(response.submitterId, response.formStatus)}
+                          checked={formType === '1' ? (response.consent_status === 1) : (response.mapping_status === 1)}
+                          disabled = {((response.consent_status === 1 && formType === '1') || (response.mapping_status === 1 && formType === '2')) && !newlySelectedStudents.includes(response.submitterId)}
+                          onChange={() => {return formType === '1' ? handleCheckboxChange(response.submitterId,formType) : handleCheckboxChange(response.submitterId,formType)}}
                         />
                       </td>
+                      )}
                       <td>{response.submitterId}</td>
                       <td>{response.submitterName}</td>
+                      <td>{response.submitterEmail}</td>
+                      <td>{response.Contact}</td>
+                      <td>{response.Year[1]}</td>
                       <td>{departmentOptions[response.department]}</td>
                       {Object.keys(response.responses).map((key, idx) => (
                         <td key={idx}>
@@ -462,7 +459,7 @@ const FormResponses = () => {
                               ? getAnswerForQuestion(key, response, formType)
                               : truncateText(
                                   getAnswerForQuestion(key, response, formType),
-                                  15
+                                  3
                                 )}
                           </span>
                         </td>
@@ -474,6 +471,18 @@ const FormResponses = () => {
             </div>
           </div>
         )}
+
+        { showConsentModal && (
+
+            <SendMail 
+              handleClose = {handleClose}
+              handleSave = {handleSave}
+              newlySelectedStudents = {newlySelectedStudents}
+              formType = {formType}
+            />
+          
+          )
+        }
       </div>
     </div>
   );

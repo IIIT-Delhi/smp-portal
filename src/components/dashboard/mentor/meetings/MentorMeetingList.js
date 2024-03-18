@@ -13,17 +13,16 @@ export default function MentorMeetingList() {
   // const [usermeetings, setusermeetings] = useState([]);
   const [previousMeeting, setpreviousMeeting] = useState([]);
   const [upcomingMeeting, setupcomingMeeting] = useState([]);
+  const [mentees, setmentees] = useState([]);
 
   const fetchMeetings = async () => {
     try {
-      console.log(userDetails)
       const response = await axios.post("http://127.0.0.1:8000/getMeetings/",
       JSON.stringify({
         id: userDetails.id, 
         role: userDetails.role
       }));
       if (response.status === 200) {
-        console.log("response : " + response.data)
         if (typeof response.data === "string") {
           const dataObject = JSON.parse(response.data);
           // console.log("respnse : " + response.data.previousMeeting)
@@ -42,9 +41,42 @@ export default function MentorMeetingList() {
     }
   };
 
+  const fetchAttributeId = async (id) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/getMentorById/",
+        JSON.stringify({ id: id })
+      );
+  
+      let userData;
+  
+      if (typeof response.data === "string") {
+        // If response.data is a string, parse it as JSON
+        const dataObject = JSON.parse(response.data);
+        userData = dataObject;
+      } else if (typeof response.data === "object") {
+        // If response.data is already an object, access id directly
+        userData = response.data;
+      }
+  
+      if (userData) {
+        // console.log("Attribute ID:", id);
+        // Update the userDetails with the retrieved 'id'
+        setmentees(userData.menteesToMentors)
+      } else {
+        console.error("User ID not found in response data");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching attribute:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     // if(isFirstTime){setisFirstTime(false);fetchMeetings();}
     fetchMeetings();
+    fetchAttributeId(userDetails.id)
   },[]);
 
 
@@ -84,6 +116,7 @@ export default function MentorMeetingList() {
           time: meeting.time,
           attendee: meeting.attendee,
           description: meeting.description,
+          menteeList : meeting.menteeList
         }))
         .then((response) => {
           // If the backend successfully updates the meeting, update your local state
@@ -112,18 +145,18 @@ export default function MentorMeetingList() {
       </div>
 
       <div className="row d-flex">
-        <MeetingSection title="Upcoming Meetings" meetings={upcomingMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={false} userDetails={userDetails} />
-        <MeetingSection title="Previous Meetings" meetings={previousMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={true} userDetails={userDetails}/>
+        <MeetingSection title="Upcoming Meetings" meetings={upcomingMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={false} userDetails={userDetails} mentees = {mentees} />
+        <MeetingSection title="Previous Meetings" meetings={previousMeeting} deleteMeeting={deleteMeeting} editMeeting={editMeeting} isPreviousMeeting={true} userDetails={userDetails} mentees = {mentees}/>
 
         <div>
-          <ScheduleMeetingButton userDetails={userDetails} fetchMeetings={fetchMeetings} />
+          <ScheduleMeetingButton userDetails={userDetails} fetchMeetings={fetchMeetings} mentees = {mentees}/>
         </div>
       </div>
     </div>
   );
 }
 
-const MeetingSection = ({ title, meetings, deleteMeeting, editMeeting, isPreviousMeeting,userDetails }) => {
+const MeetingSection = ({ title, meetings, deleteMeeting, editMeeting, isPreviousMeeting,userDetails, mentees}) => {
   return (
     <div style={{width : '45%'}}>
       <h3 className="text-center">{title}</h3>
@@ -137,6 +170,7 @@ const MeetingSection = ({ title, meetings, deleteMeeting, editMeeting, isPreviou
               ondelete={deleteMeeting}
               editMeeting={editMeeting}
               isPreviousMeeting={isPreviousMeeting}
+              mentees = {mentees}
             />
           ))
         ) : (

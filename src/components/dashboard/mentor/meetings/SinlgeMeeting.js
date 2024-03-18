@@ -3,9 +3,9 @@ import { useState } from 'react';
 import TakeMeetingDetails from './TakeMeetingDetails';
 import Attendance from './Attendance';
 import ViewAttendance from './ViewAttendance';
+import departmentOptions from "../../../../data/departmentOptions.json"
 
-
-export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails, isPreviousMeeting}) {
+export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails, isPreviousMeeting,mentees}) {
   const handleButtonClick = (e) => {
     e.stopPropagation();
   };
@@ -95,20 +95,6 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
     
   // };
 
-  const Departments = {
-    "B-CSB": "CSB (B.Tech.)",
-    "B-CSSS": "CSSS (B.Tech.)",
-    "B-CSD": "CSD (B.Tech.)",
-    "B-CSE": "CSE (B.Tech.)",
-    "B-CSAI": "CSAI (B.Tech.)",
-    "B-CSAM": "CSAM (B.Tech.)",
-    "B-ECE": "ECE (B.Tech.)",
-    "B-EVE": "EVE (B.Tech.)",
-    "M-CSE": "CSE (M.Tech.)",
-    "M-ECE": "ECE (M.Tech.)",
-    "M-CB": "CB (M.Tech.)",
-  };
-
   const handleShowAttendance = () => {
     console.log(meet)
     setshowAttendance(true)
@@ -129,6 +115,29 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
   const handleCloseViewAttendance= () => {
     setviewAttendance(false)
   }
+
+  const handleMentee = (e) => {
+    let value = e.target.value
+    let isChecked = e.target.checked
+    
+    setEditedMeeting((prevDetails) => {
+        if(isChecked){
+            return {
+                ...editedMeeting,
+                menteeList : [...prevDetails.menteeList, value]
+            }
+        }
+        else{
+            return{
+                ...editedMeeting,
+                menteeList : prevDetails.menteeList.filter(
+                    (mentee) => mentee !== value
+                )
+            }
+        }
+    })
+
+}
 
   return (
     <div className='mb-2'>
@@ -155,15 +164,52 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
                 ) : (
                   <li>{meet.attendee}</li>
                 )}
-                Mentors Branches:
-                <br />
-                {Array.isArray(meet.mentorBranches) ? (
-                  meet.mentorBranches.map((branch, index) => (
-                    <li key={index}>{Departments[branch]}</li>
-                  ))
-                ) : (
-                  <li>{meet.mentorBranches}</li>
+                {meet.attendee.includes("Mentors") && (
+                  <>Mentor Branches:</>
                 )}
+                <br />
+                
+                {Array.isArray(meet.mentorBranches) && (
+                  meet.mentorBranches.map((branch, index) => (
+                    // <li key={index}>{departmentOptions[branch]}</li>
+                    <span key={index}>
+                      {departmentOptions[branch]}
+                      {index < meet.mentorBranches.length - 1 && ', '}
+                    </span>
+                  ))
+                )}
+
+                {(meet.attendee.includes("Mentees") && meet.menteeList.length ===0) ? (
+                  <><br/><br/>Mentee Branches:</>
+                ) : meet.menteeList.length !==0 && (
+                  <>Name of the Mentees:</>
+                )}
+                
+                <p>
+                  {Array.isArray(meet.menteeBranches) ? (
+                    meet.menteeBranches.map((branch, index) => (
+                      // <li key={index}>{departmentOptions[branch]}</li>
+                      <span key={index}>
+                        {departmentOptions[branch]}
+                        {index < meet.menteeBranches.length - 1 && ', '}
+                      </span>
+                    ))
+                  ) : (
+                    <span>{meet.menteeBranches}</span>
+                  )}
+                  {Array.isArray(meet.menteeList) ? (
+                    mentees
+                      .filter((mentee, index) => meet.menteeList.includes(mentee[0]))
+                      .map((mentee, index) => (
+                        <span key={index}>
+                          {mentee[1]}
+                          {index < meet.menteeList.length - 1 && ', '}
+                        </span>
+                      ))
+                  ) : (
+                    <span>{meet.menteeList}</span>
+                  )}
+                </p>
               </p>
               <p>Description:<br/>{meet.description}</p> 
               <div className='mt-2'>
@@ -206,6 +252,8 @@ export default function SinlgeMeeting({meet, ondelete, editMeeting,  userDetails
               handletitle={handletitle}
               handleDescription={handleDescription}
               userDetails = {userDetails}
+              handleMentee = {handleMentee}
+              mentees = {mentees}
             />
 
           }
