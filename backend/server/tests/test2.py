@@ -2,7 +2,7 @@ from django.http import HttpRequest, JsonResponse
 from django.test import TestCase, Client
 from django.urls import reverse
 from .models import *
-from .views import *
+from .view.views import *
 from datetime import datetime, timedelta
 class AddCandidateTestCase(TestCase):
 
