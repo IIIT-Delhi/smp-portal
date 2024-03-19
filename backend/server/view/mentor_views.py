@@ -208,6 +208,9 @@ def get_all_mentors(request):
             for mentee in mentees:
                 menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
             mentor.update({'menteesToMentors': menteesToMentors})
+            total_meetings = Meetings.objects.filter(schedulerId=str(mentor['id'])).count()
+            # Add total meeting count to the mentor
+            mentor.update({"totalMeetings": total_meetings})
         return JsonResponse(list(mentors_from_candidates), safe=False)
     else:
         return JsonResponse({"message": "Invalid request method"})
