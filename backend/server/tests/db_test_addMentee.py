@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 from django.http import HttpRequest, JsonResponse
 from django.test import Client, TestCase
 from .models import *
-from .views import *
+from .view.views import *
 
 class AddMenteeTestCase(TestCase):
     client = Client()
