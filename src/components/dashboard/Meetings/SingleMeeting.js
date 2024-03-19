@@ -356,7 +356,7 @@ export default function SinlgeMeeting({ meet, ondelete, editMeeting, userDetails
               handleAllBranchesChange={handleAllBranchesChange}
               handleMentee = {handleMentee}
               mentees = {mentees}
-
+              role = {userDetails.role}
             />
           )}
 

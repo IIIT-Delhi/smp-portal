@@ -23,7 +23,25 @@ export default function TakeMeetingDetails({
     e.stopPropagation();
     if (currmeeting.title && currmeeting.date && currmeeting.time && currmeeting.attendee.length > 0 && currmeeting.description) {
       // If the form is valid, you can create the meeting object
-      handleSave()
+      if(role === "admin"){
+        if(currmeeting.attendee.includes("Mentors") && currmeeting.mentorBranches.length === 0){
+          setFormValid(false);
+        }
+        else if(currmeeting.attendee.includes("Mentees") && currmeeting.menteeBranches.length === 0){
+          setFormValid(false);
+        }
+        else{
+          handleSave()
+        }
+      }
+      else if(role === "mentor"){
+        if(currmeeting.menteeList.length === 0){
+          setFormValid(false);
+        }
+        else{
+          handleSave()
+        }
+      }
       
     } else {
       setFormValid(false);
