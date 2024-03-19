@@ -1,24 +1,63 @@
 import React from 'react';
-import { Link, useNavigate} from 'react-router-dom';
-import { useAuth,  } from '../../../context/AuthContext';
-import iiitdLogo from '../../../images/iiitd_logo.png';
-import { queryByRole } from '@testing-library/react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth, } from '../../../context/AuthContext';
+import iiitdLogo from '../../../images/iiitd_logo_colour.png';
 
 const Navbar = () => {
   const { userDetails, logout } = useAuth();
   const role = userDetails?.role;
   const navStyle = {
-    backgroundColor: "#3fada8",
+    // backgroundColor: "#3fada8",
+    backgroundColor: "white",
     padding: "0.5rem 1rem",
     display: "flex",
     justifyContent: "space-between", // Align items horizontally
     alignItems: "center", // Align items vertical
+    borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add shadow near the bottom border
   };
 
   const listStyle = {
     listStyle: "none",
     display: "flex",
     gap: "20px",
+  };
+
+  const linkStyle = {
+    color: "black",
+    fontWeight: 500,
+    fontSize: 15,
+    textDecoration: "none",
+    position: "relative", // Add position relative to create space for the underline
+    transition: "color 0.3s ease", // Add transition for smooth effect
+    borderRadius: "10px",
+    marginRight: "15px",
+  };
+
+  const underlineStyle = {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    width: "100%",
+    height: "2px",
+    backgroundColor: "#3fad88", // Green color for the underline
+    transition: "transform 0.3s ease", // Add transition for smooth effect
+    transformOrigin: "center", // Center the transform origin for smoother animation
+    transform: "scaleX(0)", // Initially hide the underline
+  };
+
+  const handleMouseEnter = (e) => {
+    const underline = e.target.querySelector(".underline");
+    if (underline) underline.style.transform = "scaleX(1)";
+  };
+
+  const handleMouseLeave = (e) => {
+    const underline = e.target.querySelector(".underline");
+    if (underline) underline.style.transform = "scaleX(0)";
+  };
+
+  const activeLinkStyle = {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
   };
 
   // const history = useHistory();
@@ -37,7 +76,7 @@ const Navbar = () => {
         className="navbar-brand"
         src={iiitdLogo}
         alt="IIITD Logo"
-        style={{ width:"200px", marginRight: "10px" }}
+        style={{ width: "250px", marginRight: "10px" }}
       />
       <ul className="navbar-nav ml-auto">
         {userDetails?.id !== -1 &&
@@ -46,53 +85,49 @@ const Navbar = () => {
             role === "mentee") && (
             <>
               <li className="nav-item" style={listStyle}>
-                <Link
+                <NavLink
                   to={`/dashboard/${role}/profile`}
                   className="nav-link"
-                  style={{ color: "white" }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = "transparent")
-                  }
+                  style={linkStyle}
+                  activeStyle={activeLinkStyle}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  Profile
-                </Link>
+                  PROFILE
+                  <div className="underline" style={underlineStyle}></div>
+                  <div className="underline" style={underlineStyle}></div>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link
+                <NavLink
                   to={`/dashboard/${role}/Meetings`}
                   className="nav-link"
-                  style={{ color: "white" }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = "transparent")
-                  }
+                  style={linkStyle}
+                  activeStyle={activeLinkStyle}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
                 >
-                  Meetings
-                </Link>
+                  MEETINGS
+                  <div className="underline" style={underlineStyle}></div>
+                  <div className="underline" style={underlineStyle}></div>
+                </NavLink>
               </li>
             </>
           )}
         {role === "mentee" && (
           <>
             <li className="nav-item">
-              <Link
+              <NavLink
                 to={`/dashboard/${role}/form`}
                 className="nav-link"
-                style={{ color: "white" }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
-                }
+                style={linkStyle}
+                activeStyle={activeLinkStyle}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
-                Feedback Form
-              </Link>
+                FEEDBACK FORM
+                <div className="underline" style={underlineStyle}></div>
+              </NavLink>
             </li>
             {/* Add more mentee-specific tabs here */}
           </>
@@ -101,61 +136,59 @@ const Navbar = () => {
         {role === "admin" && (
           <>
             <li className="nav-item">
-              <Link
+              <NavLink
                 to={`/dashboard/${role}/mentors`}
                 className="nav-link"
-                style={{ color: "white" }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
-                }
+                style={linkStyle}
+                activeStyle={activeLinkStyle}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
-                Mentors
-              </Link>
+                MENTORS
+                <div className="underline" style={underlineStyle}></div>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link
+              <NavLink
                 to={`/dashboard/${role}/mentees`}
                 className="nav-link"
-                style={{ color: "white" }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
-                }
+                style={linkStyle}
+                activeStyle={activeLinkStyle}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
-                Mentees
-              </Link>
+                MENTEES
+                <div className="underline" style={underlineStyle}></div>
+              </NavLink>
             </li>
             <li className="nav-item">
-              <Link
+              <NavLink
                 to={`/dashboard/${role}/form`}
                 className="nav-link"
-                style={{ color: "white" }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "rgba(255, 255, 255,0.1)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
-                }
+                style={linkStyle}
+                activeStyle={activeLinkStyle}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
-                Form and Responses
-              </Link>
+                FORMS
+                <div className="underline" style={underlineStyle}></div>
+              </NavLink>
             </li>
             {/* Add more admin-specific tabs here */}
           </>
         )}
         {role && (
-          <li className="nav-item">
+          <li className="nav-item" style={linkStyle}
+            activeStyle={activeLinkStyle}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}>
             <button
               className="btn btn-link nav-link"
-              style={{ color: "white", textDecoration: "none" }}
+              style={{ color: "black", textDecoration: "none" }}
               onClick={handleLogout}
             >
-              Logout
+              LOGOUT
+              <div className="underline" style={underlineStyle}></div>
             </button>
           </li>
         )}
@@ -164,4 +197,4 @@ const Navbar = () => {
   );
 };
 
-export default  Navbar;
+export default Navbar;
