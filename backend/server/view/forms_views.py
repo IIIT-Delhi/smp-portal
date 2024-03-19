@@ -77,7 +77,6 @@ def update_form_status(request):
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
 
-
 @csrf_exempt
 def get_form_response(request):
     """

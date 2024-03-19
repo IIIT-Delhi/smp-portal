@@ -42,6 +42,8 @@ def add_meeting(request):
         mentorBranches = data.get('mentorBranches', [])
         menteeBranches = data.get('menteeBranches', [])
         menteeList = data.get('menteeList', [])
+        mentee_names = Mentee.objects.filter(id__in=menteeList).values_list('id', 'name')
+        menteeList =  [{'id': id, 'name': name} for id, name in mentee_names]
 
         if "Mentees" in attendeelist and "Mentors" in attendeelist:
             attendeevalue = 3
@@ -209,11 +211,7 @@ def get_meetings(request):
                 mentorBranches__contains=[mentor_department]
             ).values()
             all_meetings = organized_meetings | attendee_meetings
-            for meeting in all_meetings:
-                mentee_ids = meeting.get('menteeList', [])
-                mentee_names = Mentee.objects.filter(id__in=mentee_ids).values_list('id', 'name')
-                meeting.update({'menteeList': [{'id': id, 'name': name} for id, name in mentee_names]})
-
+            
         elif user_type == "mentee":
             try:
                 mentee_department = Mentee.objects.get(id=user_id).department

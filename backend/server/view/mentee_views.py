@@ -37,7 +37,7 @@ def add_mentee(request):
         if existing_mentee:
             return JsonResponse({"message": "Mentee with this ID already exist"})
         new_mentee = Mentee(id=data.get('id'), name=data.get('name'), email=data.get('email'),
-                          department=data.get('department'))
+                          department=data.get('department'), contact=data.get('contact'))
         mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
         if(data.get('imgSrc')):
             new_mentee.imgSrc = data.get('imgSrc')
