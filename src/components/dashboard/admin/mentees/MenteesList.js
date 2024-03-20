@@ -127,8 +127,8 @@ const MenteesList = () => {
         .then((response) => {
           // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
-            // Clear the form and close the modal
-            setMenteeForm({
+             // Clear the form and close the modal
+             setMenteeForm({
               name: "",
               id: "",
               department: "",
@@ -138,7 +138,8 @@ const MenteesList = () => {
             });
             setAddMenteeModalVisible(false);
             setMentees((prevMentees) => [...prevMentees, mentee]); // Add the new mentee to the mentees list
-            console.log("Mentee added successfully on the backend");
+            alert("Mentee added successfully on the backend");
+      
           }
         });
     } catch (error) {
@@ -188,7 +189,8 @@ const MenteesList = () => {
       !menteeForm.id || // Check if roll number is empty
       !menteeForm.department || // Check if department is empty
       !menteeForm.email || // Check if email is empty
-      !menteeForm.mentorId // Check if mentor id is empty
+      !menteeForm.mentorId || // Check if mentor id is empty
+      !menteeForm.contact
     ) {
       // You can display an error message or handle validation as needed
       console.error("Please fill in all required fields.");

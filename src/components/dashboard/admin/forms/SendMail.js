@@ -18,7 +18,8 @@ export default function SendMail({handleClose, handleSave, newlySelectedStudents
     };
 
     const sendConsentMail = async() => {
-        const response1 = await axios.post("http://127.0.0.1:8000/sendConsentForm/",
+        try {
+            const response1 = await axios.post("http://127.0.0.1:8000/sendConsentForm/",
         JSON.stringify({
             subject : mailSubject,
             body : mailBody,
@@ -27,6 +28,11 @@ export default function SendMail({handleClose, handleSave, newlySelectedStudents
 
         if(response1.status === 200){
             alert('Mailed Send succesfully');
+        }else {
+            alert(response1.data.message);
+          }
+        } catch (error) {
+            alert("Invalid Selection.");
         }
     } 
 
@@ -46,11 +52,11 @@ export default function SendMail({handleClose, handleSave, newlySelectedStudents
             alert("Mentor-Mentee Mapping is completed!");
             navigate("/dashboard/admin/mentors");
           } else {
-            alert(response.data.message);
+            alert("Invalid Selection.");
           }
         } catch (error) {
           console.error("Error calling Mentor-Mentee Mapping API:", error);
-          alert(error.message);
+          alert("Invalid Selection.");
         }
       };
 

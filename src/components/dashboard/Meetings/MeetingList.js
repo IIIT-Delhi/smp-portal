@@ -34,7 +34,7 @@ export default function MeetingList() {
           setFilteredPreviousMeeting(response.data.previousMeeting.filter(
             meeting => meeting.schedulerId.includes(userDetails.id)
           ));
-
+          
         } else if (typeof response.data === "object") {
           console.log(response.data)
           setpreviousMeeting(response.data.previousMeeting);
@@ -187,7 +187,7 @@ export default function MeetingList() {
           <input
             type="text"
             className="form-control"
-            placeholder="Search Mentor Meetings by roll number"
+            placeholder="Search mentor meetings by roll number"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{width:'40%', marginRight:'1%'}}
@@ -197,7 +197,7 @@ export default function MeetingList() {
             Search
           </button>
           <button type="button" className="btn btn-secondary" onClick={handleClear}>
-            clear
+            Clear
           </button>
         </div>
       )}
