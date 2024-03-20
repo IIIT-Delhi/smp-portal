@@ -127,7 +127,10 @@ def edit_meeting_by_id(request):
         meeting.description = data.get('description')
         meeting.mentorBranches = data.get('mentorBranches', [])
         meeting.menteeBranches = data.get('menteeBranches', [])
-        meeting.menteeList = data.get('menteeList', [])
+        menteeList = data.get('menteeList', [])
+        mentee_names = Mentee.objects.filter(id__in=menteeList).values_list('id', 'name')
+        menteeList =  [{'id': id, 'name': name} for id, name in mentee_names]
+        meeting.menteeList = menteeList
         existing_meeting = Meetings.objects.filter(
             schedulerId=data.get('schedulerId'),
             date=data.get('date'),
