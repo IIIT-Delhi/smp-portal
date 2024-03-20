@@ -60,7 +60,7 @@ def add_meeting(request):
         ).first()
 
         if existing_meeting:
-            return JsonResponse({"error": "Meeting already scheduled at the same date and time"})
+            return JsonResponse({"error": "Meeting already scheduled at the same date and time"}, status=400)
         else:
             new_meeting = Meetings(
                 title=data.get('title'),
