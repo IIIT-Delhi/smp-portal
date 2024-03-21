@@ -1,9 +1,12 @@
 import csv
 from http.client import HTTPResponse
 from io import StringIO
+import threading
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from backend.core import settings
+from backend.server.view.helper_functions import get_mail_content, send_emails_to
 from server.models import *
 
 
@@ -133,6 +136,9 @@ def edit_mentee_by_id(request):
                 return JsonResponse({"message": "Mentor Not Found Make sure that the mentor exist and have same department"})
             existing_mentee.mentorId = mentor[0]['id']
             existing_mentee.save()
+            mail_content = get_mail_content("mentor_Assigned")
+            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,[existing_mentee]))
+            thread.start()
             return JsonResponse({"message": "Mentee Details Updated successfully"})
         else: 
             return JsonResponse({"message": "No such mentee Exist"})
