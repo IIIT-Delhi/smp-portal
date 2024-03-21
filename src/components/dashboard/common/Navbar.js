@@ -89,7 +89,7 @@ const Navbar = () => {
                   to={`/dashboard/${role}/profile`}
                   className="nav-link"
                   style={linkStyle}
-                  activeStyle={activeLinkStyle}
+                  activestyle={activeLinkStyle}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -103,7 +103,7 @@ const Navbar = () => {
                   to={`/dashboard/${role}/Meetings`}
                   className="nav-link"
                   style={linkStyle}
-                  activeStyle={activeLinkStyle}
+                  activestyle={activeLinkStyle}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -121,7 +121,7 @@ const Navbar = () => {
                 to={`/dashboard/${role}/form`}
                 className="nav-link"
                 style={linkStyle}
-                activeStyle={activeLinkStyle}
+                activestyle={activeLinkStyle}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
@@ -140,7 +140,7 @@ const Navbar = () => {
                 to={`/dashboard/${role}/mentors`}
                 className="nav-link"
                 style={linkStyle}
-                activeStyle={activeLinkStyle}
+                activestyle={activeLinkStyle}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
@@ -153,7 +153,7 @@ const Navbar = () => {
                 to={`/dashboard/${role}/mentees`}
                 className="nav-link"
                 style={linkStyle}
-                activeStyle={activeLinkStyle}
+                activestyle={activeLinkStyle}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
@@ -166,7 +166,7 @@ const Navbar = () => {
                 to={`/dashboard/${role}/form`}
                 className="nav-link"
                 style={linkStyle}
-                activeStyle={activeLinkStyle}
+                activestyle={activeLinkStyle}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
               >
@@ -179,7 +179,7 @@ const Navbar = () => {
         )}
         {role && (
           <li className="nav-item" style={linkStyle}
-            activeStyle={activeLinkStyle}
+            activestyle={activeLinkStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}>
             <button
