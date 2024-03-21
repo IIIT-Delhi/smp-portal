@@ -128,6 +128,16 @@ def get_form_response(request):
                         summiter_name = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                         department = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
                         status = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['status']
+                        consent_status = None
+                        mapping_status = None
+                        if int(status) == 1:
+                            consent_status = 0
+                        elif int(status) == 2:
+                            consent_status = 1
+                        elif int(status) == 3:
+                            mapping_status = 0
+                        elif int(status) == 5:
+                            mapping_status = 1
                 if int(form_type) == 3:
                     if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
@@ -138,17 +148,6 @@ def get_form_response(request):
                     "responses": form_response_obj['responses'],
                     "department": department,
                 }
-
-                consent_status = None
-                mapping_status = None
-                if int(status) == 1:
-                    consent_status = 0
-                elif int(status) == 2:
-                    consent_status = 1
-                elif int(status) == 3:
-                    mapping_status = 0
-                elif int(status) == 5:
-                    mapping_status = 1
 
                 if summiter_name != '':
                     if int(form_type) in [1, 2]:

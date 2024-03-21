@@ -7,8 +7,8 @@ mail_content = [
     },
     {
         "type" : "consent",
-        "subject" : "subject",
-        "body" : "body"
+        "subject" : "Request to Fill Mentor Consent Form",
+        "body" : "Dear Student,\n\nCongratulations on being selected as a mentor!\n\nTo move forward, please complete the Mentor Consent Form using the link below:\n\nhttps/smpportal.iiitd.edu.in/login\n\nYour prompt response is appreciated.\n\nBest regards,"
     },
     {
         "type" : "consent_filled",
@@ -17,18 +17,23 @@ mail_content = [
     },
     {
         "type" : "feedback_filled",
-        "subject" : "Feedback From Filled",
-        "body" : "Feedback form successfully filled."
+        "subject" : "Mentor Feedback From Filled",
+        "body" : "Feedback form successfully filled. \nWe appreciate their time and effort in providing valuable insights into the mentoring process. \nYour mentor's feedback will greatly assist us in evaluating the effectiveness of the mentoring program and making necessary improvements to better serve our participants.\n\nBest Regard"
     },
     {
         "type" : "mapping",
-        "subject" : "Mentee Assigned",
-        "body" : "Dear Students,\nWe would like to inform you that you have been selected as a mentor"
+        "subject" : "Important: Congratulations on being selected as an Student Mentor for SMP(20AY-AY).",
+        "body" : "Hello dear...\nI hope you're doing well and staying safe.\
+            \n\nCongratulations on being selected as an M.Tech\B.Tech Student Mentor for SMP(20AY-AY).\
+            \n\nAs a Student Mentor, you will be having a vital role in guiding and supporting M.Tech\B.Tech first year students throughout their first academic year at IIITD.\
+            \n\nWe look forward to witnessing your positive impact as an M.Tech Student Mentor.\
+            \n\nFor any queries, please feel free to contact.\n\nBest Regard"
     },
     {
         "type" : "feedback_open",
         "subject" : "Feedback Form Activated",
-        "body" : "Dear Students,\nWe would like to inform you that the mentor feedback form has been activated by the admin. Your prompt action in filling out the feedback form is crucial."
+        "body" : "Dear Students,\nWe would like to inform you that the mentor feedback form has been activated by the admin. Your prompt action in filling out the feedback form is crucial.\
+        \nPlease take a few moments to complete the Mentor Feedback Form by following the link provided below: https/smpportal.iiitd.edu.in/login\n\nBest Regard"
     },
     {
         "type" : "feedback_close",
@@ -37,8 +42,8 @@ mail_content = [
     },
     {
         "type" : "mentor_Assigned",
-        "subject" : "Mentor Assigned",
-        "body" : "Dear Students,\nWe would like to inform you that we have assigned you a mentor"
+        "subject" : "Mentor Assignment Notification",
+        "body" : "Dear Mentee,\n\nWe hope this email finds you well.\n\nWe are excited to inform you that mentors have been assigned to all mentees in our program. You can now access your mentor's details through the portal.\n\nPlease log in to the portal to view your mentor's information and begin your mentoring journey. If you encounter any issues or have questions regarding your mentor assignment, feel free to reach out to us for assistance.\n\nWe wish you a productive and fulfilling mentoring experience ahead.\n\nBest regards,"
   },
     
     

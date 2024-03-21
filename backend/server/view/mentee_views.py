@@ -38,7 +38,7 @@ def add_mentee(request):
             return JsonResponse({"message": "Mentee with this ID already exist"})
         new_mentee = Mentee(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), contact=data.get('contact'))
-        mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
+        mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId'))).values()
         if(data.get('imgSrc')):
             new_mentee.imgSrc = data.get('imgSrc')
         if len(mentor) == 0: 
@@ -128,7 +128,7 @@ def edit_mentee_by_id(request):
         data = json.loads(request.body.decode('utf-8'))
         existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
         if existing_mentee:
-            mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
+            mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId'))).values()
             if len(mentor) == 0: 
                 return JsonResponse({"message": "Mentor Not Found Make sure that the mentor exist and have same department"})
             existing_mentee.mentorId = mentor[0]['id']
@@ -167,6 +167,7 @@ def get_all_mentees(request):
                             'mentorEmail': mentor[0]['email'],
                             'mentorContact': mentor[0]['contact'],
                             'mentorImage': mentor[0]['imgSrc'],
+                            'mentorDepartment': mentor[0]['department'],
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)})
             else: 
                 mentee.update({'mentorId': 'NULL',
@@ -174,6 +175,7 @@ def get_all_mentees(request):
                            'mentorEmail': 'NULL',
                             'mentorContact': 'NULL',
                             'mentorImage': 'NULL',
+                            'mentorDepartment': 'NULL',
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)})
         return JsonResponse(list(mentees), safe=False)
     else:
