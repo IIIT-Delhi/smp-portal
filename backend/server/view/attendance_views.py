@@ -45,7 +45,7 @@ def get_attendance(request):
 
             if attendees == 1:  # Mentor
                 # Filter mentors based on mentorBranches
-                mentors = Candidate.objects.filter(department__in=meeting.mentorBranches).values()
+                mentors = Candidate.objects.filter(status=5, department__in=meeting.mentorBranches).values()
                 for mentor in mentors:
                     attendee_info = {}
                     attendee_info["id"] = mentor['id']
@@ -74,7 +74,7 @@ def get_attendance(request):
 
             elif attendees == 3:  # Both mentor and mentee
                 # Filter mentors based on mentorBranches
-                mentors = Candidate.objects.filter(department__in=meeting.mentorBranches).values()
+                mentors = Candidate.objects.filter(status=5, department__in=meeting.mentorBranches).values()
                 for mentor in mentors:
                     attendee_info = {}
                     attendee_info["id"] = mentor['id']

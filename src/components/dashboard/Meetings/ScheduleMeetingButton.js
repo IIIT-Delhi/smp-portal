@@ -4,7 +4,7 @@ import TakeMeetingDetails from './TakeMeetingDetails';
 import axios from 'axios'; // Import Axios
 import departmentOptions from "../../../data/departmentOptions.json";
 
-const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
+const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
   const [showModal, setShowModal] = useState(false);
   const [currmeeting, setcurrmeeting] = useState({
     id: null,
@@ -14,9 +14,9 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
     title: "",
     description: "",
     attendee: userDetails.role === 'mentor' ? 'Mentees' : [],
-    mentorBranches : [],
-    menteeBranches  : [],
-    menteeList : []
+    mentorBranches: [],
+    menteeBranches: [],
+    menteeList: []
   });
 
   const handleScheduleClick = () => {
@@ -28,9 +28,9 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
       title: "",
       description: "",
       attendee: userDetails.role === 'mentor' ? 'Mentees' : [],
-      mentorBranches : [],
-      menteeBranches : [],
-      menteeList : []
+      mentorBranches: [],
+      menteeBranches: [],
+      menteeList: []
     });
     setShowModal(true);
   };
@@ -39,38 +39,44 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
     setShowModal(false);
   };
 
-  const handleSaveModal = () => {
-    const newMeeting = { ...currmeeting, id: Date.now() };
-    setcurrmeeting(newMeeting); // Update the current meeting state
-    const meetingData = {
-      title: newMeeting.title,
-      schedulerId: newMeeting.schedulerId,
-      date: newMeeting.date,
-      time: newMeeting.time,
-      attendee: newMeeting.attendee,
-      description: newMeeting.description,
-      mentorBranches: newMeeting.mentorBranches,
-      menteeBranches: newMeeting.menteeBranches,
-      menteeList: newMeeting.menteeList
-    };
 
-    axios
-      .post('http://127.0.0.1:8000/addMeeting/', meetingData, {
+
+  const handleSaveModal = async () => {
+    try{
+      const newMeeting = { ...currmeeting, id: Date.now() };
+      setcurrmeeting(newMeeting); // Update the current meeting state
+      const meetingData = {
+        title: newMeeting.title,
+        schedulerId: newMeeting.schedulerId,
+        date: newMeeting.date,
+        time: newMeeting.time,
+        attendee: newMeeting.attendee,
+        description: newMeeting.description,
+        mentorBranches: newMeeting.mentorBranches,
+        menteeBranches: newMeeting.menteeBranches,
+        menteeList: newMeeting.menteeList
+      };
+
+      const response = await axios.post('http://127.0.0.1:8000/addMeeting/', meetingData, {
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          alert('Meeting added successfully');
-        }
-      })
-      .catch((error) => {
-        console.error('Error adding meeting', error);
       });
 
-    setShowModal(false);
-    fetchMeetings();
+      if (response.status === 200) {
+        console.log(response);
+        alert('Meeting added successfully');
+        // Once the meeting is successfully added, fetch the updated meetings
+        fetchMeetings();
+      } else {
+        alert(response.data.error);
+      }
+      setShowModal(false);
+    }
+    catch(error){
+      alert('Error adding meeting')
+  }
+
   };
 
   const handletitle = (e) => {
@@ -119,7 +125,7 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
     setcurrmeeting({ ...currmeeting, description: e.target.value });
   };
 
-  const handleBranch = (e,val) => {
+  const handleBranch = (e, val) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
 
@@ -148,10 +154,10 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
     });
   }
 
-  const handleAllBranchesChange = (e,val) => {
+  const handleAllBranchesChange = (e, val) => {
     const isChecked = e.target.checked;
     const allBranches = Object.keys(departmentOptions);
-  
+
     setcurrmeeting((prevDetails) => {
       if (isChecked) {
         // If "All Branches" is checked, set mentorBranches to all branch keys
@@ -178,46 +184,32 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
   const handleMentee = (e) => {
     let value = e.target.value
     let isChecked = e.target.checked
-    
+
     setcurrmeeting((prevDetails) => {
-        if(isChecked){
-            return {
-                ...currmeeting,
-                menteeList : [...prevDetails.menteeList, value]
-            }
+      if (isChecked) {
+        return {
+          ...currmeeting,
+          menteeList: [...prevDetails.menteeList, value]
         }
-        else{
-            return{
-                ...currmeeting,
-                menteeList : prevDetails.menteeList.filter(
-                    (mentee) => mentee !== value
-                )
-            }
+      }
+      else {
+        return {
+          ...currmeeting,
+          menteeList: prevDetails.menteeList.filter(
+            (mentee) => mentee !== value
+          )
         }
+      }
     })
   }
 
   return (
     <div>
-      {/* <i class="bi bi-plus-circle"></i> */}
-      <button
-        className="btn btn-primary btn-floating position-fixed"
-        style={{ bottom: "5%", right: '4%'}}
-        onClick={handleScheduleClick}
-      >
-        {/* Schedule Meeting */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          fill="currentColor"
-          className="bi bi-plus-circle"
-          viewBox="0 0 16 16"
-        >
-          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-        </svg>
-      </button>
+      <div style={{ float: 'right', paddingRight: '1.75rem' }}>
+        <button type="button" className="btn btn-primary" onClick={handleScheduleClick} style={{}}>
+          Schedule New Meeting
+        </button>
+      </div>
 
       {showModal && (
         <TakeMeetingDetails
@@ -231,9 +223,9 @@ const ScheduleMeetingButton = ({userDetails,fetchMeetings,mentees }) => {
           handleBranch={handleBranch}
           handleAllBranchesChange={handleAllBranchesChange}
           handleattendees={handleattendees}
-          mentees = {mentees}
+          mentees={mentees}
           handleMentee={handleMentee}
-          role = {userDetails.role}
+          role={userDetails.role}
         />
       )}
     </div>

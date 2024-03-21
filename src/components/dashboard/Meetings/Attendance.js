@@ -7,6 +7,7 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
     const [attendanceList, setattendanceList] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredAttendanceList, setFilteredAttendanceList] = useState([]);
+    const [attendanceCount, setAttendanceCount] = useState(0);
 
     useEffect(() => {
       // Update the filtered list when the search query or attendanceList changes
@@ -16,6 +17,9 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
           student.id.toString().includes(searchQuery)
       );
       setFilteredAttendanceList(filteredList);
+
+      const presentCount = filteredList.filter((student) => student.attendance === 1).length;
+      setAttendanceCount(presentCount);
     }, [searchQuery, attendanceList]);
 
     const fetchAttendance = useCallback( async () => {
@@ -30,7 +34,6 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
 
           if (response.status === 200) {
             setattendanceList(response.data.attendees)
-            // console.log(response.data.attendees)
           }
         } catch (error) {
           console.error("Error fetching Attendance:", error);
@@ -62,12 +65,17 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
 
     const handleCheckboxChange = (studentId) => {
         setattendanceList((prevAttendanceList) => {
-          return prevAttendanceList.map((student) => {
+          const updatedList = prevAttendanceList.map((student) => {
             if (student.id === studentId) {
-              return { ...student, attendance: student.attendance === 0 ? 1 : 0 };
+              const newAttendanceValue = student.attendance === 0 ? 1 : 0;
+              // Update attendance count on checkbox change
+              setAttendanceCount(attendanceCount + (newAttendanceValue - student.attendance));
+              return { ...student, attendance: newAttendanceValue };
             }
             return student;
           });
+
+          return updatedList;
         });
       };
 
@@ -78,12 +86,12 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
             <div className="modal-dialog modal-lg">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">{type === 'take' ? 'Take Attendance' : 'Current Attendance'}Take Attendance</h5>
+                  <h5 className="modal-title">{type === 'take' ? 'Take Attendance' : 'Current Attendance'}</h5>
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleClose}>
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
-    
+                
                 {filteredAttendanceList ? (
                   <div className="modal-body">
                     <div className="mb-3">
@@ -94,6 +102,9 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                       />
+                    </div>
+                    <div>
+                      <p> Total Attendace : {attendanceCount}</p>
                     </div>
                     <div className="table-header">
                       <table className="table">

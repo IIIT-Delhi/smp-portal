@@ -77,16 +77,16 @@ def send_emails_to_attendees(meeting, type):
             return JsonResponse({"error": "Mentor not found or has no mentees"}, status=404)
     if type == 1:
         # new meeting 
-        subject = 'New meeting Meeting ID: '+ str(meeting.meetingId)+" Title: "+meeting.title
-        message = 'New meeting Scheduled by your '+user_type
+        subject = 'New meeting: Title: '+meeting.title
+        message = 'New meeting Scheduled by: '+user_type
     if type == 2:
         # Edit meeting 
-        subject = 'Meeting Updated Meeting ID: '+ str(meeting.meetingId) + " Title: "+ meeting.title
-        message = 'Meeting details for meeting : '+ str(meeting.meetingId) + " updated by user " + user_type
+        subject = 'Meeting Updated: Title: '+ meeting.title
+        message = 'Meeting details with meeting ID : '+ str(meeting.meetingId) + " updated by user " + user_type
     if type == 3:
         # Delete meeting 
-        subject = 'Meeting Deleted Meeting ID: '+ str(meeting.meetingId) + " Title: "+ meeting.title
-        message = 'Meeting Removed for meeting : '+ str(meeting.meetingId) + " updated by user " + user_type
+        subject = 'Meeting Deleted: Title: '+ meeting.title
+        message = 'Meeting Removed with meeting ID : '+ str(meeting.meetingId) + " updated by user " + user_type
     message = message + '\n Schdeduler name : '+user_name
     message = message + '\n Schdeduler email : '+user_email
     message = message + '\n\t Meeting Detials : '

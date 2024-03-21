@@ -1,9 +1,12 @@
 import csv
 from http.client import HTTPResponse
 from io import StringIO
+import threading
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from backend.core import settings
+from backend.server.view.helper_functions import get_mail_content, send_emails_to
 from server.models import *
 
 
@@ -38,7 +41,7 @@ def add_mentee(request):
             return JsonResponse({"message": "Mentee with this ID already exist"})
         new_mentee = Mentee(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), contact=data.get('contact'))
-        mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
+        mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId'))).values()
         if(data.get('imgSrc')):
             new_mentee.imgSrc = data.get('imgSrc')
         if len(mentor) == 0: 
@@ -128,11 +131,14 @@ def edit_mentee_by_id(request):
         data = json.loads(request.body.decode('utf-8'))
         existing_mentee = Mentee.objects.filter(id=data.get('id')).first()
         if existing_mentee:
-            mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId')), department=str(data.get('department'))).values()
+            mentor = Candidate.objects.filter(status=5, id=str(data.get('mentorId'))).values()
             if len(mentor) == 0: 
                 return JsonResponse({"message": "Mentor Not Found Make sure that the mentor exist and have same department"})
             existing_mentee.mentorId = mentor[0]['id']
             existing_mentee.save()
+            mail_content = get_mail_content("mentor_Assigned")
+            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,[existing_mentee]))
+            thread.start()
             return JsonResponse({"message": "Mentee Details Updated successfully"})
         else: 
             return JsonResponse({"message": "No such mentee Exist"})
@@ -167,6 +173,7 @@ def get_all_mentees(request):
                             'mentorEmail': mentor[0]['email'],
                             'mentorContact': mentor[0]['contact'],
                             'mentorImage': mentor[0]['imgSrc'],
+                            'mentorDepartment': mentor[0]['department'],
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)})
             else: 
                 mentee.update({'mentorId': 'NULL',
@@ -174,6 +181,7 @@ def get_all_mentees(request):
                            'mentorEmail': 'NULL',
                             'mentorContact': 'NULL',
                             'mentorImage': 'NULL',
+                            'mentorDepartment': 'NULL',
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)})
         return JsonResponse(list(mentees), safe=False)
     else:
