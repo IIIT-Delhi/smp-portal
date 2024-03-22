@@ -103,8 +103,11 @@ def get_attendance(request):
         except Admin.DoesNotExist:
             # Mentor scheduler, get all mentees of the mentor
             try:
+                menteeList = []
+                for menteelist in meeting.menteeList:
+                    menteeList.append(menteelist['id'])
                 mentor_mentees = Mentee.objects.filter(mentorId=scheduler_id,
-                                                       id__in=meeting.menteeList).values()
+                                                       id__in=menteeList).values()
                 attendees = [mentee['id'] for mentee in mentor_mentees]
                 for attendee_id in attendees:
                         attendee_info = {}
