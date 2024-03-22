@@ -5,6 +5,8 @@ import deleteIcon from "../../../../images/delete_icon.png";
 import axios from "axios"; // Import Axios
 import MentorProfile from "./MentorProfile";
 import departmentOptions from "../../../../data/departmentOptions.json";
+import yearOptions from "../../../../data/yearOptions.json";
+import sizeOptions from "../../../../data/sizeOptions.json";
 import { DownloadCSV } from "../DownloadCSV";
 
 const MentorsList = () => {
@@ -19,6 +21,19 @@ const MentorsList = () => {
   const [uniqueTotalMentees, setUniqueTotalMentees] = useState([]);
   const [selectedTotalMenteesFilter, setSelectedTotalMenteesFilter] =
     useState("");
+  const [addMentorModalVisible, setAddMentorModalVisible] = useState(false);
+  // State for mentor form fields
+  const [mentorForm, setMentorForm] = useState({
+    name: "",
+    id: "",
+    department: "",
+    email: "",
+    year: "",
+    size: "",
+    imgSrc: "",
+    contact: "",
+    score: 100,
+  });
 
   // Function to fetch Mentor list from Django endpoint
   const fetchMentorList = async () => {
@@ -78,6 +93,58 @@ const MentorsList = () => {
     setTotalEntries(filteredMentors.length);
   }, [filteredMentors]);
 
+  const addMentorOnBackend = async (mentor) => {
+    try {
+      await axios
+        .post("http://127.0.0.1:8000/addMentor/", mentor)
+        .then((response) => {
+          // If the backend successfully updates the mentor, update your local state
+          if (response.status === 200) {
+            // Clear the form and close the modal
+            setMentorForm({
+              name: "",
+              id: "",
+              department: "",
+              email: "",
+              year: "",
+              size: "",
+              imgSrc: "",
+              contact: "",
+              score: 100,
+            });
+            setAddMentorModalVisible(false);
+            setMentors((prevMentors) => [...prevMentors, mentor]); // Add the new mentor to the mentees list
+            alert("Mentor added successfully");
+          }
+        });
+    } catch (error) {
+      console.error("Error updating", error);
+      // Handle errors or display an error message to the user.
+    }
+  };
+
+  // Function to handle the form submission when adding a mentor
+  const handleAddMentor = () => {
+    console.log(mentorForm);
+    // Form validation
+    if (
+      !mentorForm.name || // Check if name is empty
+      !mentorForm.id || // Check if roll number is empty
+      !mentorForm.department || // Check if department is empty
+      !mentorForm.email || // Check if email is empty
+      !mentorForm.year ||
+      !mentorForm.size ||
+      !mentorForm.imgSrc ||
+      !mentorForm.contact
+    ) {
+      // You can display an error message or handle validation as needed
+      console.error("Please fill in all required fields.");
+      return;
+    }
+    // Add the mentor to the list
+    addMentorOnBackend(mentorForm);
+  };
+
   const headerColumns = [
     { label: "Name", key: "name" },
     { label: "Roll Number", key: "id" },
@@ -96,6 +163,27 @@ const MentorsList = () => {
   // Function to handle deletion confirmation
   const handleDeleteConfirmation = (mentor) => {
     setMentorToDelete(mentor);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]; // Get the selected file
+    if (file) {
+      if (file.size > 200000) {
+        alert("Image size exceeds 200KB. Please select a smaller image.");
+        e.target.value = null; // Clear the selected file
+      } else {
+        // Handle the selected image, e.g., store it in component state
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageBase64 = event.target.result; // Base64-encoded image
+          setMentorForm({
+            ...mentorForm,
+            imgSrc: imageBase64,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   };
 
   // Function to delete a mentor
@@ -129,7 +217,6 @@ const MentorsList = () => {
   const handleCancelDelete = () => {
     setMentorToDelete(null); // Clear the mentor to delete
   };
-
 
   const editMentorProfile = () => {
     console.log(`Edit Clicked for ${selectedMentor.name}`);
@@ -185,6 +272,192 @@ const MentorsList = () => {
             </select>
           </div>
         </div>
+
+        <button
+          className="btn btn-primary mx-2"
+          onClick={() => setAddMentorModalVisible(true)}
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title="Add new mentor"
+        >
+          Add Mentor
+        </button>
+        <div
+          className={`modal ${addMentorModalVisible ? "show" : ""}`}
+          tabIndex="-1"
+          role="dialog"
+          style={{
+            display: addMentorModalVisible ? "block" : "none",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+          aria-hidden="true"
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Add Mentor</h5>
+                <button
+                  type="button"
+                  className="close"
+                  onClick={() => setAddMentorModalVisible(false)}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                {/* Mentor Form */}
+                <form onSubmit={handleAddMentor}>
+                  <div className="form-group">
+                    <label>Full Name (as per records) *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={mentorForm.name}
+                      onChange={(e) =>
+                        setMentorForm({ ...mentorForm, name: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Roll Number *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={mentorForm.id}
+                      onChange={(e) =>
+                        setMentorForm({ ...mentorForm, id: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email Address *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={mentorForm.email}
+                      onChange={(e) =>
+                        setMentorForm({ ...mentorForm, email: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Contact *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={mentorForm.contact}
+                      onChange={(e) =>
+                        setMentorForm({
+                          ...mentorForm,
+                          contact: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Year</label>
+                    <select
+                      className="form-select"
+                      name="year"
+                      value={mentorForm.year}
+                      required // Make the select required
+                      onChange={(e) =>
+                        setMentorForm({
+                          ...mentorForm,
+                          year: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" disabled>
+                        Select Year
+                      </option>
+                      {Object.entries(yearOptions).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label">Department</label>
+                    <select
+                      className="form-select"
+                      name="department"
+                      value={mentorForm.department}
+                      required // Make the select required
+                      onChange={(e) =>
+                        setMentorForm({
+                          ...mentorForm,
+                          department: e.target.value,
+                        })
+                      }
+                      disabled={!mentorForm.year} // Disable if year not selected
+                    >
+                      <option value="" disabled>
+                        Select Department
+                      </option>
+                      {Object.entries(departmentOptions).map(
+                        ([value, label]) => (
+                          <option key={value} value={value}>
+                            {label}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label">T-Shirt Size</label>
+                    <select
+                      className="form-select"
+                      name="size"
+                      value={mentorForm.size}
+                      required // Make the select required
+                      onChange={(e) =>
+                        setMentorForm({
+                          ...mentorForm,
+                          size: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="" disabled>
+                        Select Size
+                      </option>
+                      {Object.entries(sizeOptions).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">
+                      {"Passport-size Photo (Max size - 200KB)"}
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      name="imgSrc"
+                      accept="image/*" // Allow only image files
+                      required // Make the input required
+                      onChange={handleImageChange} // Handle image selection
+                    />
+                  </div>
+
+                  <button type="submit" className="btn btn-primary">
+                    Add
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <DownloadCSV></DownloadCSV>
 
         <div
