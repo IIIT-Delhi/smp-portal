@@ -162,9 +162,16 @@ def get_form_response(request):
 
                     elif int(form_type) == 3:
                         mentee_obj = Mentee.objects.get(id=form_response_obj['submitterId'])
-                        response_data["MenteeName"] = mentee_obj.name
-                        response_data["MenteeEmail"] = mentee_obj.email
+                        response_data["submitterName"] = mentee_obj.name
+                        response_data["submitterEmail"] = mentee_obj.email
                         response_data["Contact"] = mentee_obj.contact
+                        response_data["department"] = mentee_obj.department
+                        mentor_obj = Candidate.objects.get(id=mentee_obj.mentorId)
+                        response_data["mentorName"] = mentor_obj.name
+                        response_data["mentorEmail"] = mentor_obj.email
+                        response_data["mentorYear"] = mentor_obj.year
+                        response_data["mentorDepartment"] = mentor_obj.department
+                        
                     
                     form_responses_data.append(response_data)
 
