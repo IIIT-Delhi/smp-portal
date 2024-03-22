@@ -106,7 +106,6 @@ def add_mentor(request):
                 "score": "//mentor_score//",
                 "contact": "//mentor_contact//",
                 "imgSrc": "//mentor_image_source//",
-                "menteesToMentors": ["//mentee_id_1//", "//mentee_id_2//", ...]
             }
 
     Returns:
@@ -122,10 +121,10 @@ def add_mentor(request):
                           status=5, imgSrc=data.get('imgSrc'))
         new_candidate.save()
         
-        for mentee_id in data.get('menteesToMentors'):
-            mentee = Mentee.objects.get(id=mentee_id)
-            mentee.mentorId = data.get('id')
-            mentee.save()
+        # for mentee_id in data.get('menteesToMentors'):
+        #     mentee = Mentee.objects.get(id=mentee_id)
+        #     mentee.mentorId = data.get('id')
+        #     mentee.save()
         
         return JsonResponse({"message": "data added successfully"})
     else:
@@ -284,23 +283,14 @@ def delete_mentor_by_id(request):
         data = json.loads(request.body.decode('utf-8'))
         mentor_id = data.get('id')
         try:
-            mentor_department = Candidate.objects.get(id=mentor_id).department
-            highest_score_mentor = Candidate.objects.filter(
-                status=3,
-                department=mentor_department
-            ).order_by('-score').values()
-            if(len(highest_score_mentor) == 0):
-                return JsonResponse({"message": "No new mentor to replace"})
-            highest_score_mentor = highest_score_mentor[0]
-            Mentee.objects.filter(mentorId=mentor_id).update(mentorId=highest_score_mentor["id"])
-            candidate = Candidate.objects.get(id=mentor_id)
+            mentees = Mentee.objects.filter(mentorId=mentor_id)
+            for mentee in mentees:
+                mentee.mentorId = -1
+                mentee.save()
+                candidate = Candidate.objects.get(id=mentor_id)
             candidate.status = -1
             candidate.save()
-            highest_score_mentor_id = highest_score_mentor["id"]
-            candidate_new = Candidate.objects.get(id=highest_score_mentor_id)
-            candidate_new.status = 5
-            candidate_new.save()
-            return JsonResponse({"message": f"Repalced Mentor ID: {highest_score_mentor_id}"})
+            return JsonResponse({"message": "Mentor deleted"})
         except Candidate.DoesNotExist:
             return JsonResponse({"message": "Mentor not found"})
     else:

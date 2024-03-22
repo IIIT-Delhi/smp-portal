@@ -126,15 +126,19 @@ const Dashboard = () => {
 
                     <div className="card mx-3 my-3" style={{ width: "60%" }}>
                       <div className="card-body">
-                        <div className="row">
-                          <div className="col-sm-3">
-                            <p className="mb-0">Roll Number</p>
+                        {userDetails.role !== "admin" && (
+                          <div>
+                            <div className="row">
+                              <div className="col-sm-3">
+                                <p className="mb-0">Roll Number</p>
+                              </div>
+                              <div className="col-sm-9">
+                                <p className="text-muted mb-0">{userData.id}</p>
+                              </div>
+                            </div>
+                            <hr />
                           </div>
-                          <div className="col-sm-9">
-                            <p className="text-muted mb-0">{userData.id}</p>
-                          </div>
-                        </div>
-                        <hr />
+                        )}
                         <div className="row">
                           <div className="col-sm-3">
                             <p className="mb-0">Email</p>
@@ -146,28 +150,29 @@ const Dashboard = () => {
                         <hr />
                         {userDetails.role === "admin" && (
                           <div className="row">
-                          <div className="col-sm-3">
-                            <p className="mb-0">Phone</p>
+                            <div className="col-sm-3">
+                              <p className="mb-0">Phone</p>
+                            </div>
+                            <div className="col-sm-9">
+                              <p className="text-muted mb-0">
+                                {userData.phone}
+                              </p>
+                            </div>
                           </div>
-                          <div className="col-sm-9">
-                            <p className="text-muted mb-0">
-                              {userData.phone}
-                            </p>
-                          </div>
-                        </div>
                         )}
-                        {userDetails.role === "mentor" && userDetails.role === "mentee" && (
-                          <div className="row">
-                          <div className="col-sm-3">
-                            <p className="mb-0">Contact</p>
-                          </div>
-                          <div className="col-sm-9">
-                            <p className="text-muted mb-0">
-                              {userData.contact}
-                            </p>
-                          </div>
-                        </div>
-                        )}
+                        {userDetails.role === "mentor" &&
+                          userDetails.role === "mentee" && (
+                            <div className="row">
+                              <div className="col-sm-3">
+                                <p className="mb-0">Contact</p>
+                              </div>
+                              <div className="col-sm-9">
+                                <p className="text-muted mb-0">
+                                  {userData.contact}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                         <hr />
                         {userDetails.role === "mentor" && (
                           <div>
