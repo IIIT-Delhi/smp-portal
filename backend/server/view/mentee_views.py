@@ -5,8 +5,8 @@ import threading
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
-from backend.core import settings
-from backend.server.view.helper_functions import get_mail_content, send_emails_to
+from django.conf import settings
+from server.view.helper_functions import send_emails_to, get_mail_content
 from server.models import *
 
 

@@ -47,6 +47,14 @@ const FormResponses = () => {
         (q) => q.id === questionId
       );
       return question ? question.options[response.responses[questionId]] : "";
+    } else if (formType === "3") {
+      if (questionId === "score") {
+        return response.responses[questionId];
+      }
+      const question = menteeFeedbackQuestions.questions.find(
+        (q) => q.id === questionId
+      );
+      return question ? question.options[response.responses[questionId]] : "";
     } else if (formType === "2") {
       if (questionId === "score") {
         return statusOptions[response.responses[questionId]];
@@ -72,7 +80,7 @@ const FormResponses = () => {
         return [];
     }
   };
-  
+
   const statusOptions = {
     0: "Accepted",
     1: "Rejected",
@@ -84,7 +92,6 @@ const FormResponses = () => {
   }, [filteredResponses]);
 
   useEffect(() => {
-    console.log(formType);
     const fetchFormResponses = async () => {
       try {
         const response = await axios.post(
@@ -94,8 +101,6 @@ const FormResponses = () => {
           }
         );
         setFormResponses(response.data.formResponses);
-        console.log(response)
-
       } catch (error) {
         console.error("Error fetching form responses:", error);
       }
@@ -106,7 +111,6 @@ const FormResponses = () => {
 
   useEffect(() => {
     setQuestionSet(getQuestionSet(formType)["questions"]);
-    // console.log(formResponses);
     const filtered = formResponses.filter((response) => {
       const values = Object.values(response.responses);
       const includesTerm = values.some((value) =>
@@ -135,8 +139,6 @@ const FormResponses = () => {
           includesTerm)
       );
     });
-
-    console.log(filtered)
     setFilteredResponses(filtered);
   }, [
     formResponses,
@@ -151,20 +153,19 @@ const FormResponses = () => {
   };
 
   const handleMentorMenteeMapping = async () => {
-    setshowConsentModal(true)
+    setshowConsentModal(true);
   };
 
   const handleClose = () => {
-    setshowConsentModal(false)
-  }
+    setshowConsentModal(false);
+  };
 
   const handleSave = () => {
-    setshowConsentModal(false)
-  }
+    setshowConsentModal(false);
+  };
 
   const handleSendConsentEmail = async () => {
-
-    setshowConsentModal(true)
+    setshowConsentModal(true);
   };
 
   const handleSort = (option) => {
@@ -239,11 +240,16 @@ const FormResponses = () => {
     setFilteredResponses((prevResponse) => {
       return prevResponse.map((response) => {
         if (response.submitterId === studentId) {
-          if(formType === '1'){
-          return { ...response, consent_status: response.consent_status === 0 ? 1 : 0 };
-          }
-          else{
-            return { ...response, mapping_status: response.mapping_status === 0 ? 1 : 0 };
+          if (formType === "1") {
+            return {
+              ...response,
+              consent_status: response.consent_status === 0 ? 1 : 0,
+            };
+          } else {
+            return {
+              ...response,
+              mapping_status: response.mapping_status === 0 ? 1 : 0,
+            };
           }
         }
         return response;
@@ -388,16 +394,10 @@ const FormResponses = () => {
                   }}
                 >
                   <tr>
-                    { formType !== '3' && (
-                    <th>Select Student</th>
-                    )}
+                    {formType !== "3" && <th>Select Student</th>}
                     <th>Roll Number</th>
-                    { formType !== '3' && (
-                    <th>Applicant Name</th>
-                    )}
-                    { formType == '3' && (
-                    <th>Mentee Name</th>
-                    )}
+                    {formType !== "3" && <th>Applicant Name</th>}
+                    {formType == "3" && <th>Mentee Name</th>}
                     <th>Email</th>
                     <th>Contact</th>
                     <th>Year</th>
@@ -425,17 +425,39 @@ const FormResponses = () => {
                 <tbody>
                   {filteredResponses.map((response, index) => (
                     <tr key={index}>
-                      {formType !== '3' && (
-                      <td className='text-center'>
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id={response.submitterId}
-                          checked={formType === '1' ? (response.consent_status === 1) : (response.mapping_status === 1)}
-                          disabled = {((response.consent_status === 1 && formType === '1') || (response.mapping_status === 1 && formType === '2')) && !newlySelectedStudents.includes(response.submitterId)}
-                          onChange={() => {return formType === '1' ? handleCheckboxChange(response.submitterId,formType) : handleCheckboxChange(response.submitterId,formType)}}
-                        />
-                      </td>
+                      {formType !== "3" && (
+                        <td className="text-center">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={response.submitterId}
+                            checked={
+                              formType === "1"
+                                ? response.consent_status === 1
+                                : response.mapping_status === 1
+                            }
+                            disabled={
+                              ((response.consent_status === 1 &&
+                                formType === "1") ||
+                                (response.mapping_status === 1 &&
+                                  formType === "2")) &&
+                              !newlySelectedStudents.includes(
+                                response.submitterId
+                              )
+                            }
+                            onChange={() => {
+                              return formType === "1"
+                                ? handleCheckboxChange(
+                                    response.submitterId,
+                                    formType
+                                  )
+                                : handleCheckboxChange(
+                                    response.submitterId,
+                                    formType
+                                  );
+                            }}
+                          />
+                        </td>
                       )}
                       <td>{response.submitterId}</td>
                       <td>{response.submitterName}</td>
@@ -472,17 +494,14 @@ const FormResponses = () => {
           </div>
         )}
 
-        { showConsentModal && (
-
-            <SendMail 
-              handleClose = {handleClose}
-              handleSave = {handleSave}
-              newlySelectedStudents = {newlySelectedStudents}
-              formType = {formType}
-            />
-          
-          )
-        }
+        {showConsentModal && (
+          <SendMail
+            handleClose={handleClose}
+            handleSave={handleSave}
+            newlySelectedStudents={newlySelectedStudents}
+            formType={formType}
+          />
+        )}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import MenteeUpload from "./MenteeUpload";
 import axios from "axios";
 import ChangeMentor from "./ChangeMentor";
 import departmentOptions from "../../../../data/departmentOptions.json";
+import { DownloadCSV } from "../DownloadCSV";
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
@@ -80,7 +81,6 @@ const MenteesList = () => {
   const [currMentee, setcurrMentee] = useState(null);
 
   const handleChangeMentor = (mentee) => {
-    console.log(mentee);
     seteditMentee({
       mentorID: "",
       mentorName: "",
@@ -127,8 +127,8 @@ const MenteesList = () => {
         .then((response) => {
           // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
-             // Clear the form and close the modal
-             setMenteeForm({
+            // Clear the form and close the modal
+            setMenteeForm({
               name: "",
               id: "",
               department: "",
@@ -138,12 +138,11 @@ const MenteesList = () => {
             });
             setAddMenteeModalVisible(false);
             setMentees((prevMentees) => [...prevMentees, mentee]); // Add the new mentee to the mentees list
-            alert("Mentee added successfully on the backend");
-      
+            alert("Mentee added successfully");
           }
         });
     } catch (error) {
-      console.error("Error updating meeting on the backend:", error);
+      console.error("Error updating", error);
       // Handle errors or display an error message to the user.
     }
   };
@@ -201,7 +200,6 @@ const MenteesList = () => {
   };
 
   const handleOpenUploadCSV = () => {
-    // console.log("here")
     setmenteeUploadCSV(true);
   };
 
@@ -209,44 +207,7 @@ const MenteesList = () => {
     setmenteeUploadCSV(false);
   };
 
-  const handleDownloadCSV = () => {
-    try {
-      // Filter out keys you want to exclude from the CSV
-      const excludedKeys = ["imgSrc", "mentorImage","f3"];
-      const filteredData = mentees.map((entry) => {
-        const filteredEntry = { ...entry };
-        excludedKeys.forEach((key) => delete filteredEntry[key]);
-        return filteredEntry;
-      });
-
-      const csvData = convertToCSV(filteredData);
-
-      // Create a Blob containing the CSV data
-      const blob = new Blob([csvData], { type: "text/csv" });
-
-      // Create a link element to trigger the download
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = "Mentees_AY_.csv";
-
-      // Append the link to the document
-      document.body.appendChild(link);
-
-      // Trigger the download
-      link.click();
-
-      // Remove the link from the document
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error creating CSV and downloading:", error);
-    }
-  };
-
-  const convertToCSV = (data) => {
-    const header = Object.keys(data[0]).join(",");
-    const rows = data.map((entry) => Object.values(entry).join(","));
-    return `${header}\n${rows.join("\n")}`;
-  };
+  
 
   const filteredMentees = mentees.filter((mentee) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -309,6 +270,9 @@ const MenteesList = () => {
         <button
           className="btn btn-primary mx-2"
           onClick={() => setAddMenteeModalVisible(true)}
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title="Add new mentee"
         >
           Add Mentee
         </button>
@@ -454,12 +418,16 @@ const MenteesList = () => {
           </div>
         </div>
 
-        <button className="btn btn-primary mx-2" onClick={handleOpenUploadCSV}>
+        <button
+          className="btn btn-primary mx-2"
+          onClick={handleOpenUploadCSV}
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title="Upload a new CSV file to replace the current list."
+        >
           Upload New CSV
         </button>
-        <button className="btn btn-primary mx-2" onClick={handleDownloadCSV}>
-          Download CSV
-        </button>
+        <DownloadCSV ></DownloadCSV>
         <div
           className="table-container text-center my-2"
           style={{ overflow: "auto", maxHeight: "400px" }}

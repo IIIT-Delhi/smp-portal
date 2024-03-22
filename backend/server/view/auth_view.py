@@ -68,7 +68,6 @@ def get_id_by_email(request) -> JsonResponse:
                     'f2': str(FormStatus.objects.get(formId='2').formStatus)
                 }
                 return JsonResponse(data_dict)
-            
             return JsonResponse(entry[0])
         
         except Exception as e:
