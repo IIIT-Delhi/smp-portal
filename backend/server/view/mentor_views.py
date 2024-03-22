@@ -106,7 +106,6 @@ def add_mentor(request):
                 "score": "//mentor_score//",
                 "contact": "//mentor_contact//",
                 "imgSrc": "//mentor_image_source//",
-                "menteesToMentors": ["//mentee_id_1//", "//mentee_id_2//", ...]
             }
 
     Returns:
@@ -122,10 +121,10 @@ def add_mentor(request):
                           status=5, imgSrc=data.get('imgSrc'))
         new_candidate.save()
         
-        for mentee_id in data.get('menteesToMentors'):
-            mentee = Mentee.objects.get(id=mentee_id)
-            mentee.mentorId = data.get('id')
-            mentee.save()
+        # for mentee_id in data.get('menteesToMentors'):
+        #     mentee = Mentee.objects.get(id=mentee_id)
+        #     mentee.mentorId = data.get('id')
+        #     mentee.save()
         
         return JsonResponse({"message": "data added successfully"})
     else:
