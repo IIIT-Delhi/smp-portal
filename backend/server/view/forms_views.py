@@ -142,8 +142,11 @@ def get_form_response(request):
                     if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                         department = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
+                form_response_obj['responses'].pop('mentorId')
+                form_response_obj['responses'].pop('mentorName')
                 response_data = {
-                    "submitterId": form_response_obj['submitterId']
+                    "submitterId": form_response_obj['submitterId'],
+                    "responses": form_response_obj['responses'],
                 }
 
                 if summiter_name != '':
@@ -164,6 +167,7 @@ def get_form_response(request):
                         response_data["Contact"] = mentee_obj.contact
                         response_data["department"] = mentee_obj.department
                         mentor_obj = Candidate.objects.get(id=mentee_obj.mentorId)
+                        response_data["mentorId"] = mentor_obj.id
                         response_data["mentorName"] = mentor_obj.name
                         response_data["mentorEmail"] = mentor_obj.email
                         response_data["mentorYear"] = mentor_obj.year
