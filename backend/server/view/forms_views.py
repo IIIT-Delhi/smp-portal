@@ -143,10 +143,7 @@ def get_form_response(request):
                         summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                         department = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
                 response_data = {
-                    "submitterId": form_response_obj['submitterId'],
-                    "submiterName": summiter_name,
-                    "responses": form_response_obj['responses'],
-                    "department": department,
+                    "submitterId": form_response_obj['submitterId']
                 }
 
                 if summiter_name != '':
