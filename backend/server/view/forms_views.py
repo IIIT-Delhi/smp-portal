@@ -374,6 +374,8 @@ def get_excellence_award(request):
         try:
             eligible_candidates = Candidate.objects.filter(status=5)
             excellence_award_data = []
+            max_meetings_attended = 0
+            max_meetings_scheduled = 0
             for candidate in eligible_candidates:
                 # Calculate the number of meetings attended by the candidate
                 meetings_attended = Attendance.objects.filter(attendeeId=candidate.id).count()
@@ -384,6 +386,8 @@ def get_excellence_award(request):
                 # Additional metrics calculation (e.g., average mentor rating)
                 total_ratings = 0
                 total_mentees = 0
+                max_meetings_attended = max(max_meetings_attended, meetings_attended)
+                max_meetings_scheduled = max(max_meetings_scheduled, meetings_scheduled)
                 for form in mentee_feedback_forms:
                     total_ratings += form.responses.get('fq4', 0)  # Assuming fq4 contains mentor rating
                     total_mentees += 1
@@ -395,13 +399,31 @@ def get_excellence_award(request):
                 
                 excellence_award_data.append({
                     'candidate_id': candidate.id,
+                    "name": candidate.name,
+                    "email": candidate.email,
+                    "department": candidate.department,
+                    "year": candidate.year,
+                    "contact": candidate.contact,
                     'meetings_attended': meetings_attended,
                     'meetings_scheduled': meetings_scheduled,
                     'average_mentor_rating': average_mentor_rating,
                     # Add other relevant metrics here
                 })
+
+                data = {}
+                for candidate in excellence_award_data:
+                    score = candidate['meetings_attended']/max_meetings_attended*3.0 + candidate['meetings_scheduled']/max_meetings_scheduled*3.0 + candidate['average_mentor_rating']
+                    data.append({
+                        "id": candidate['candidate_id'],
+                        "name": candidate['name'],
+                        "email": candidate['email'],
+                        "department": candidate['department'],
+                        "year": candidate['year'],
+                        "contact": candidate['contact'],
+                        "score": score,
+                    })
             
-            return excellence_award_data
+            return data
         except Exception as e:
             print(e)
             return JsonResponse({"error": str(e)})
