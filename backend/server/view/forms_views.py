@@ -142,8 +142,6 @@ def get_form_response(request):
                     if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
                         department = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
-                form_response_obj['responses'].pop('mentorId')
-                form_response_obj['responses'].pop('mentorName')
                 response_data = {
                     "submitterId": form_response_obj['submitterId'],
                     "responses": form_response_obj['responses'],
@@ -269,8 +267,6 @@ def mentee_filled_feedback(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         responses = {
-            'mentorId':data.get('mentorId'),
-            'mentorName':data.get('mentorName'),
             'fq1': data.get('fq1'),
             'fq2': data.get('fq2'),
             'fq3': data.get('fq3'),
