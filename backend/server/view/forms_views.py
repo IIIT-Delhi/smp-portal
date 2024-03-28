@@ -152,6 +152,7 @@ def get_form_response(request):
                         mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
                         response_data["submitterName"] = mentor_obj.name
                         response_data["submitterEmail"] = mentor_obj.email
+                        response_data["department"] = mentor_obj.department
                         response_data["Year"] = mentor_obj.year
                         response_data["Contact"] = mentor_obj.contact
                         response_data["Image"] = mentor_obj.imgSrc
