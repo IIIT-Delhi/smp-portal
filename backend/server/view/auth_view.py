@@ -43,19 +43,13 @@ def get_id_by_email(request) -> JsonResponse:
                     
                     if mentor:      # mentor assigned retrive mentor details 
                         mentor = mentor[0]
-                        existing_responses = FormResponses.objects.filter(submitterId=mentee.id, FormType='3').exists()
-                        feebackfilled = False
-                        if existing_responses:
-                            feebackfilled = True
-        
                         mentee.update({
                             'mentorId': mentor['id'],
                             'mentorName': mentor['name'],
                             'mentorEmail': mentor['email'],
                             'mentorContact': mentor['contact'],
                             'mentorImage': mentor['imgSrc'],
-                            'f3': int(FormStatus.objects.get(formId='3').formStatus),
-                            'feebackfilled': feebackfilled
+                            'f3': int(FormStatus.objects.get(formId='3').formStatus)
                         })
                     else:       # else put NULL
                         mentee.update({
@@ -64,8 +58,7 @@ def get_id_by_email(request) -> JsonResponse:
                             'mentorEmail': 'NULL',
                             'mentorContact': 'NULL',
                             'mentorImage': 'NULL',
-                            'f3': int(FormStatus.objects.get(formId='3').formStatus),
-                            'feebackfilled': False
+                            'f3': int(FormStatus.objects.get(formId='3').formStatus)
                         })
             
             if len(entry) == 0:

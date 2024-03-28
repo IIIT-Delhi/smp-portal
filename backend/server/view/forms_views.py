@@ -269,12 +269,7 @@ def mentee_filled_feedback(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         submitter_id = data.get('id')
-        
-        # Check if the submitter has already filled the form with FormType 3
-        existing_responses = FormResponses.objects.filter(submitterId=submitter_id, FormType='3').exists()
-        if existing_responses:
-            return JsonResponse({"message": "Feedback form already submitted"})
-        
+ 
         responses = {
             'fq1': data.get('fq1'),
             'fq2': data.get('fq2'),
