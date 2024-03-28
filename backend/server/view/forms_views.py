@@ -264,9 +264,12 @@ def mentee_filled_feedback(request):
             Possible responses:
                 - {"message": "Feedback form submitted successfully"}: If the feedback form is successfully submitted.
                 - {"message": "Invalid request method"}: If the request method is not POST.
+                - {"message": "Feedback form already submitted"}: If the submitter has already filled the form before with form type 3.
     """
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
+        submitter_id = data.get('id')
+ 
         responses = {
             'fq1': data.get('fq1'),
             'fq2': data.get('fq2'),
@@ -275,11 +278,11 @@ def mentee_filled_feedback(request):
         }
 
         new_responses = FormResponses(
-            submitterId=data.get('id'),
+            submitterId=submitter_id,
             FormType='3',
             responses=responses
         )
-        mentee = Mentee.objects.get(id=data.get('id'))
+        mentee = Mentee.objects.get(id=submitter_id)
         new_responses.save()
         mail_content = get_mail_content("feedback_filled")
         thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,[mentee.email]))
