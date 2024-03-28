@@ -18,8 +18,8 @@ mail_content = [
     {
         "type" : "feedback_filled",
         "subject" : "Mentor Feedback From Filled",
-        "body" : "Feedback form successfully filled. \nWe appreciate their time and effort in providing valuable insights into the mentoring process. \nYour mentor's feedback will greatly assist us in evaluating the effectiveness of the mentoring program and making necessary improvements to better serve our participants.\n\nBest Regard"
-    },
+        "body": "\nWe're pleased to inform you that the feedback form for your mentor has been successfully submitted. Thank you for taking the time to provide valuable insights into the mentoring process.\n\nYour mentor's feedback is invaluable to us and will greatly assist in evaluating the effectiveness of our mentoring program. This will help us make necessary improvements to better serve our participants.\n\nThank you once again for your contribution.\n\nBest Regards,"
+},
     {
         "type" : "mapping",
         "subject" : "Important: Congratulations on being selected as an Student Mentor for SMP(20AY-AY).",

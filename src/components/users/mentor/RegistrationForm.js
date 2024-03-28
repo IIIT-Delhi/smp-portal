@@ -13,14 +13,15 @@ import sizeOptions from "../../../data/sizeOptions.json";
 import axios from "axios";
 
 export default function RegistrationForm() {
-  const { userDetails,logout } = useAuth();
+  const { userDetails, logout } = useAuth();
   const [step, setStep] = useState(1);
   const [enrollmentFormStatus, setEnrollmentFormStatus] = useState([]);
   const [consentFormStatus, setConsentFormStatus] = useState([]);
 
   useEffect(() => {
     // setConsentFormStatus(userDetails.f2);
-    // setEnrollmentFormStatus(userDetails.f1); 
+    // setEnrollmentFormStatus(userDetails.f1);
+    console.log(userDetails);
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
@@ -42,7 +43,7 @@ export default function RegistrationForm() {
     fetchFormStatus();
   }, []);
 
-  const handleChangeQuestionInMain = (questionId,value) => {
+  const handleChangeQuestionInMain = (questionId, value) => {
     setFormData({
       ...formData,
       [questionId]: value,
@@ -124,43 +125,37 @@ export default function RegistrationForm() {
   return (
     <div>
       <Navbar className="fixed-top" />
-      {enrollmentFormStatus === "1" &&
-        userDetails.id === -1 &&
-        step === 1 && (
-          // If userDetails.id is -1 and step is 1, show UserDetails
-          <UserDetails
-            nextStep={nextStep}
-            handleChange={handleChange}
-            inputValues={formData}
-            yearOptions={yearOptions}
-            departmentOptions={departmentOptions}
-          />
-        )}
+      {enrollmentFormStatus === "1" && userDetails.id === -1 && step === 1 && (
+        // If userDetails.id is -1 and step is 1, show UserDetails
+        <UserDetails
+          nextStep={nextStep}
+          handleChange={handleChange}
+          inputValues={formData}
+          yearOptions={yearOptions}
+          departmentOptions={departmentOptions}
+        />
+      )}
 
-      {enrollmentFormStatus === "1" &&
-        userDetails.id === -1 &&
-        step === 2 && (
-          <Questions
-            nextStep={nextStep}
-            prevStep={prevStep}
-            questions={registrationQuestions["questions"]}
-            handleChangeQuestionInMain={handleChangeQuestionInMain}
-          />
-        )}
+      {enrollmentFormStatus === "1" && userDetails.id === -1 && step === 2 && (
+        <Questions
+          nextStep={nextStep}
+          prevStep={prevStep}
+          questions={registrationQuestions["questions"]}
+          handleChangeQuestionInMain={handleChangeQuestionInMain}
+        />
+      )}
 
-      {enrollmentFormStatus === "1" &&
-        userDetails.id === -1 &&
-        step === 3 && (
-          <Confirmation
-            nextStep={nextStep}
-            prevStep={prevStep}
-            inputValues={formData}
-            questions={registrationQuestions["questions"]}
-            yearOptions={yearOptions}
-            departmentOptions={departmentOptions}
-            saveAndContinue={saveAndContinue}
-          />
-        )}
+      {enrollmentFormStatus === "1" && userDetails.id === -1 && step === 3 && (
+        <Confirmation
+          nextStep={nextStep}
+          prevStep={prevStep}
+          inputValues={formData}
+          questions={registrationQuestions["questions"]}
+          yearOptions={yearOptions}
+          departmentOptions={departmentOptions}
+          saveAndContinue={saveAndContinue}
+        />
+      )}
 
       {userDetails.id === -1 && enrollmentFormStatus === "0" && (
         // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
@@ -210,6 +205,16 @@ export default function RegistrationForm() {
             We are sorry to inform you that you are not selected for Student
             Mentorship Programme.
           </div>
+        </div>
+      )}
+
+      {userDetails.id !== -1 && userDetails.status === -1 && (
+        // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
+        <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+          <div className="card p-4 mt-5">
+            You have been removed from the program. Please contact admin.
+          </div>
+           
         </div>
       )}
     </div>

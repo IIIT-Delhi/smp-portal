@@ -413,6 +413,8 @@ const FormResponses = () => {
                     <th>Department</th>
                     {formType === "3" && <th>Mentor Id</th>}
                     {formType === "3" && <th>Mentor Name</th>}
+                    {formType === "3" && <th>Mentor Email</th>}
+                    {formType === "3" && <th>Mentor Department</th>}
                     {formType === "3" && <th>Mentor Year</th>}
                     {formType === "1" && <th>Score</th>}
                     {formType === "2" && <th>Status</th>}
@@ -477,6 +479,10 @@ const FormResponses = () => {
                       <td>{departmentOptions[response.department]}</td>
                       {formType === "3" && <td>{response.mentorId}</td>}
                       {formType === "3" && <td>{response.mentorName}</td>}
+                      {formType === "3" && <td>{response.mentorEmail}</td>}
+                      {formType === "3" && (
+                        <td>{departmentOptions[response.mentorDepartment]}</td>
+                      )}
                       {formType === "3" && <td>{response.mentorYear[1]}</td>}
                       {Object.keys(response.responses).map((key, idx) => (
                         <td key={idx}>
