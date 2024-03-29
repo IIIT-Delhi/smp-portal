@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import departmentOptions from "../../../data/departmentOptions.json";
 export const DownloadCSV = () => {
   const [mentees, setMentees] = useState([]);
   const [isFirstTime, setisFirstTime] = useState(true);
@@ -37,28 +37,26 @@ export const DownloadCSV = () => {
         return a.id.localeCompare(b.id);
       });
 
-      // Filter out keys you want to exclude from the CSV
-      const excludedKeys = ["imgSrc", "mentorImage", "f3"];
-      const reorderedKeys = [
-        "mentorId",
-        "mentorName",
-        "mentorEmail",
-        "menteeDepartment",
-        "mentorContact",
-        "id",
-        "name",
-        "email",
-        "department",
-        "contact",
-      ];
+      // Modify the department value to departmentOptions[sortedMentees.department]
+      // Modify the year value to departmentOptions[sortedMentees.year]
+      const mappedMentees = sortedMentees.map((mentee) => ({
+        "Mentor Roll Number": mentee.mentorId,
+        "Mentor Name": mentee.mentorName,
+        "Mentor Email": mentee.mentorEmail,
+        "Mentor Programme":
+          mentee.mentorDepartment[0] === "B" ? "B.Tech" : "M.Tech",
+        "Mentor Department":
+          departmentOptions[mentee.mentorDepartment].split(" ")[0],
+        "Mentor Contact": mentee.mentorContact,
+        "Mentee Roll Number": mentee.id,
+        "Mentee Name": mentee.name,
+        "Mentee Email": mentee.email,
+        "Mentee Programme": mentee.department[0] === "B" ? "B.Tech" : "M.Tech",
+        "Mentee Department": departmentOptions[mentee.department].split(" ")[0],
+        "Mentee Contact": mentee.contact,
+      }));
 
-      const filteredData = sortedMentees.map((entry) => {
-        const filteredEntry = { ...entry };
-        excludedKeys.forEach((key) => delete filteredEntry[key]);
-        return filteredEntry;
-      });
-
-      const csvData = convertToCSV(filteredData, reorderedKeys);
+      const csvData = convertToCSV(mappedMentees);
 
       // Create a Blob containing the CSV data
       const blob = new Blob([csvData], { type: "text/csv" });
@@ -81,28 +79,21 @@ export const DownloadCSV = () => {
     }
   };
 
-  const convertToCSV = (data, orderedKeys) => {
-    const rows = data.map((entry) => {
-      // Map each entry to an array of values in the specified order
-      const orderedValues = orderedKeys.map((key) => entry[key]);
-      return orderedValues.join(",");
-    });
-
-    // Create header row with ordered keys
-    const header = orderedKeys.join(",");
-
+  const convertToCSV = (data) => {
+    const header = Object.keys(data[0]).join(",");
+    const rows = data.map((entry) => Object.values(entry).join(","));
     return `${header}\n${rows.join("\n")}`;
   };
 
   return (
-      <button
-        className="btn btn-primary mx-2"
-        onClick={handleDownloadCSV}
-        data-toggle="tooltip"
-        data-placement="bottom"
-        title="Download Mentor-Mentee Pairings in CSV format"
-      >
-        Download Mentor-Mentee Pairings
-      </button>
+    <button
+      className="btn btn-primary mx-2"
+      onClick={handleDownloadCSV}
+      data-toggle="tooltip"
+      data-placement="bottom"
+      title="Download Mentor-Mentee Pairings in CSV format"
+    >
+      Download Mentor-Mentee Pairings
+    </button>
   );
 };

@@ -6,6 +6,7 @@ import TableRow from "./TableRow";
 import formNames from "../../../../data/formNames.json";
 import departmentOptions from "../../../../data/departmentOptions.json";
 import SendMail from "./SendMail";
+import ExcellenceAward from "./ExcellenceAward";
 import {
   getQuestionSet,
   statusOptions,
@@ -32,6 +33,7 @@ const FormResponses = () => {
   const [newlySelectedStudents, setNewlySelectedStudents] = useState([]);
   const [showConsentModal, setshowConsentModal] = useState(false);
   const [topEntries, setTopEntries] = useState("");
+  const [showMentorList, setShowMentorList] = useState(false);
 
   useEffect(() => {
     // Update filtered total entries when filteredMentors change
@@ -115,6 +117,18 @@ const FormResponses = () => {
     topEntries,
   ]);
 
+  const handleShowMentorList = () => {
+    setShowMentorList(true);
+  };
+
+  const handleCloseMentorList = () => {
+    setShowMentorList(false);
+  };
+
+  const handleSaveMentorList = () => {
+    setShowMentorList(false);
+  };
+
   const handleExpandQuestion = (index) => {
     setExpandedQuestion((prevIndex) => (prevIndex === index ? null : index));
   };
@@ -148,7 +162,7 @@ const FormResponses = () => {
   };
 
   const handleExcellenceClicked = async () => {
-    setLoading(true);
+    handleShowMentorList();
     console.log("Excellence award clicked.");
   };
 
@@ -213,7 +227,7 @@ const FormResponses = () => {
             </select>
           </div>
           {formType === "2" && (
-            <div className="input-group-append">
+            <div className="input-group-append mx-2">
               <select
                 className="form-control"
                 value={selectedStatusFilter}
@@ -368,6 +382,12 @@ const FormResponses = () => {
             handleSave={handleSave}
             newlySelectedStudents={newlySelectedStudents}
             formType={formType}
+          />
+        )}
+        {showMentorList && (
+          <ExcellenceAward
+            handleClose={handleCloseMentorList}
+            handleButtonSave={handleSaveMentorList}
           />
         )}
       </div>

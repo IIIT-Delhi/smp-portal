@@ -1,5 +1,5 @@
 import React from "react";
-import {truncateText} from "./utils"
+import { truncateText } from "./utils";
 
 const TableRow = ({
   response,
