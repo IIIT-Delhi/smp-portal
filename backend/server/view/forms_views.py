@@ -410,7 +410,7 @@ def get_excellence_award(request):
                 m = candidate['meetings_attended']/max_meetings_attended*3.0 if max_meetings_attended != 0 else 0
                 n = candidate['meetings_scheduled']/max_meetings_scheduled*3.0 if max_meetings_scheduled != 0 else 0
                 score = m + n + int(candidate['average_mentor_rating'])
-                candidate_list.append({
+                candidate_info = {
                     "id": candidate["candidate_id"],
                     "name": candidate['name'],
                     "email": candidate['email'],
@@ -418,10 +418,16 @@ def get_excellence_award(request):
                     "year": candidate['year'],
                     "contact": candidate['contact'],
                     "score": score,
-                })
+                }
+                
+                try:
+                    excellence_award_data = ExcellenceAward.objects.get(candidateId=candidate["candidate_id"])
+                    candidate_info["status"] = 1  # Attendee is present
+                except Attendance.DoesNotExist:
+                    candidate_info["status"] = 0  # Attendee is absent
+                candidate_list.append(candidate_info)
             return JsonResponse({"candidateList": candidate_list})
         except Exception as e:
-            print(e)
             return JsonResponse({"error": str(e)})
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
