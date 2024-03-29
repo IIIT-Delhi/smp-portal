@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "./common/Navbar";
+import Navbar from "../navbar/Navbar";
 import { useAuth } from "../../context/AuthContext";
-import Table from "./Table";
+import Table from "../Table";
 import axios from "axios";
 import deparmentOptions from "../../data/departmentOptions.json";
 import yearOptions from "../../data/yearOptions.json";

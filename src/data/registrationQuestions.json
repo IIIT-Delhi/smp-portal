@@ -2,7 +2,7 @@
   "questions": [
     {
       "id": "rq1",
-      "question": "Question 1: Your mentee shared an issue and you offered some suggestions but the mentee criticizes your suggestions, calling them stupid and impractical. What do you do?",
+      "question": "Q1: Your mentee shared an issue and you offered some suggestions but the mentee criticizes your suggestions, calling them stupid and impractical. What do you do?",
       "options": [
         "1. Reprimand the mentee to maintain your respect and authority.",
         "2. Use humor to communicate with your mentees by laughing off the comment and responding in a manner similar to how the mentee spoke.",
@@ -15,7 +15,7 @@
     },
     {
       "id": "rq2",
-      "question": "Question 2: Your mentee shares that they have not left their room in days, do not feel like eating and haven’t been able to sleep. What do you do?",
+      "question": "Q2: Your mentee shares that they have not left their room in days, do not feel like eating and haven’t been able to sleep. What do you do?",
       "options": [
         "1. Invite your mentee out for a fun evening, bond with them, and try to understand what is bothering them.",
         "2. Speak to the mentee and let them know that you’re there for them and can be contacted anytime for any support.",
@@ -28,7 +28,7 @@
     },
     {
       "id": "rq3",
-      "question": "Question 3: Your mentee wanted to meet you but when you met they were sitting quietly. What do you do?",
+      "question": "Q3: Your mentee wanted to meet you but when you met they were sitting quietly. What do you do?",
       "options": [
         "1. Ask them why they wanted to meet and if they wanted to discuss something in particular.",
         "2. Sit with them in silence until they feel comfortable enough to start talking.",
@@ -41,7 +41,7 @@
     },
     {
       "id": "rq4",
-      "question": "Question 4: You confront your mentee about their silence and they get uncomfortable and defensive. How do you aid the situation?",
+      "question": "Q4: You confront your mentee about their silence and they get uncomfortable and defensive. How do you aid the situation?",
       "options": [
         "1. Apologize to your mentee for upsetting them and let them know it won’t happen again.",
         "2. Ask them if they are feeling uncomfortable to confirm before apologizing or taking any other action.",
@@ -54,7 +54,7 @@
     },
     {
       "id": "rq5",
-      "question": "Question 5: Your mentee does not seem to be making any friends in their batch and prefers finding you and spending all their time with you. How would you set a boundary if you don’t feel comfortable with this?",
+      "question": "Q5: Your mentee does not seem to be making any friends in their batch and prefers finding you and spending all their time with you. How would you set a boundary if you don’t feel comfortable with this?",
       "options": [
         "1. Call a meeting with all mentees and try to help them to start making friends through that group interaction.",
         "2. Communicate frankly and honestly that you need space and you don’t like their current behavior.",
@@ -67,7 +67,7 @@
     },
     {
       "id": "rq6",
-      "question": "Question 6: Why do you want to be IIITD Student Mentor?",
+      "question": "Q6: Why do you want to be IIITD Student Mentor?",
       "options": [
         "1. I have maintained a good academic and extracurricular record so I think I’d have a lot to offer to the program.",
         "2. I am keen to pass on the college culture to the new students.",

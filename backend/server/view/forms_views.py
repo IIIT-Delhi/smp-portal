@@ -144,9 +144,7 @@ def get_form_response(request):
                         department = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['department']
                 response_data = {
                     "submitterId": form_response_obj['submitterId'],
-                    "submiterName": summiter_name,
                     "responses": form_response_obj['responses'],
-                    "department": department,
                 }
 
                 if summiter_name != '':
@@ -154,6 +152,7 @@ def get_form_response(request):
                         mentor_obj = Candidate.objects.get(id=form_response_obj['submitterId'])
                         response_data["submitterName"] = mentor_obj.name
                         response_data["submitterEmail"] = mentor_obj.email
+                        response_data["department"] = mentor_obj.department
                         response_data["Year"] = mentor_obj.year
                         response_data["Contact"] = mentor_obj.contact
                         response_data["Image"] = mentor_obj.imgSrc
@@ -167,6 +166,7 @@ def get_form_response(request):
                         response_data["Contact"] = mentee_obj.contact
                         response_data["department"] = mentee_obj.department
                         mentor_obj = Candidate.objects.get(id=mentee_obj.mentorId)
+                        response_data["mentorId"] = mentor_obj.id
                         response_data["mentorName"] = mentor_obj.name
                         response_data["mentorEmail"] = mentor_obj.email
                         response_data["mentorYear"] = mentor_obj.year
@@ -264,12 +264,13 @@ def mentee_filled_feedback(request):
             Possible responses:
                 - {"message": "Feedback form submitted successfully"}: If the feedback form is successfully submitted.
                 - {"message": "Invalid request method"}: If the request method is not POST.
+                - {"message": "Feedback form already submitted"}: If the submitter has already filled the form before with form type 3.
     """
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
+        submitter_id = data.get('id')
+ 
         responses = {
-            'mentorId':data.get('mentorId'),
-            'mentorName':data.get('mentorName'),
             'fq1': data.get('fq1'),
             'fq2': data.get('fq2'),
             'fq3': data.get('fq3'),
@@ -277,11 +278,11 @@ def mentee_filled_feedback(request):
         }
 
         new_responses = FormResponses(
-            submitterId=data.get('id'),
+            submitterId=submitter_id,
             FormType='3',
             responses=responses
         )
-        mentee = Mentee.objects.get(id=data.get('id'))
+        mentee = Mentee.objects.get(id=submitter_id)
         new_responses.save()
         mail_content = get_mail_content("feedback_filled")
         thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,[mentee.email]))
@@ -338,3 +339,93 @@ def send_consent_form(request):
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
+
+@csrf_exempt
+def get_excellence_award(request):
+    """
+    Retrieves the list of candidates who are eligible for the excellence award.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+
+    Returns:
+        JsonResponse: A JSON response containing the list of candidates eligible for the excellence award.
+            Example response: 
+            {
+                "candidates": [
+                    {
+                        "id": 1,
+                        "name": "John Doe",
+                        "email": "john@gmail.com",
+                        "department": "Computer Science",
+                        "year": 3,
+                        "contact": "1234567890",
+                        "score": 1,
+                    }
+                ]
+            }
+
+            Possible responses:
+                - {"error": "No candidates found"} (status 404): If no candidates are eligible for the excellence award.
+                - {"error": "Invalid request method"} (status 400): If the request method is not POST.
+    """
+    if request.method == "POST":
+        try:
+            eligible_candidates = Candidate.objects.filter(status=5)
+            excellence_award_data = []
+            max_meetings_attended = 0
+            max_meetings_scheduled = 0
+            for candidate in eligible_candidates:
+                # Calculate the number of meetings attended by the candidate
+                meetings_attended = Attendance.objects.filter(attendeeId=candidate.id).count()
+                # Calculate the number of meetings scheduled by the candidate
+                meetings_scheduled = Meetings.objects.filter(schedulerId=candidate.id).count()
+                # Retrieve feedback forms submitted by the mentees of the candidate's mentor
+                mentee_feedback_forms = FormResponses.objects.filter(FormType='3').filter(responses__mentorId=candidate.id)
+                # Additional metrics calculation (e.g., average mentor rating)
+                total_ratings = 0
+                total_mentees = 0
+                max_meetings_attended = max(max_meetings_attended, meetings_attended)
+                max_meetings_scheduled = max(max_meetings_scheduled, meetings_scheduled)
+                for form in mentee_feedback_forms:
+                    total_ratings += form.responses.get('fq4', 0)  # Assuming fq4 contains mentor rating
+                    total_mentees += 1
+                
+                average_mentor_rating = total_ratings / total_mentees if total_mentees != 0 else 0
+                
+                # Determine eligibility for the excellence award based on your criteria
+                # For example, you can use a scoring system based on the calculated metrics
+                
+                excellence_award_data.append({
+                    'candidate_id': candidate.id,
+                    "name": candidate.name,
+                    "email": candidate.email,
+                    "department": candidate.department,
+                    "year": candidate.year,
+                    "contact": candidate.contact,
+                    'meetings_attended': meetings_attended,
+                    'meetings_scheduled': meetings_scheduled,
+                    'average_mentor_rating': average_mentor_rating,
+                    # Add other relevant metrics here
+                })
+
+                data = {}
+                for candidate in excellence_award_data:
+                    score = candidate['meetings_attended']/max_meetings_attended*3.0 + candidate['meetings_scheduled']/max_meetings_scheduled*3.0 + candidate['average_mentor_rating']
+                    data.append({
+                        "id": candidate['candidate_id'],
+                        "name": candidate['name'],
+                        "email": candidate['email'],
+                        "department": candidate['department'],
+                        "year": candidate['year'],
+                        "contact": candidate['contact'],
+                        "score": score,
+                    })
+            
+            return data
+        except Exception as e:
+            print(e)
+            return JsonResponse({"error": str(e)})
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
