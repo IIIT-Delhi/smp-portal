@@ -127,3 +127,14 @@ class FormStatus(models.Model):
     
     class Meta:
         app_label = 'server'
+
+
+class ExcellenceAward(models.Model):
+    id = models.AutoField(primary_key=True)
+    candidateId = models.CharField()
+
+    def __str__(self):
+        return self.id
+    
+    class Meta:
+        app_label = 'server'

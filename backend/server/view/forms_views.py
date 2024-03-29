@@ -352,8 +352,7 @@ def get_excellence_award(request):
     Returns:
         JsonResponse: A JSON response containing the list of candidates eligible for the excellence award.
             Example response: 
-            {
-                "candidates": [
+                [
                     {
                         "id": 1,
                         "name": "John Doe",
@@ -364,7 +363,7 @@ def get_excellence_award(request):
                         "score": 1,
                     }
                 ]
-            }
+                
 
             Possible responses:
                 - {"error": "No candidates found"} (status 404): If no candidates are eligible for the excellence award.
@@ -388,15 +387,12 @@ def get_excellence_award(request):
                 total_mentees = 0
                 max_meetings_attended = max(max_meetings_attended, meetings_attended)
                 max_meetings_scheduled = max(max_meetings_scheduled, meetings_scheduled)
+                maping = {"Pathetic":-2, "Bad":-1, "No Comments":0, "Good":1, "Excellent":2}
                 for form in mentee_feedback_forms:
-                    total_ratings += form.responses.get('fq4', 0)  # Assuming fq4 contains mentor rating
+                    total_ratings += int(maping[form.responses['fq4']])  # Assuming fq4 contains mentor rating
                     total_mentees += 1
-                
+            
                 average_mentor_rating = total_ratings / total_mentees if total_mentees != 0 else 0
-                
-                # Determine eligibility for the excellence award based on your criteria
-                # For example, you can use a scoring system based on the calculated metrics
-                
                 excellence_award_data.append({
                     'candidate_id': candidate.id,
                     "name": candidate.name,
@@ -407,23 +403,23 @@ def get_excellence_award(request):
                     'meetings_attended': meetings_attended,
                     'meetings_scheduled': meetings_scheduled,
                     'average_mentor_rating': average_mentor_rating,
-                    # Add other relevant metrics here
                 })
 
-                data = {}
-                for candidate in excellence_award_data:
-                    score = candidate['meetings_attended']/max_meetings_attended*3.0 + candidate['meetings_scheduled']/max_meetings_scheduled*3.0 + candidate['average_mentor_rating']
-                    data.append({
-                        "id": candidate['candidate_id'],
-                        "name": candidate['name'],
-                        "email": candidate['email'],
-                        "department": candidate['department'],
-                        "year": candidate['year'],
-                        "contact": candidate['contact'],
-                        "score": score,
-                    })
-            
-            return data
+            candidate_list = []
+            for candidate in excellence_award_data:
+                m = candidate['meetings_attended']/max_meetings_attended*3.0 if max_meetings_attended != 0 else 0
+                n = candidate['meetings_scheduled']/max_meetings_scheduled*3.0 if max_meetings_scheduled != 0 else 0
+                score = m + n + int(candidate['average_mentor_rating'])
+                candidate_list.append({
+                    "id": candidate["candidate_id"],
+                    "name": candidate['name'],
+                    "email": candidate['email'],
+                    "department": candidate['department'],
+                    "year": candidate['year'],
+                    "contact": candidate['contact'],
+                    "score": score,
+                })
+            return JsonResponse({"candidateList": candidate_list})
         except Exception as e:
             print(e)
             return JsonResponse({"error": str(e)})
