@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function SendMail({
   handleClose,
+  setLoading,
   handleSave,
   newlySelectedStudents,
   formType,
@@ -64,6 +65,7 @@ export default function SendMail({
       console.error("Error calling Mentor-Mentee Mapping API:", error);
       alert("Invalid Selection.");
     }
+    setLoading(false);
   };
 
   const handlModalSave = () => {
@@ -91,15 +93,12 @@ export default function SendMail({
         })
       );
 
-      //   console.log(response.data.attendees)
-
       if (response.status === 200) {
-        // setattendanceList(response.data.attendees)
         setmailBody(response.data.body);
         setmailSubject(response.data.subject);
       }
     } catch (error) {
-      console.error("Error fetching Attendance:", error);
+      console.error("Error fetching Mail Content:", error);
     }
   }, []);
 
