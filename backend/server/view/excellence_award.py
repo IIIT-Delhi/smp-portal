@@ -94,7 +94,7 @@ def get_excellence_award(request):
                 candidate_list.append(candidate_info)
             return JsonResponse({"candidateList": candidate_list})
         except Exception as e:
-            return JsonResponse({"error": str(e)})
+            return JsonResponse({"error": str(e)}, status=400)
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
     
@@ -141,6 +141,6 @@ def update_excellence_award(request):
                     send_emails_to([candidate.email], subject, mail_content)
             return JsonResponse({"message": "Excellence award status updated successfully"})
         except Candidate.DoesNotExist:
-            return JsonResponse({"error": "Candidate not found"}, status=404)
+            return JsonResponse({"error": "Candidate not found"}, status=400)
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
