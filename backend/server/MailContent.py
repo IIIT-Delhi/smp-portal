@@ -48,7 +48,7 @@ mail_content = [
     {
         "type" : "excellence_award",
         "subject" : "Congratulations! You have been selected for the Excellence Award",
-        "body" : "Dear {{name}},\n\nCongratulations on being selected for the Excellence Award! Your dedication and hard work have been recognized, and we are pleased to inform you that you have been chosen for this prestigious award.\n\nYour commitment to excellence and outstanding performance have set you apart from your peers, and we are proud to have you as a recipient of this award.\n\nWe look forward to celebrating your achievements and presenting you with the Excellence Award. Please stay tuned for further details on the award ceremony.\n\nOnce again, congratulations on this well-deserved honor!\n\nBest regards,"
+        "body" : "Dear,\n\nCongratulations on being selected for the Excellence Award! Your dedication and hard work have been recognized, and we are pleased to inform you that you have been chosen for this prestigious award.\n\nYour commitment to excellence and outstanding performance have set you apart from your peers, and we are proud to have you as a recipient of this award.\n\nWe look forward to celebrating your achievements and presenting you with the Excellence Award. Please stay tuned for further details on the award ceremony.\n\nOnce again, congratulations on this well-deserved honor!\n\nBest regards,"
     }
     
     

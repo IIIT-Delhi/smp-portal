@@ -128,7 +128,7 @@ def update_excellence_award(request):
         candidate_list = data.get('candidateList', [])
         try:
             for candidate in candidate_list:
-                candidate_id = candidate.get('candidate_id')
+                candidate_id = candidate.get('id')
                 status = candidate.get('status')
                 if status == 1:
                     excellanceAward = ExcellenceAward(candidateId=candidate_id)
@@ -136,7 +136,6 @@ def update_excellence_award(request):
                     # Send an email to the candidate
                     candidate = Candidate.objects.get(id=candidate_id)
                     mail_content = get_mail_content('excellence_award')
-                    mail_content = mail_content.replace("{{name}}", candidate.name)
                     subject = "Congratulations! You have been selected for the Excellence Award"
                     send_emails_to([candidate.email], subject, mail_content)
             return JsonResponse({"message": "Excellence award status updated successfully"})
