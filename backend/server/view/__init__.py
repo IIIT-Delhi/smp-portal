@@ -8,3 +8,4 @@ from .mentor_views import *
 from .mentee_views import *
 from .mmpairs_views import *
 from .views import *
+from .excellence_award import *
