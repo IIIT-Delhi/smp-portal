@@ -131,7 +131,7 @@ def update_excellence_award(request):
                 candidate_id = candidate.get('candidate_id')
                 status = candidate.get('status')
                 if status == 1:
-                    excellanceAward = ExcellenceAward(candidate_id=candidate_id)
+                    excellanceAward = ExcellenceAward(candidateId=candidate_id)
                     excellanceAward.save()
                     # Send an email to the candidate
                     candidate = Candidate.objects.get(id=candidate_id)
