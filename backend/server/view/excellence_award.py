@@ -142,7 +142,7 @@ def update_excellence_award(request):
                         candidate_info.append(candidate_s.email)
                     # Send an email to the candidate
             mail_content = get_mail_content('excellence_award')
-            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,candidate_list))
+            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,candidate_info))
             thread.start()
             return JsonResponse({"message": "Excellence award status updated successfully"})
         except Candidate.DoesNotExist:
