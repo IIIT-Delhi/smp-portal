@@ -89,7 +89,7 @@ def get_excellence_award(request):
                 try:
                     excellence_award_data = ExcellenceAward.objects.get(candidateId=candidate["candidate_id"])
                     candidate_info["status"] = 1  # Attendee is present
-                except Attendance.DoesNotExist:
+                except ExcellenceAward.DoesNotExist:
                     candidate_info["status"] = 0  # Attendee is absent
                 candidate_list.append(candidate_info)
             return JsonResponse({"candidateList": candidate_list})
