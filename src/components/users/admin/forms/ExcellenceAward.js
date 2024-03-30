@@ -11,14 +11,14 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
   useEffect(() => {
     // Update the filtered list when the search query or mentorsList changes
     const filteredList = mentorsList.filter(
-      (student) =>
-        student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.id.toString().includes(searchQuery)
+      (candidate) =>
+        candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        candidate.id.toString().includes(searchQuery)
     );
     setFilteredMentorsList(filteredList);
 
     const presentCount = filteredList.filter(
-      (student) => student.attendance === 1
+      (candidate) => candidate.status === 1
     ).length;
     setMentorsCount(presentCount);
   }, [searchQuery, mentorsList]);
@@ -29,9 +29,8 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
         "http://127.0.0.1:8000/getExcellenceAward/"
       );
 
-      if (response.error === "") {
-        console.log(response.data);
-        setMentorsList(response.data);
+      if (response.status === 200) {
+        setMentorsList(response.data.candidateList);
       } else {
         alert("There is some issue fetching the list. Please try again later.");
         handleClose();
@@ -43,7 +42,24 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
     }
   }, [handleClose]);
 
+  const updateExcellenceAward = async () => {
+    const response1 = await axios.post(
+      "http://127.0.0.1:8000/updateExcellenceAward/",
+      JSON.stringify({
+        candidateList: mentorsList,
+      })
+    );
+
+    if (response1.error === "") {
+      alert("Excellence Award List Updated Succesfully");
+    } else {
+      alert("There is some issue saving the list. Please try again.");
+      handleClose();
+    }
+  };
+
   const handleSave = () => {
+    updateExcellenceAward();
     handleButtonSave();
   };
 
@@ -52,18 +68,16 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
     fetchMentorsList();
   }, [fetchMentorsList]);
 
-  const handleCheckboxChange = (studentId) => {
+  const handleCheckboxChange = (candidateId) => {
     setMentorsList((prevMentorsList) => {
-      const updatedList = prevMentorsList.map((student) => {
-        if (student.id === studentId) {
-          const newMentorSelected = student.attendance === 0 ? 1 : 0;
-          // Update attendance count on checkbox change
-          setMentorsCount(
-            mentorsCount + (newMentorSelected - student.attendance)
-          );
-          return { ...student, attendance: newMentorSelected };
+      const updatedList = prevMentorsList.map((candidate) => {
+        if (candidate.id === candidateId) {
+          const newMentorSelected = candidate.status === 0 ? 1 : 0;
+          // Update mentor count on checkbox change
+          setMentorsCount(mentorsCount + (newMentorSelected - candidate.status));
+          return { ...candidate, status: newMentorSelected };
         }
-        return student;
+        return candidate;
       });
 
       return updatedList;
@@ -129,22 +143,22 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
                 >
                   <table className="table">
                     <tbody>
-                      {filteredMentorsList.map((student) => (
-                        <tr key={student.id} style={{ width: "100%" }}>
+                      {filteredMentorsList.map((candidate) => (
+                        <tr key={candidate.id} style={{ width: "100%" }}>
                           <td className="text-center" style={{ width: "33%" }}>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              id={`attendanceCheckbox${student.id}`}
-                              checked={student.attendance === 1}
-                              onChange={() => handleCheckboxChange(student.id)}
+                              id={`attendanceCheckbox${candidate.id}`}
+                              checked={candidate.attendance === 1}
+                              onChange={() => handleCheckboxChange(candidate.id)}
                             />
                           </td>
                           <td className="text-center" style={{ width: "33%" }}>
-                            {student.id}
+                            {candidate.id}
                           </td>
                           <td className="text-center" style={{ width: "33%" }}>
-                            {student.name}
+                            {candidate.name}
                           </td>
                         </tr>
                       ))}
