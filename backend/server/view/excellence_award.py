@@ -127,17 +127,22 @@ def update_excellence_award(request):
         data = json.loads(request.body.decode('utf-8'))
         candidate_list = data.get('candidateList', [])
         try:
+            candidate_info = []
             for candidate in candidate_list:
                 candidate_id = candidate.get('id')
                 status = candidate.get('status')
                 if status == 1:
-                    excellanceAward = ExcellenceAward(candidateId=candidate_id)
-                    excellanceAward.save()
+                    try:
+                        excellence_award_data = ExcellenceAward.objects.get(candidateId=candidate_id)
+                    except ExcellenceAward.DoesNotExist:
+                        excellanceAward = ExcellenceAward(candidateId=candidate_id)
+                        excellanceAward.save()
+                        candidate_s = Candidate.objects.get(id=candidate_id)
+                        candidate_info.append(candidate_s.email)
                     # Send an email to the candidate
-                    candidate = Candidate.objects.get(id=candidate_id)
-                    mail_content = get_mail_content('excellence_award')
-                    subject = "Congratulations! You have been selected for the Excellence Award"
-                    send_emails_to([candidate.email], subject, mail_content)
+            mail_content = get_mail_content('excellence_award')
+            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,[existing_mentee]))
+            thread.start()
             return JsonResponse({"message": "Excellence award status updated successfully"})
         except Candidate.DoesNotExist:
             return JsonResponse({"error": "Candidate not found"}, status=400)
