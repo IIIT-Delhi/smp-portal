@@ -57,6 +57,7 @@ urlpatterns = [
     path('menteeFilledFeedback/', views.mentee_filled_feedback, name='menteeFilledFeedback'),
     path('sendConsentForm/', views.send_consent_form, name='sendConsentForm'),
     path('getExcellenceAward/', views.get_excellence_award, name='getExcellenceAward'),
+    path('updateExcellenceAward/', views.update_excellence_award, name='updateExcellenceAward'),
 
     # Mail APIs 
     path('getMailSubjectAndBody/', views.get_mail_subject_and_body, name="getMailSubjectAndBody"),

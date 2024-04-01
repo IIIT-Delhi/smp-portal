@@ -45,6 +45,11 @@ mail_content = [
         "subject" : "Mentor Assignment Notification",
         "body" : "Dear Mentee,\n\nWe hope this email finds you well.\n\nWe are excited to inform you that mentors have been assigned to all mentees in our program. You can now access your mentor's details through the portal.\n\nPlease log in to the portal to view your mentor's information and begin your mentoring journey. If you encounter any issues or have questions regarding your mentor assignment, feel free to reach out to us for assistance.\n\nWe wish you a productive and fulfilling mentoring experience ahead.\n\nBest regards,"
   },
+    {
+        "type" : "excellence_award",
+        "subject" : "Congratulations! You have been selected for the Excellence Award",
+        "body" : "Dear,\n\nCongratulations on being selected for the Excellence Award! Your dedication and hard work have been recognized, and we are pleased to inform you that you have been chosen for this prestigious award.\n\nYour commitment to excellence and outstanding performance have set you apart from your peers, and we are proud to have you as a recipient of this award.\n\nWe look forward to celebrating your achievements and presenting you with the Excellence Award. Please stay tuned for further details on the award ceremony.\n\nOnce again, congratulations on this well-deserved honor!\n\nBest regards,"
+    }
     
     
 ]
