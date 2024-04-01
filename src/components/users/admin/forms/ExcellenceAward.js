@@ -50,7 +50,7 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
       })
     );
 
-    if (response1.error === "") {
+    if (response1.status === 200) {
       alert("Excellence Award List Updated Succesfully");
     } else {
       alert("There is some issue saving the list. Please try again.");
@@ -149,8 +149,8 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              id={`attendanceCheckbox${candidate.id}`}
-                              checked={candidate.attendance === 1}
+                              id={`excellenceAwardCheckbox${candidate.id}`}
+                              checked={candidate.status === 1}
                               onChange={() => handleCheckboxChange(candidate.id)}
                             />
                           </td>
