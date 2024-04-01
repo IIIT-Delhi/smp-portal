@@ -76,7 +76,6 @@ def get_id_by_email(request) -> JsonResponse:
     
     else:
         # Handle other request methods
-        pass
         return JsonResponse({"message": "Invalid request method"})
     
 

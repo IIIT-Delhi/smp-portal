@@ -5,6 +5,7 @@ from server.models import *
 from datetime import datetime
 import threading
 from server.view.helper_functions import send_emails_to_attendees
+from django.db.models import Q
 
 @csrf_exempt
 def add_meeting(request):
@@ -218,13 +219,14 @@ def get_meetings(request):
         elif user_type == "mentee":
             try:
                 mentee_department = Mentee.objects.get(id=user_id).department
+                mentee_name = Mentee.objects.get(id=user_id).name
             except Mentee.DoesNotExist:
                 return JsonResponse({"error": "Mentee not found"})
             
             # Return meetings organized by the mentee's mentor and meetings where the mentee is an attendee
             mentor = Mentee.objects.get(id=user_id).mentorId
             mentor_meetings = Meetings.objects.filter(schedulerId=mentor, 
-                    menteeList__contains=[user_id]).values()
+                    menteeList__contains=[{'id':user_id, 'name':mentee_name}]).values()
             attendee_meetings = Meetings.objects.filter(attendee__in=[2, 3],
                 menteeBranches__contains=[mentee_department]).values()  # Include 2 (mentee) and 3 (both mentor and mentee)
             all_meetings = mentor_meetings | attendee_meetings
