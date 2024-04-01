@@ -240,6 +240,11 @@ export default function MeetingList() {
               placeholder="Search mentor meetings by roll number"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
               style={{ width: "80%" }}
             />
             <button

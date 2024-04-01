@@ -102,3 +102,70 @@ export const handleCheckboxChange = (
   });
 };
 
+export const handleSelectAll = (selectAll, setFilteredResponses, setNewlySelectedStudents, newlySelectedStudents, formType) => {
+  if(selectAll === true){
+    setFilteredResponses((prevResponse) => {
+      return prevResponse.map((response) => {
+        if (formType === "1") {
+          if(response.consent_status === 0){
+
+            setNewlySelectedStudents((prevList) => {
+              return [...prevList, response.submitterId];
+            });
+
+            return {
+              ...response,
+              consent_status: 1,
+            };
+          }
+          else{
+            return response
+          }
+        } else {
+          if(response.mapping_status === 0){
+
+            setNewlySelectedStudents((prevList) => {
+              return [...prevList, response.submitterId];
+            });
+
+            return {
+              ...response,
+              mapping_status: 1,
+            };
+          }
+          else{
+            return response
+          }
+        }
+      });
+    });
+  }
+  else{
+
+    setFilteredResponses((prevResponse) => {
+      return prevResponse.map((response) => {
+        if (formType === "1") {
+          if (newlySelectedStudents.includes(response.submitterId)) {
+            return {
+              ...response,
+              consent_status: 0,
+            };
+          } else {
+            return response;
+          }
+        } else {
+          if (newlySelectedStudents.includes(response.submitterId)) {
+            return {
+              ...response,
+              mapping_status: 0,
+            };
+          } else {
+            return response;
+          }
+        }
+      });
+    });
+    setNewlySelectedStudents([]);
+  }
+};
+

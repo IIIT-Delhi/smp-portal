@@ -36,7 +36,7 @@ const Login = () => {
     const userObject = {
       role: currRole,
       email: decoded.email,
-    };
+          };
     // setUserObject(userObjectTemp);
     login(userObject);
   }
@@ -44,7 +44,7 @@ const Login = () => {
   useEffect(() => {
     if (userDetails) {
       const id = userDetails.id;
-      if (id === -2 && currRole === "mentor") {
+      if (id === -2) {
         setvaliduser(false);
         const interval = setInterval(() => {
           setTimer((prevTimer) => prevTimer - 1);
@@ -54,9 +54,7 @@ const Login = () => {
           clearInterval(interval);
           navigate("/login"); // Redirect to login page
         }, 3000); // Wait for 3 seconds before redirecting
-      }
-
-      if (id === -1) {
+      }else if (id === -1) {
         // console.log(id);
         if (currRole === "admin" || currRole === "mentee") {
           // Show "Invalid User" message and redirect to the login page

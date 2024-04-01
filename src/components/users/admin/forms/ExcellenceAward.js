@@ -7,6 +7,7 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredMentorsList, setFilteredMentorsList] = useState([]);
   const [mentorsCount, setMentorsCount] = useState(0);
+  const [newlySelectedStudents, setNewlySelectedStudents] = useState([]);
 
   useEffect(() => {
     // Update the filtered list when the search query or mentorsList changes
@@ -69,6 +70,16 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
   }, [fetchMentorsList]);
 
   const handleCheckboxChange = (candidateId) => {
+    setNewlySelectedStudents((prevNewlySelectedStudents) => {
+      if (prevNewlySelectedStudents.includes(candidateId)) {
+        // If candidateId is already included, remove it
+        return prevNewlySelectedStudents.filter(id => id !== candidateId);
+      } else {
+        // If candidateId is not included, add it
+        return [...prevNewlySelectedStudents, candidateId];
+      }
+    })
+
     setMentorsList((prevMentorsList) => {
       const updatedList = prevMentorsList.map((candidate) => {
         if (candidate.id === candidateId) {
@@ -151,6 +162,7 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
                               type="checkbox"
                               id={`excellenceAwardCheckbox${candidate.id}`}
                               checked={candidate.status === 1}
+                              disabled = {candidate.status === 1 && !newlySelectedStudents.includes(candidate.id)}
                               onChange={() => handleCheckboxChange(candidate.id)}
                             />
                           </td>

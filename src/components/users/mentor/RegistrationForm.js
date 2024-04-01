@@ -21,7 +21,6 @@ export default function RegistrationForm() {
   useEffect(() => {
     // setConsentFormStatus(userDetails.f2);
     // setEnrollmentFormStatus(userDetails.f1);
-    console.log(userDetails);
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(

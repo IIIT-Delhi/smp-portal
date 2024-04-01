@@ -54,7 +54,6 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
         menteeBranches: newMeeting.menteeBranches,
         menteeList: newMeeting.menteeList,
       };
-      console.log(meetingData);
       const response = await axios.post(
         "http://127.0.0.1:8000/addMeeting/",
         meetingData,
@@ -211,13 +210,12 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
   };
 
   return (
-    <div>
-      <div style={{ float: "right", paddingRight: "1.75rem" }}>
+    <>
+      <div style={userDetails.role === 'mentor' ? {display:'flex', alignContent:'center',justifyContent:'center'} : { float: "right", paddingRight: "1.25rem"}}>
         <button
           type="button"
           className="btn btn-primary"
           onClick={handleScheduleClick}
-          style={{}}
         >
           Schedule New Meeting
         </button>
@@ -240,7 +238,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
           role={userDetails.role}
         />
       )}
-    </div>
+    </>
   );
 };
 
