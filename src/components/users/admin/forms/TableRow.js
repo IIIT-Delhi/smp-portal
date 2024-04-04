@@ -21,19 +21,16 @@ const TableRow = ({
             id={response.submitterId}
             checked={
               formType === "1"
-                ? response.consent_status === 1
+                ? (response.consent_status === 1 || response.mapping_status!==null)
                 : response.mapping_status === 1
             }
             disabled={
-              (response.consent_status === 1 && formType === "1") ||
-              (response.mapping_status === 1 &&
-                formType === "2" &&
-                !newlySelectedStudents.includes(response.submitterId))
+              (((response.consent_status === 1 || response.mapping_status !==null) && formType === "1") ||
+              (response.mapping_status === 1 && formType === "2" ))&&
+                !newlySelectedStudents.includes(response.submitterId)
             }
             onChange={() =>
-              formType === "1"
-                ? handleCheckboxChangeWrapper(response.submitterId, formType)
-                : handleCheckboxChangeWrapper(response.submitterId, formType)
+              handleCheckboxChangeWrapper(response.submitterId, formType)
             }
           />
         </td>

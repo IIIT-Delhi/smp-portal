@@ -2,57 +2,57 @@
   "questions": [
     {
       "id": "cq1",
-      "question": "1. I understand that my active participation in the SMP Mentor Orientation and all other SMP departmental sessions getting organized by Mentor Review Board will be mandatory.",
+      "question": "I understand that my active participation in the SMP Mentor Orientation and all other SMP departmental sessions getting organized by Mentor Review Board will be mandatory.",
       "options": ["Agree", "Disagree"]
     },
     {
       "id": "cq2",
-      "question": "2. I understand that my participation in the SMP as a Student Mentor requires me to stay connected to my mentees and provide them mentorship through regular interactions.",
+      "question": "I understand that my participation in the SMP as a Student Mentor requires me to stay connected to my mentees and provide them mentorship through regular interactions.",
       "options": ["Agree", "Disagree"]
     },
     {
       "id": "cq3",
-      "question": "3. I understand that my role as a Student Mentor requires me to be sensitive towards the information and issues that my mentees share with me.",
+      "question": "I understand that my role as a Student Mentor requires me to be sensitive towards the information and issues that my mentees share with me.",
       "options": ["Agree", "Disagree"]
     },
     {
       "id": "cq4",
-      "question": "4. I would therefore protect the privacy of my mentees by not discussing/sharing/joking about what they have shared in casual conversations with friends.",
+      "question": "I would therefore protect the privacy of my mentees by not discussing/sharing/joking about what they have shared in casual conversations with friends.",
       "options": ["Consent", "Reject"]
     },
     {
       "id": "cq5",
-      "question": "5. I would therefore protect the privacy of my mentees by not posting about what mentees have shared on social media.",
+      "question": "I would therefore protect the privacy of my mentees by not posting about what mentees have shared on social media.",
       "options": ["Consent", "Reject"]
     },
     {
       "id": "cq6",
-      "question": "6. I would therefore protect the privacy of my mentees by not using the information they are sharing against them.",
+      "question": "I would therefore protect the privacy of my mentees by not using the information they are sharing against them.",
       "options": ["Consent", "Reject"]
     },
     {
       "id": "cq7",
-      "question": "7. I would therefore protect the privacy of my mentees by not using information shared by the mentees to pass value judgements on them.",
+      "question": "I would therefore protect the privacy of my mentees by not using information shared by the mentees to pass value judgements on them.",
       "options": ["Consent", "Reject"]
     },
     {
       "id": "cq8",
-      "question": "8. I would therefore protect the privacy of my mentees by not using information shared by mentees to coerce them into giving favours",
+      "question": "I would therefore protect the privacy of my mentees by not using information shared by mentees to coerce them into giving favours",
       "options": ["Consent", "Reject"]
     },
     {
       "id": "cq9",
-      "question": "9. I would therefore protect the privacy of my mentees by respecting their agency in deciding when and what to share with you",
+      "question": "I would therefore protect the privacy of my mentees by respecting their agency in deciding when and what to share with you",
       "options": ["Consent", "Reject"]
     },
     {
       "id": "cq10",
-      "question": "10. I would therefore protect the privacy of my mentees by not using anything shared by mentees for any other purposes outside of the scope of SMP mentorship",
+      "question": "I would therefore protect the privacy of my mentees by not using anything shared by mentees for any other purposes outside of the scope of SMP mentorship",
       "options": ["Consent", "Reject"]
     },
     {
       "id": "cq11",
-      "question": "11. I hereby confirm my participation in the SMP as a Student Mentor.",
+      "question": "I hereby confirm my participation in the SMP as a Student Mentor.",
       "options": ["Confirm", "Deny"]
     }
   ]

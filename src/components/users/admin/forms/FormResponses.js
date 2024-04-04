@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Navbar from "../../../navbar/Navbar";
 import { useLocation } from "react-router-dom";
@@ -14,7 +14,7 @@ import {
   truncateText,
 } from "./utils";
 
-import { handleSort, handleCheckboxChange } from "./handleUtils";
+import { handleSort, handleCheckboxChange, handleSelectAll } from "./handleUtils";
 
 const FormResponses = () => {
   const location = useLocation();
@@ -34,26 +34,29 @@ const FormResponses = () => {
   const [showConsentModal, setshowConsentModal] = useState(false);
   const [topEntries, setTopEntries] = useState("");
   const [showMentorList, setShowMentorList] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     // Update filtered total entries when filteredMentors change
     setTotalEntries(filteredResponses.length);
   }, [filteredResponses]);
 
+  const fetchFormResponses = useCallback(async () => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/getFormResponse/",
+        {
+          formType: formType,
+        }
+      );
+      setFormResponses(response.data.formResponses);
+      console.log(response.data.formResponses)
+    } catch (error) {
+      console.error("Error fetching form responses:", error);
+    }
+  },[formType]);
+
   useEffect(() => {
-    const fetchFormResponses = async () => {
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:8000/getFormResponse/",
-          {
-            formType: formType,
-          }
-        );
-        setFormResponses(response.data.formResponses);
-      } catch (error) {
-        console.error("Error fetching form responses:", error);
-      }
-    };
 
     fetchFormResponses();
   }, [formType]);
@@ -154,6 +157,7 @@ const FormResponses = () => {
   const handleSave = () => {
     setshowConsentModal(false);
     setLoading(false);
+    window.location.reload()
   };
 
   const handleSendConsentEmail = async () => {
@@ -173,7 +177,7 @@ const FormResponses = () => {
       filteredResponses,
       setFilteredResponses,
       newlySelectedStudents,
-      setNewlySelectedStudents
+      setNewlySelectedStudents,
     );
   };
 
@@ -189,6 +193,25 @@ const FormResponses = () => {
       </button>
     </div>
   );
+
+  const changeSelectAllType = () => {
+    setSelectAll((prevSelectAll) => {
+        // Toggle the select all state
+        const newSelectAll = !prevSelectAll;
+        
+        // Return the new select all state
+        return newSelectAll;
+    });
+};
+
+useEffect(() => {
+    // This effect will be triggered after the component re-renders
+    // It ensures that the state update from setSelectAll has been applied
+    handleSelectAll(selectAll, setFilteredResponses, setNewlySelectedStudents, newlySelectedStudents, formType);
+}, [selectAll]); // Only re-run the effect if selectAll changes
+
+// Call the changeSelectAllType function whenever needed
+
 
   return (
     <div>
@@ -321,6 +344,19 @@ const FormResponses = () => {
             style={{ overflow: "auto", maxHeight: "400px" }}
           >
             <div className="table-responsive">
+              {formType !== '3' && (
+                <div>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={'all'}
+                    checked={selectAll}
+                    onChange={changeSelectAllType}
+                    style={{marginRight:'0.75rem', marginLeft:'0.50rem'}}
+                  />
+                  Select All
+                </div>
+              )}
               <table className="table table-bordered table-hover">
                 <thead className="thead-light">
                   <tr>
@@ -382,6 +418,8 @@ const FormResponses = () => {
             handleSave={handleSave}
             newlySelectedStudents={newlySelectedStudents}
             formType={formType}
+            fetchFormResponses= {fetchFormResponses}
+            setLoading={setLoading}
           />
         )}
         {showMentorList && (

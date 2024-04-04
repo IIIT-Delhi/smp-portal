@@ -8,6 +8,7 @@ export default function SendMail({
   handleSave,
   newlySelectedStudents,
   formType,
+  fetchFormResponses
 }) {
   const navigate = useNavigate();
   const [mailSubject, setmailSubject] = useState("");
@@ -54,12 +55,11 @@ export default function SendMail({
           Id: newlySelectedStudents,
         })
       );
-      console.log(response.status);
-      if (response.data.message === "Mentor-Mentee Mapping is completed!") {
+      if (response.status === 200) {
         alert("Mentor-Mentee Mapping is completed!");
         navigate("/users/admin/mentors");
       } else {
-        alert("Invalid Selection.");
+        alert(response.data.message);
       }
     } catch (error) {
       console.error("Error calling Mentor-Mentee Mapping API:", error);
@@ -68,11 +68,11 @@ export default function SendMail({
     setLoading(false);
   };
 
-  const handlModalSave = () => {
+  const handlModalSave = async () => {
     if (formType === "1") {
-      sendConsentMail();
+      await sendConsentMail();
     } else {
-      handleMentorMenteeMapping();
+      await handleMentorMenteeMapping();
     }
     handleSave();
   };
