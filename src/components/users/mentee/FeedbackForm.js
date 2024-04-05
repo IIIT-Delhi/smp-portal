@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import Navbar from "../../navbar/Navbar";
 import axios from "axios";
+import {Form} from "react-bootstrap";
 
 export default function MenteeForm() {
   const { userDetails } = useAuth();
@@ -141,8 +142,7 @@ export default function MenteeForm() {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">4. Rate your mentor</label>
-                  <select
-                    className="form-select"
+                  <Form.Select
                     name="fq4"
                     value={formData.fq4}
                     onChange={handleChange}
@@ -156,7 +156,7 @@ export default function MenteeForm() {
                         {option}
                       </option>
                     ))}
-                  </select>
+                  </Form.Select>
                 </div>
                 <button type="submit" className="btn btn-primary">
                   Submit

@@ -8,6 +8,7 @@ import axios from "axios";
 import ChangeMentor from "./ChangeMentor";
 import departmentOptions from "../../../../data/departmentOptions.json";
 import { DownloadCSV } from "../DownloadCSV";
+import {Form} from 'react-bootstrap';
 
 const MenteesList = () => {
   // Dummy data (replace with actual data fetching)
@@ -103,6 +104,7 @@ const MenteesList = () => {
       .then((response) => {
         if (response.status === 200) {
           alert(response.data.message);
+          window.location.reload();
         }
       })
       .catch((error) => {
@@ -113,7 +115,6 @@ const MenteesList = () => {
   const handleSaveChangeMentor = () => {
     editMentor();
     setshowChangeMentor(false);
-    fetchMenteeList();
   };
 
   const handleCloseChangeMentor = () => {
@@ -137,8 +138,8 @@ const MenteesList = () => {
               contact: "",
             });
             setAddMenteeModalVisible(false);
-            setMentees((prevMentees) => [...prevMentees, mentee]); // Add the new mentee to the mentees list
             alert("Mentee added successfully");
+            window.location.reload();
           }
         });
     } catch (error) {
@@ -163,7 +164,7 @@ const MenteesList = () => {
           //   prevMentees.filter((mentee) => mentee.id !== menteeToDelete.id)
           // );
           setMenteeToDelete(null); // Clear the mentee to delete
-          fetchMenteeList();
+          window.location.reload();
         }
       } catch (error) {
         console.error("Error deleting mentee:", error);
@@ -250,11 +251,8 @@ const MenteesList = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-
-          {/* Department filter dropdown */}
           <div className="input-group-append mx-2">
-            <select
-              className="form-control"
+            <Form.Select
               value={selectedDepartmentFilter}
               onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
             >
@@ -264,7 +262,7 @@ const MenteesList = () => {
                   {departmentOptions[department]}
                 </option>
               ))}
-            </select>
+            </Form.Select>
           </div>
         </div>
         <button
@@ -354,8 +352,7 @@ const MenteesList = () => {
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Department</label>
-                    <select
-                      className="form-select"
+                    <Form.Select
                       name="department"
                       value={menteeForm.department}
                       required // Make the select required
@@ -376,7 +373,7 @@ const MenteesList = () => {
                           </option>
                         )
                       )}
-                    </select>
+                    </Form.Select>
                   </div>
                   {/* <div className="form-group">
                     <label>Department *</label>
@@ -427,7 +424,7 @@ const MenteesList = () => {
         >
           Upload New CSV
         </button>
-        <DownloadCSV ></DownloadCSV>
+        <DownloadCSV type={"mentorMenteeMapping"}></DownloadCSV>
         <div
           className="table-container text-center my-2"
           style={{ overflow: "auto", maxHeight: "400px" }}
@@ -562,7 +559,6 @@ const MenteesList = () => {
           <MenteeUpload
             isOpen={menteeUploadCSV}
             closeModal={handleCloseUploadCSV}
-            fetchMenteeList={fetchMenteeList}
             // onUpload = {onIpload}
           />
         )}

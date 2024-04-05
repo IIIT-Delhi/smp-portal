@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import { DownloadCSV } from "../DownloadCSV";
 
 export default function ExcellenceAward({ handleClose, handleButtonSave }) {
   const [mentorsList, setMentorsList] = useState([]);
@@ -134,14 +135,17 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
                   <table className="table">
                     <thead>
                       <tr style={{ width: "100%" }}>
-                        <th className="text-center" style={{ width: "33%" }}>
+                        <th className="text-center" style={{ width: "25%" }}>
                           Select Mentors
                         </th>
-                        <th className="text-center" style={{ width: "33%" }}>
+                        <th className="text-center" style={{ width: "25%" }}>
                           Roll Number
                         </th>
-                        <th className="text-center" style={{ width: "33%" }}>
+                        <th className="text-center" style={{ width: "25%" }}>
                           Name
+                        </th>
+                        <th className="text-center" style={{ width: "25%" }}>
+                          Score
                         </th>
                       </tr>
                     </thead>
@@ -156,21 +160,29 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
                     <tbody>
                       {filteredMentorsList.map((candidate) => (
                         <tr key={candidate.id} style={{ width: "100%" }}>
-                          <td className="text-center" style={{ width: "33%" }}>
+                          <td className="text-center" style={{ width: "25%" }}>
                             <input
                               className="form-check-input"
                               type="checkbox"
                               id={`excellenceAwardCheckbox${candidate.id}`}
                               checked={candidate.status === 1}
-                              disabled = {candidate.status === 1 && !newlySelectedStudents.includes(candidate.id)}
-                              onChange={() => handleCheckboxChange(candidate.id)}
+                              disabled={
+                                candidate.status === 1 &&
+                                !newlySelectedStudents.includes(candidate.id)
+                              }
+                              onChange={() =>
+                                handleCheckboxChange(candidate.id)
+                              }
                             />
                           </td>
-                          <td className="text-center" style={{ width: "33%" }}>
+                          <td className="text-center" style={{ width: "25%" }}>
                             {candidate.id}
                           </td>
-                          <td className="text-center" style={{ width: "33%" }}>
+                          <td className="text-center" style={{ width: "25%" }}>
                             {candidate.name}
+                          </td>
+                          <td className="text-center" style={{ width: "25%" }}>
+                            {candidate.score}
                           </td>
                         </tr>
                       ))}
@@ -195,9 +207,14 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
                 type="button"
                 className="btn btn-primary"
                 onClick={handleSave}
+                title="Save the current selected mentors and send email to them."
               >
-                Save Details
+                Save and Send Email
               </button>
+              <DownloadCSV
+                type={"excellenceAward"}
+                list={mentorsList}
+              ></DownloadCSV>
             </div>
           </div>
         </div>
