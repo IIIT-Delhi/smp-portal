@@ -205,7 +205,7 @@ def get_all_mentors(request):
             mentees = Mentee.objects.filter(mentorId=str(mentor['id'])).values()
             
             for mentee in mentees:
-                menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
+                menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact'], mentee['department']])
             mentor.update({'menteesToMentors': menteesToMentors})
             total_meetings = Meetings.objects.filter(schedulerId=str(mentor['id'])).count()
             # Add total meeting count to the mentor

@@ -63,6 +63,7 @@ def create_mentor_mentee_pairs(request):
                     mentee.mentorId = candidate_id
                     emails_mentees.append(mentee.email)
                     mentee.save()
+                    print(candidate_id, mentee.id)
                     candidates_dict[candidate_id] += 1
                 
                 for candidate in candidates:
