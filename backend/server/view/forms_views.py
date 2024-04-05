@@ -130,22 +130,22 @@ def get_form_response(request):
                         status = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['status']
                         consent_status = None
                         mapping_status = None
-                        if int(status) == 1:
+                        if int(status) == 1:        # registration form filled
                             consent_status = 0
                             mapping_status = 0
-                        elif int(status) == 2:
+                        elif int(status) == 2:      # consent form sent
                             consent_status = 1
                             mapping_status = 0
-                        elif int(status) == 3:
+                        elif int(status) == 3:     # consent form filled
                             consent_status = 1
                             mapping_status = 0
-                        elif int(status) == 3:
+                        elif int(status) == 4:      # consent rejected
                             consent_status = 1
                             mapping_status = -1
-                        elif int(status) == 5:
+                        elif int(status) == 5:      # mentee assigned
                             consent_status = 1
                             mapping_status = 1
-                        elif int(status) == -1:
+                        elif int(status) == -1:     # mentor deleted 
                             consent_status = 1
                             mapping_status = -1
                 if int(form_type) == 3:
@@ -184,7 +184,6 @@ def get_form_response(request):
                     
                     form_responses_data.append(response_data)
 
-            print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
 
         except FormResponses.DoesNotExist:

@@ -46,9 +46,7 @@ def create_mentor_mentee_pairs(request):
             emails_mentees = []
             for candidate_id in candidate_ids:
                 candidate = Candidate.objects.get(id=candidate_id)
-                candidate.status = '5'
                 department_dict[candidate.department].append(candidate)
-                candidate.save()
                 emails_mentor.append(candidate.email)
 
             for department in departments:
@@ -63,7 +61,7 @@ def create_mentor_mentee_pairs(request):
                     mentee.mentorId = candidate_id
                     emails_mentees.append(mentee.email)
                     mentee.save()
-                    print(candidate_id, mentee.id)
+                    print(mentee)
                     candidates_dict[candidate_id] += 1
                 
                 for candidate in candidates:
