@@ -39,15 +39,15 @@ def create_mentor_mentee_pairs(request):
             if not all([subject, message, candidate_ids]):
                 return JsonResponse({"error": "Please Select Students"}, status=400)
 
-            departments_mentee = Mentee.objects.values_list('department', flat=True).distinct()
-            departments_mentor = Candidate.objects.values_list('department', flat=True).distinct()
-            departments = list(set(departments_mentee) & set(departments_mentor))
+            departments = Mentee.objects.values_list('department', flat=True).distinct()
             department_dict = {department: [] for department in departments}
 
             emails_mentor = []
             emails_mentees = []
             for candidate_id in candidate_ids:
                 candidate = Candidate.objects.get(id=candidate_id)
+                if candidate.department not in departments:
+                    continue
                 department_dict[candidate.department].append(candidate)
                 emails_mentor.append(candidate.email)
 
@@ -63,7 +63,6 @@ def create_mentor_mentee_pairs(request):
                     mentee.mentorId = candidate_id
                     emails_mentees.append(mentee.email)
                     mentee.save()
-                    print(mentee)
                     candidates_dict[candidate_id] += 1
                 
                 for candidate in candidates:
