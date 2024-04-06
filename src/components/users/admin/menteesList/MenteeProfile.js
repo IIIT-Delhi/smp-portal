@@ -1,5 +1,5 @@
 import React from "react";
-import branchOptions from "../../../../data/departmentOptions.json"
+import departmentOptions from "../../../../data/departmentOptions.json"
 
 const MenteeProfile = ({ mentee, onClose }) => {
   if (!mentee) {
@@ -7,7 +7,10 @@ const MenteeProfile = ({ mentee, onClose }) => {
   }
 
   return (
-    <div className="modal fade show" style={{ display: "block", backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+    <div
+      className="modal fade show"
+      style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+    >
       <div className="modal-dialog modal-lg">
         <div className="modal-content">
           <div className="modal-header">
@@ -16,8 +19,15 @@ const MenteeProfile = ({ mentee, onClose }) => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div className="modal-body"
-          style={{ maxHeight: "70vh", overflowY: "scroll", maxWidth: "70vw", overflowX: "scroll" }}>
+          <div
+            className="modal-body"
+            style={{
+              maxHeight: "70vh",
+              overflowY: "scroll",
+              maxWidth: "70vw",
+              overflowX: "scroll",
+            }}
+          >
             <div className="row">
               <div className="col-md-6">
                 <h6>Mentee:</h6>
@@ -25,7 +35,11 @@ const MenteeProfile = ({ mentee, onClose }) => {
                   src={mentee.imgSrc}
                   alt="Mentee Profile"
                   className="img-fluid img-thumbnail mt-4 mb-2"
-                  style={{ maxWidth: "400px", maxHeight: "400px", borderRadius: "10%" }}
+                  style={{
+                    maxWidth: "400px",
+                    maxHeight: "400px",
+                    borderRadius: "10%",
+                  }}
                 />
                 {/* Display mentee's profile information here */}
                 <p>Name: {mentee.name}</p>
@@ -33,29 +47,34 @@ const MenteeProfile = ({ mentee, onClose }) => {
                 <p>Email: {mentee.email}</p>
                 <p>Contact: {mentee.contact}</p>
                 <p>
-                  Programme:
+                  Programme:{" "}
                   {mentee.department.startsWith("B") ? "B.Tech" : "M.Tech"}
                 </p>
-                <p>
-                  Branch:
-                  {branchOptions[mentee.department]}
-                </p>
+                <p>Branch:{" "} {departmentOptions[mentee.department]}</p>
               </div>
               <div className="col-md-6">
                 <h6>Mentor:</h6>
-                {mentee.mentorId !== 'NULL' ? (
+                {mentee.mentorId !== "NULL" ? (
                   <>
                     <img
                       src={mentee.mentorImage}
                       alt="Mentor Profile"
                       className="img-fluid img-thumbnail mt-4 mb-2"
-                      style={{ maxWidth: "200px", maxHeight: "200px", borderRadius: "10%" }}
+                      style={{
+                        maxWidth: "200px",
+                        maxHeight: "200px",
+                        borderRadius: "10%",
+                      }}
                     />
                     {/* Display mentor's profile information here */}
                     <p>Mentor Name: {mentee.mentorName}</p>
                     <p>Mentor Roll Number: {mentee.mentorId}</p>
                     <p>Mentor Email: {mentee.mentorEmail}</p>
                     <p>Mentor Contact: {mentee.mentorContact}</p>
+                    <p>
+                      Mentor Department:{" "}
+                      {departmentOptions[mentee.mentorDepartment]}
+                    </p>
                     {/* Add other mentor profile details */}
                   </>
                 ) : (

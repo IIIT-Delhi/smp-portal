@@ -8,6 +8,7 @@ import departmentOptions from "../../../../data/departmentOptions.json";
 import yearOptions from "../../../../data/yearOptions.json";
 import sizeOptions from "../../../../data/sizeOptions.json";
 import { DownloadCSV } from "../DownloadCSV";
+import {Form} from "react-bootstrap";
 
 const MentorsList = () => {
   // Dummy data (replace with actual data fetching)
@@ -113,8 +114,8 @@ const MentorsList = () => {
               score: 100,
             });
             setAddMentorModalVisible(false);
-            setMentors((prevMentors) => [...prevMentors, mentor]); // Add the new mentor to the mentees list
             alert("Mentor added successfully");
+            window.location.reload();
           }
         });
     } catch (error) {
@@ -204,7 +205,7 @@ const MentorsList = () => {
             // );
             setMentorToDelete(null); // Clear the mentor to delete
             const confirmLogout = window.confirm(response.data.message);
-            fetchMentorList();
+            window.location.reload();
           }
         })
         .catch((error) => {
@@ -242,8 +243,7 @@ const MentorsList = () => {
 
           {/* Department filter dropdown */}
           <div className="input-group-append mx-2">
-            <select
-              className="form-control"
+            <Form.Select
               value={selectedDepartmentFilter}
               onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
             >
@@ -253,13 +253,12 @@ const MentorsList = () => {
                   {departmentOptions[department]}
                 </option>
               ))}
-            </select>
+            </Form.Select>
           </div>
 
           {/* Total Mentees filter dropdown */}
           <div className="input-group-append">
-            <select
-              className="form-control"
+            <Form.Select
               value={selectedTotalMenteesFilter}
               onChange={(e) => setSelectedTotalMenteesFilter(e.target.value)}
             >
@@ -269,7 +268,7 @@ const MentorsList = () => {
                   {totalMentees}
                 </option>
               ))}
-            </select>
+            </Form.Select>
           </div>
         </div>
 
@@ -360,8 +359,7 @@ const MentorsList = () => {
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Year</label>
-                    <select
-                      className="form-select"
+                    <Form.Select
                       name="year"
                       value={mentorForm.year}
                       required // Make the select required
@@ -380,13 +378,12 @@ const MentorsList = () => {
                           {label}
                         </option>
                       ))}
-                    </select>
+                    </Form.Select>
                   </div>
 
                   <div className="mb-3">
                     <label className="form-label">Department</label>
-                    <select
-                      className="form-select"
+                    <Form.Select
                       name="department"
                       value={mentorForm.department}
                       required // Make the select required
@@ -408,13 +405,12 @@ const MentorsList = () => {
                           </option>
                         )
                       )}
-                    </select>
+                    </Form.Select>
                   </div>
 
                   <div className="mb-3">
                     <label className="form-label">T-Shirt Size</label>
-                    <select
-                      className="form-select"
+                    <Form.Select
                       name="size"
                       value={mentorForm.size}
                       required // Make the select required
@@ -433,7 +429,7 @@ const MentorsList = () => {
                           {label}
                         </option>
                       ))}
-                    </select>
+                    </Form.Select>
                   </div>
                   <div className="mb-3">
                     <label className="form-label">
@@ -458,7 +454,8 @@ const MentorsList = () => {
           </div>
         </div>
 
-        <DownloadCSV></DownloadCSV>
+        <DownloadCSV type={"mentorMenteeMapping"}></DownloadCSV>
+        <DownloadCSV type={"mentorImagesDownload"} list = {mentors}></DownloadCSV>
 
         <div
           className="table-container text-center my-2"

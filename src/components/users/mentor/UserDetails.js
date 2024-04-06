@@ -1,4 +1,5 @@
 import React from "react";
+import {Form} from "react-bootstrap";
 
 function UserDetails(props) {
   const {
@@ -106,8 +107,7 @@ function UserDetails(props) {
 
         <div className="mb-3">
           <label className="form-label">Year</label>
-          <select
-            className="form-select"
+          <Form.Select
             name="year"
             value={inputValues.year}
             required // Make the select required
@@ -121,13 +121,12 @@ function UserDetails(props) {
                 {label}
               </option>
             ))}
-          </select>
+          </Form.Select>
         </div>
 
         <div className="mb-3">
           <label className="form-label">Department</label>
-          <select
-            className="form-select"
+          <Form.Select
             name="department"
             value={inputValues.department}
             required // Make the select required
@@ -142,7 +141,7 @@ function UserDetails(props) {
                 {label}
               </option>
             ))}
-          </select>
+          </Form.Select>
         </div>
 
         <div className="mb-3">

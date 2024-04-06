@@ -92,7 +92,6 @@ def get_excellence_award(request):
                 except ExcellenceAward.DoesNotExist:
                     candidate_info["status"] = 0  # Attendee is absent
                 candidate_list.append(candidate_info)
-            print(candidate_list)
             return JsonResponse({"candidateList": candidate_list})
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)

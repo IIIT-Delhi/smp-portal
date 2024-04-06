@@ -1,6 +1,6 @@
 import React from "react";
 import yearOptions from "../../../../data/yearOptions.json";
-import branchOptions from "../../../../data/departmentOptions.json";
+import departmentOptions from "../../../../data/departmentOptions.json";
 const MentorProfile = ({ mentor, onClose }) => {
   if (!mentor) {
     return null;
@@ -10,7 +10,7 @@ const MentorProfile = ({ mentor, onClose }) => {
   // Create a table row for each mentee
   const menteeRows = mentor.menteesToMentors.map((mentee) => {
     // mentee should be an array with id, name, and email
-    const [id, name, email, contact] = mentee;
+    const [id, name, email, contact,department] = mentee;
 
     return (
       <tr key={id}>
@@ -18,6 +18,7 @@ const MentorProfile = ({ mentor, onClose }) => {
         <td>{id}</td>
         <td>{email}</td>
         <td>{contact}</td>
+        <td>{departmentOptions[department]}</td>
       </tr>
     );
   });
@@ -50,9 +51,9 @@ const MentorProfile = ({ mentor, onClose }) => {
                 <p>Contact Number: {mentor.contact}</p>
                 <p>Year: {yearOptions[mentor.year]}</p>
                 <p>
-                  Programme:{mentor.department.startsWith("B") ? "B.Tech" : "M.Tech"}
+                  Programme:{" "}{mentor.department.startsWith("B") ? "B.Tech" : "M.Tech"}
                 </p>
-                <p>Branch: {branchOptions[mentor.department]}</p>
+                <p>Branch:{ " "} {departmentOptions[mentor.department]}</p>
                 {/* <p>Goodies Status: {mentor.goodiesStatus}</p> */}
                 {/* Add more mentor profile details here */}
               </div>
@@ -66,6 +67,7 @@ const MentorProfile = ({ mentor, onClose }) => {
                       <th>Roll Number</th>
                       <th>Email</th>
                       <th>Contact</th>
+                      <th>Department</th>
                     </tr>
                   </thead>
                   <tbody>{menteeRows}</tbody>

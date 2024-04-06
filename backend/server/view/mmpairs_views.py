@@ -46,9 +46,9 @@ def create_mentor_mentee_pairs(request):
             emails_mentees = []
             for candidate_id in candidate_ids:
                 candidate = Candidate.objects.get(id=candidate_id)
-                candidate.status = '5'
+                if candidate.department not in departments:
+                    continue
                 department_dict[candidate.department].append(candidate)
-                candidate.save()
                 emails_mentor.append(candidate.email)
 
             for department in departments:

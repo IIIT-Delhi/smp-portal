@@ -130,14 +130,24 @@ def get_form_response(request):
                         status = Candidate.objects.filter(id=form_response_obj['submitterId']).values()[0]['status']
                         consent_status = None
                         mapping_status = None
-                        if int(status) == 1:
+                        if int(status) == 1:        # registration form filled
                             consent_status = 0
-                        elif int(status) == 2:
-                            consent_status = 1
-                        elif int(status) == 3:
                             mapping_status = 0
-                        elif int(status) == 5:
+                        elif int(status) == 2:      # consent form sent
+                            consent_status = 1
+                            mapping_status = 0
+                        elif int(status) == 3:     # consent form filled
+                            consent_status = 1
+                            mapping_status = 0
+                        elif int(status) == 4:      # consent rejected
+                            consent_status = 1
+                            mapping_status = -1
+                        elif int(status) == 5:      # mentee assigned
+                            consent_status = 1
                             mapping_status = 1
+                        elif int(status) == -1:     # mentor deleted 
+                            consent_status = 1
+                            mapping_status = -1
                 if int(form_type) == 3:
                     if len(Mentee.objects.filter(id=form_response_obj['submitterId']).values()):
                         summiter_name = Mentee.objects.filter(id=form_response_obj['submitterId']).values()[0]['name']
@@ -155,7 +165,6 @@ def get_form_response(request):
                         response_data["department"] = mentor_obj.department
                         response_data["Year"] = mentor_obj.year
                         response_data["Contact"] = mentor_obj.contact
-                        response_data["Image"] = mentor_obj.imgSrc
                         response_data["consent_status"] = consent_status
                         response_data["mapping_status"] = mapping_status
 
@@ -175,7 +184,6 @@ def get_form_response(request):
                     
                     form_responses_data.append(response_data)
 
-            print({"formResponses": form_responses_data})
             return JsonResponse({"formResponses": form_responses_data})
 
         except FormResponses.DoesNotExist:

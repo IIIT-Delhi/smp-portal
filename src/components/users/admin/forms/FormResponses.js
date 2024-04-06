@@ -7,6 +7,7 @@ import formNames from "../../../../data/formNames.json";
 import departmentOptions from "../../../../data/departmentOptions.json";
 import SendMail from "./SendMail";
 import ExcellenceAward from "./ExcellenceAward";
+import {Form} from "react-bootstrap";
 import {
   getQuestionSet,
   statusOptions,
@@ -236,8 +237,7 @@ useEffect(() => {
             />
           </div>
           <div className="input-group-append mx-2">
-            <select
-              className="form-control"
+            <Form.Select
               value={selectedDepartmentFilter}
               onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
             >
@@ -247,12 +247,11 @@ useEffect(() => {
                   {departmentOptions[department]}
                 </option>
               ))}
-            </select>
+            </Form.Select>
           </div>
           {formType === "2" && (
             <div className="input-group-append mx-2">
-              <select
-                className="form-control"
+              <Form.Select
                 value={selectedStatusFilter}
                 onChange={(e) => setSelectedStatusFilter(e.target.value)}
               >
@@ -262,13 +261,12 @@ useEffect(() => {
                     {statusOptions[status]}
                   </option>
                 ))}
-              </select>
+              </Form.Select>
             </div>
           )}
           {["1", "3"].includes(formType) && (
             <div className="input-group-append mx-2">
-              <select
-                className="form-control"
+              <Form.Select
                 value={sortOption}
                 onChange={(e) =>
                   handleSort(
@@ -310,7 +308,7 @@ useEffect(() => {
                     </option>
                   </>
                 )}
-              </select>
+              </Form.Select>
             </div>
           )}
           {formType === "2" && (
