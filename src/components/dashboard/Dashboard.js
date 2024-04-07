@@ -273,7 +273,7 @@ const Dashboard = () => {
                             <hr />
                             <div className="row">
                               <div className="col-sm-3">
-                                <p className="mb-0">Mentor Roll No</p>
+                                <p className="mb-0">Mentor Name</p>
                               </div>
                               <div className="col-sm-9">
                                 {userData.mentorId !== "NULL" ? (
@@ -286,6 +286,21 @@ const Dashboard = () => {
                               </div>
                             </div>
                             <hr />
+                            <div className="row">
+                              <div className="col-sm-3">
+                                <p className="mb-0">Mentor Roll no</p>
+                              </div>
+                              <div className="col-sm-9">
+                                {userData.mentorId !== "NULL" ? (
+                                  <p className="text-muted mb-0">
+                                    {userData.mentorId}
+                                  </p>
+                                ) : (
+                                  <p>Mentor Not Assigned</p>
+                                )}
+                              </div>
+                            </div>
+                            <hr/>
                             <div className="row">
                               <div className="col-sm-3">
                                 <p className="mb-0">Mentor Email</p>

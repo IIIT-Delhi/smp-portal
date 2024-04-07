@@ -152,9 +152,11 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
                   <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={handleClose}>
                     Close
                   </button>
-                  <button type="button" className="btn btn-primary" onClick={handleSave}>
-                    Save Details
-                  </button>
+                  {type === 'take' && (
+                    <button type="button" className="btn btn-primary" onClick={handleSave}>
+                      Save Details
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

@@ -217,7 +217,11 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
           className="btn btn-primary"
           onClick={handleScheduleClick}
         >
-          Schedule New Meeting
+          {userDetails.role === 'admin' ? (
+            <>Schedule New Meeting</>
+          ) : (
+            <>Schedule new meeting for your mentees</>
+          )}
         </button>
       </div>
 
