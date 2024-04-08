@@ -15,7 +15,7 @@ export default function TakeMeetingDetails({
   handleAllBranchesChange,
   mentees,
   handleMentee,
-  role
+  role,
 }) {
   const [formValid, setFormValid] = useState(true);
 
@@ -80,7 +80,7 @@ export default function TakeMeetingDetails({
                 Close
               </button>
               <button type="button" className="btn btn-primary" onClick={handleButtonSave}>
-                Save Details
+                Send Invite
               </button>
             </div>
           </div>

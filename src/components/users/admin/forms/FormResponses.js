@@ -322,7 +322,7 @@ useEffect(() => {
             <Button
               onClick={handleExcellenceClicked}
               disabled={loading}
-              text="Send Excellence Award"
+              text="Excellence Award List"
             />
           )}
           {formType === "1" && (

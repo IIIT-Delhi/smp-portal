@@ -194,7 +194,7 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
               <p>Loading list of mentors....</p>
             )}
 
-            <div className="modal-footer">
+            <div className="modal-footer justify-content-center">
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -209,12 +209,22 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
                 onClick={handleSave}
                 title="Save the current selected mentors and send email to them."
               >
-                Save and Send Email
+                Save
               </button>
               <DownloadCSV
                 type={"excellenceAward"}
                 list={mentorsList}
+                handleExcellentListSave={handleSave}
               ></DownloadCSV>
+            </div>
+            <div
+              className="mx-2"
+              style={{ color: "red", textAlign: "center" }}
+            >
+              <p>
+                *Saving (and downloading) will also send mail to the selected
+                mentors.
+              </p>
             </div>
           </div>
         </div>
