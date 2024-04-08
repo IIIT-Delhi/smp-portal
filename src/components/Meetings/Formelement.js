@@ -74,7 +74,7 @@ export default function Formelement({
         </div>
 
         {role === "admin" ? (
-          <div className="accordion mb-2" id="accordionExample">
+          <div className="accordion mb-2" id="accordionAttendee">
             <div className="accordion-item">
               <h2 className="accordion-header">
                 <button
@@ -82,18 +82,22 @@ export default function Formelement({
                   onClick={handleButtonClick}
                   type="button"
                   data-bs-toggle="collapse"
-                  data-bs-target="#collapseOne"
+                  data-bs-target="#collapseAttendee"
                   aria-expanded="true"
-                  aria-controls="collapseOne"
+                  aria-controls="collapseAttendee"
                 >
                   Attendees
                 </button>
               </h2>
               <div
-                id="collapseOne"
+                id="collapseAttendee"
                 className="accordion-collapse collapse"
-                data-bs-parent="#accordionExample"
+                data-bs-parent="#accordionAttendee"
               >
+                <div className="mb-2" style={{ color: "red" , fontSize:'0.87rem', paddingTop:'0.5rem', paddingLeft:'1rem'}}>
+                  Note: Don't deselect Mentor or Mentee Options after selecting their individual Branches. 
+                </div>
+
                 <div className="accordion-body">
                   <div className="form-check">
                     <input
