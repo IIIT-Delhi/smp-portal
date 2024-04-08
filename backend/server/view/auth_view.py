@@ -49,6 +49,7 @@ def get_id_by_email(request) -> JsonResponse:
                             'mentorEmail': mentor['email'],
                             'mentorContact': mentor['contact'],
                             'mentorImage': mentor['imgSrc'],
+                            'mentorDepartment':mentor['department'],
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)
                         })
                     else:       # else put NULL
@@ -58,6 +59,7 @@ def get_id_by_email(request) -> JsonResponse:
                             'mentorEmail': 'NULL',
                             'mentorContact': 'NULL',
                             'mentorImage': 'NULL',
+                            'mentorDepartment': 'NULL',
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)
                         })
             
