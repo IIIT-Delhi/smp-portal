@@ -94,14 +94,17 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
         <h1 className="text-center mb-4">Mentor Confirmation Form - SMP</h1>
         <p className="text-left">
           Dear Student,
-                <br />
-                Congratulations to you on getting shortlisted to be a Student Mentors for SMP.
-                <br />
-                Please review the confirmation form attentively, which outlines the commitments expected from you as a mentor and respond back accordingly.
-                <br />
-                You're requested to fill out this Confirmation form carefully 
-              </p>
-              <hr />
+          <br />
+          Congratulations to you on getting shortlisted to be a Student Mentors
+          for SMP.
+          <br />
+          Please review the confirmation form attentively, which outlines the
+          commitments expected from you as a mentor and respond back
+          accordingly.
+          <br />
+          You're requested to fill out this Confirmation form carefully
+        </p>
+        <hr />
         <form onSubmit={handleSubmit}>
           {consentQuestions["questions"].map((question, i) => (
             <div key={question.id} className="mx-2 mb-3">
@@ -150,7 +153,11 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
             </Form.Select>
           </div>
           <div className="mb-3">
-            <label className="form-label">{"Passport-size Photo (Max size - 250KB and dimesnions - 600x600 pixels allowed)"}</label>
+            <label className="form-label">
+              {
+                "Passport-size Photo (Max size - 250KB and dimesnions - 600x600 pixels allowed)"
+              }
+            </label>
             <input
               type="file"
               className="form-control"
@@ -159,6 +166,18 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
               required // Make the input required
               onChange={handleImageChange} // Handle image selection
             />
+            <p className="small text-muted">
+              If your image exceeds the size limit or dimensions, you can resize
+              it{" "}
+              <a
+                href="https://simpleimageresizer.com/resize-image-to-250-kb"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                here
+              </a>
+              .
+            </p>
           </div>
           <button type="submit" className="btn btn-primary mt-3">
             Submit

@@ -4,7 +4,7 @@ import departmentOptions from "../../../data/departmentOptions.json";
 import JSZip from "jszip";
 
 
-export const DownloadCSV = ({ type, list }) => {
+export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
   const [mentees, setMentees] = useState([]);
   const [isFirstTime, setisFirstTime] = useState(true);
 
@@ -67,6 +67,7 @@ export const DownloadCSV = ({ type, list }) => {
     try {
       const csvData = generateExcellenceAwardCSV(list);
       downloadCSV(csvData, "Excellence_Award_List.csv");
+      handleExcellentListSave();
     } catch (error) {
       console.error("Error creating CSV and downloading:", error);
       alert("Error creating CSV and downloading");
@@ -84,7 +85,7 @@ export const DownloadCSV = ({ type, list }) => {
       list.forEach((mentor) => {
         if (mentor.imgSrc) {
           const imageBlob = b64toBlob(mentor.imgSrc, "image/jpeg");
-        zip.file(`${mentor.id}.jpeg`, imageBlob, { binary: true });
+          zip.file(`${mentor.id}.jpeg`, imageBlob, { binary: true });
         } else {
           console.warn("Missing image source for mentor:", mentor.id);
         }
@@ -121,19 +122,18 @@ export const DownloadCSV = ({ type, list }) => {
   };
 
   // Function to generate the CSV content for mentor details
-const generateMentorCSV = (list) => {
-  const csvData = list.map((mentor) => ({
-    "Roll Number": mentor.id,
-    Name: mentor.name,
-    Email: mentor.email,
-    Programme: mentor.department[0] === "B" ? "B.Tech" : "M.Tech",
-    Department: departmentOptions[mentor.department].split(" ")[0],
-    Contact: mentor.contact,
-    "Image Path": `${mentor.id}.jpeg`,
-  }));
-  return convertToCSV(csvData);
-};
-  
+  const generateMentorCSV = (list) => {
+    const csvData = list.map((mentor) => ({
+      "Roll Number": mentor.id,
+      Name: mentor.name,
+      Email: mentor.email,
+      Programme: mentor.department[0] === "B" ? "B.Tech" : "M.Tech",
+      Department: departmentOptions[mentor.department].split(" ")[0],
+      Contact: mentor.contact,
+      "Image Path": `${mentor.id}.jpeg`,
+    }));
+    return convertToCSV(csvData);
+  };
 
   const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
     const dataURLPattern = /^data:([^;]+);base64,(.*)$/;
@@ -202,14 +202,14 @@ const generateMentorCSV = (list) => {
           type === "mentorMenteeMapping"
             ? "Download Mentor-Mentee Pairings in CSV format"
             : type === "excellenceAward"
-            ? "Download Excellence Award List in CSV format"
+            ? "Send mail, Save and Download Excellence Award List in CSV format"
             : "Download Mentor Images"
         }
       >
         {type === "mentorMenteeMapping"
           ? "Download Mentor-Mentee Pairings"
           : type === "excellenceAward"
-          ? "Download Excellence Award List"
+          ? "Save and Downlaod"
           : "Download Mentor Images"}
       </button>
     </>
