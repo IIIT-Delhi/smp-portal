@@ -45,7 +45,7 @@ def add_mentee(request):
         if(data.get('imgSrc')):
             new_mentee.imgSrc = data.get('imgSrc')
         if len(mentor) == 0: 
-            return JsonResponse({"message": "Mentor Not Found"}, status=400)
+            return JsonResponse({"message": "Mentor Not Found"}, status=404)
         new_mentee.mentorId = mentor[0]['id']
         new_mentee.save()
         return JsonResponse({"message": "Mentee added successfully"})
