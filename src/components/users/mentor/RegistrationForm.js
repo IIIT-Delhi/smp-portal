@@ -207,8 +207,8 @@ export default function RegistrationForm() {
         </div>
       )}
 
-      {userDetails.id !== -1 && userDetails.status === -1 && (
-        // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
+      {(userDetails.id !== -1 && userDetails.status === -1) && (
+        // If userDetails.id is not -1 and userDetails.status is -1
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
             You have been removed from the program. Please contact admin.

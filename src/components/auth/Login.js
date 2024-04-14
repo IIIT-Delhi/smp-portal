@@ -36,11 +36,7 @@ const Login = () => {
     const userObject = {
       role: currRole,
       email: decoded.email,
-      // email: "abc@iiitd.ac.in",
-      // email : "ujjwal20546@iiitd.ac.in"
-      // email : "yash20551@iiitd.ac.in"
-      email : "devraj20054@iiitd.ac.in"
-          };
+    };
     // setUserObject(userObjectTemp);
     login(userObject);
   }
@@ -58,7 +54,7 @@ const Login = () => {
           clearInterval(interval);
           navigate("/login"); // Redirect to login page
         }, 3000); // Wait for 3 seconds before redirecting
-      }else if (id === -1) {
+      } else if (id === -1) {
         // console.log(id);
         if (currRole === "admin" || currRole === "mentee") {
           // Show "Invalid User" message and redirect to the login page
@@ -82,12 +78,13 @@ const Login = () => {
         if (currRole === "mentor") {
           const status = userDetails.status;
           // console.log(status);
-          if (status === 1 || status === 2 || status === 3 || status === 4) {
-            // Redirect to RegistrationForm.js
-            navigate("/registration");
-          } else if (status === 5) {
+          if (status === 5) {
             // Redirect to the profile based on the role
             navigate(`/users/${currRole}/profile`);
+          }
+          else{
+            // Redirect to the profile based on the role
+            navigate("/registration");
           }
         } else {
           // Redirect to the profile based on the role
