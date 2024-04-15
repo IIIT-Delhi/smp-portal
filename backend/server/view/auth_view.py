@@ -20,10 +20,10 @@ def get_id_by_email(request) -> JsonResponse:
         email = data.get('email')
         role = data.get('role')
 
+        if not email or not role:
+            return JsonResponse({'error': 'Invalid email or role'}, status=400)
+        
         try:
-            if not email or not role:
-                return JsonResponse({'error': 'Invalid email or role'})
-            
             if role == "admin":
                 entry = Admin.objects.filter(email=email).values()
             elif role == "mentor":

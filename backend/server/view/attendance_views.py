@@ -27,10 +27,11 @@ def get_attendance(request):
                   If attendance details are successfully retrieved. Attendance value 1 indicates present, 0 indicates absent.
     """
     if request.method == "POST":
-        data = json.loads(request.body.decode('utf-8'))
-        meeting_id = data.get("meetingId")
-
         try:
+            data = json.loads(request.body.decode('utf-8'))
+            meeting_id = data.get("meeting_id")
+            if meeting_id is None:
+                return JsonResponse({"error": "Meeting ID is required"}, status=400)
             meeting = Meetings.objects.get(meetingId=meeting_id)
         except Meetings.DoesNotExist:
             return JsonResponse({"error": "Meeting not found"}, status=404)
@@ -153,13 +154,23 @@ def update_attendance(request):
             Possible responses:
                 - {"message": "Attendance updated successfully"}: If the attendance is successfully updated.
                 - {"error": "Invalid request method"} (status 400): If the request method is not POST.
+                - {"error": "Invalid meeting ID"} (status 400): If the provided meeting ID is invalid or does not exist.
+                - {"error": "Invalid attendee ID"} (status 400): If an attendee ID in the request is invalid.
     """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
 
-        attendees = data.get("attendees")
         meeting_id = data.get("meetingId")
+        if not meeting_id:
+            return JsonResponse({"error": "Meeting ID is required"}, status=400)
 
+        try:
+            # Check if the meeting exists
+            meeting = Meetings.objects.get(meetingId=meeting_id)
+        except Meetings.DoesNotExist:
+            return JsonResponse({"error": "Invalid meeting ID"}, status=400)
+
+        attendees = data.get("attendees", [])
         for attendee in attendees:
             attendee_id = attendee.get("id")
             attendance_value = attendee.get("attendance")
