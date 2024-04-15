@@ -160,19 +160,19 @@ const Dashboard = () => {
                             </div>
                           </div>
                         )}
-                        {userDetails.role === "mentor" &&
-                          userDetails.role === "mentee" && (
-                            <div className="row">
-                              <div className="col-sm-3">
-                                <p className="mb-0">Contact</p>
-                              </div>
-                              <div className="col-sm-9">
-                                <p className="text-muted mb-0">
-                                  {userData.contact}
-                                </p>
-                              </div>
+                        {(userDetails.role === "mentor" ||
+                          userDetails.role === "mentee") && (
+                          <div className="row">
+                            <div className="col-sm-3">
+                              <p className="mb-0">Contact</p>
                             </div>
-                          )}
+                            <div className="col-sm-9">
+                              <p className="text-muted mb-0">
+                                {userData.contact}
+                              </p>
+                            </div>
+                          </div>
+                        )}
                         <hr />
                         {userDetails.role === "mentor" && (
                           <div>
@@ -182,7 +182,7 @@ const Dashboard = () => {
                               </div>
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0">
-                                  {yearOptions[userData.year]}
+                                  {userData.year[1]}
                                 </p>
                               </div>
                             </div>
@@ -300,7 +300,7 @@ const Dashboard = () => {
                                 )}
                               </div>
                             </div>
-                            <hr/>
+                            <hr />
                             <div className="row">
                               <div className="col-sm-3">
                                 <p className="mb-0">Mentor Email</p>
@@ -310,6 +310,23 @@ const Dashboard = () => {
                                   {userData.mentorId !== "NULL" ? (
                                     <p className="text-muted mb-0">
                                       {userData.mentorEmail}
+                                    </p>
+                                  ) : (
+                                    <p>Mentor Not Assigned</p>
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                            <hr />
+                            <div className="row">
+                              <div className="col-sm-3">
+                                <p className="mb-0">Mentor Department</p>
+                              </div>
+                              <div className="col-sm-9">
+                                <p className="text-muted mb-0">
+                                  {userData.mentorId !== "NULL" ? (
+                                    <p className="text-muted mb-0">
+                                      {userData.mentorDepartment}
                                     </p>
                                   ) : (
                                     <p>Mentor Not Assigned</p>

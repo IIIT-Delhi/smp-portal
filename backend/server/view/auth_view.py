@@ -20,10 +20,10 @@ def get_id_by_email(request) -> JsonResponse:
         email = data.get('email')
         role = data.get('role')
 
+        if not email or not role:
+            return JsonResponse({'error': 'Invalid email or role'}, status=400)
+        
         try:
-            if not email or not role:
-                return JsonResponse({'error': 'Invalid email or role'})
-            
             if role == "admin":
                 entry = Admin.objects.filter(email=email).values()
             elif role == "mentor":
@@ -49,6 +49,7 @@ def get_id_by_email(request) -> JsonResponse:
                             'mentorEmail': mentor['email'],
                             'mentorContact': mentor['contact'],
                             'mentorImage': mentor['imgSrc'],
+                            'mentorDepartment':mentor['department'],
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)
                         })
                     else:       # else put NULL
@@ -58,6 +59,7 @@ def get_id_by_email(request) -> JsonResponse:
                             'mentorEmail': 'NULL',
                             'mentorContact': 'NULL',
                             'mentorImage': 'NULL',
+                            'mentorDepartment': 'NULL',
                             'f3': int(FormStatus.objects.get(formId='3').formStatus)
                         })
             

@@ -287,7 +287,7 @@ def delete_mentor_by_id(request):
             for mentee in mentees:
                 mentee.mentorId = -1
                 mentee.save()
-                candidate = Candidate.objects.get(id=mentor_id)
+            candidate = Candidate.objects.get(id=mentor_id)
             candidate.status = -1
             candidate.save()
             return JsonResponse({"message": "Mentor deleted"})

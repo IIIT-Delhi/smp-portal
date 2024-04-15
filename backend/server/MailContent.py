@@ -8,7 +8,7 @@ mail_content = [
     {
         "type" : "consent",
         "subject" : "Request to Fill Mentor Consent Form",
-        "body" : "Dear Student,\n\nCongratulations on being selected as a mentor!\n\nTo move forward, please complete the Mentor Consent Form using the link below:\n\nhttps/smpportal.iiitd.edu.in/login\n\nYour prompt response is appreciated.\n\nBest regards,"
+        "body" : "Dear Student,\n\nCongratulations on being selected as a mentor!\n\nTo move forward, please complete the Mentor Consent Form using the link below:\n\nhttps://smpportal.iiitd.edu.in/login\n\nYour prompt response is appreciated.\n\nBest regards,"
     },
     {
         "type" : "consent_filled",
@@ -26,14 +26,14 @@ mail_content = [
         "body" : "Hello dear...\nI hope you're doing well and staying safe.\
             \n\nCongratulations on being selected as an M.Tech\B.Tech Student Mentor for SMP(20AY-AY).\
             \n\nAs a Student Mentor, you will be having a vital role in guiding and supporting M.Tech\B.Tech first year students throughout their first academic year at IIITD.\
-            \n\nWe look forward to witnessing your positive impact as an M.Tech Student Mentor.\
+            \n\nWe look forward to witnessing your positive impact as an M.Tech\B.Tech Student Mentor.\
             \n\nFor any queries, please feel free to contact.\n\nBest Regard"
     },
     {
         "type" : "feedback_open",
         "subject" : "Feedback Form Activated",
         "body" : "Dear Students,\nWe would like to inform you that the mentor feedback form has been activated by the admin. Your prompt action in filling out the feedback form is crucial.\
-        \nPlease take a few moments to complete the Mentor Feedback Form by following the link provided below: https/smpportal.iiitd.edu.in/login\n\nBest Regard"
+        \nPlease take a few moments to complete the Mentor Feedback Form by following the link provided below: https://smpportal.iiitd.edu.in/login\n\nBest Regard"
     },
     {
         "type" : "feedback_close",
@@ -48,7 +48,7 @@ mail_content = [
     {
         "type" : "excellence_award",
         "subject" : "Congratulations! You have been selected for the Excellence Award",
-        "body" : "Dear,\n\nCongratulations on being selected for the Excellence Award! Your dedication and hard work have been recognized, and we are pleased to inform you that you have been chosen for this prestigious award.\n\nYour commitment to excellence and outstanding performance have set you apart from your peers, and we are proud to have you as a recipient of this award.\n\nWe look forward to celebrating your achievements and presenting you with the Excellence Award. Please stay tuned for further details on the award ceremony.\n\nOnce again, congratulations on this well-deserved honor!\n\nBest regards,"
+        "body" : "Dear,\n\nCongratulations on being selected for the Excellence Award! Your dedication and hard work have been recognized, and we are pleased to inform you that you have been chosen for this award.\n\nYour commitment to excellence and outstanding performance have set you apart from your peers, and we are proud to have you as a recipient of this.\n\nWe look forward to celebrating your achievements and presenting you with the Excellence Award. You can collecet your goodies and Award certificate from A-206, Academic Block.\n\nOnce again, congratulations on this well-deserved honor!\n\nBest regards,"
     }
     
     

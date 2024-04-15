@@ -38,6 +38,8 @@ def get_excellence_award(request):
     if request.method == "POST":
         try:
             eligible_candidates = Candidate.objects.filter(status=5)
+            if not eligible_candidates:
+                return JsonResponse({"error": "No candidates found"}, status=404)
             excellence_award_data = []
             max_meetings_attended = 0
             max_meetings_scheduled = 0
