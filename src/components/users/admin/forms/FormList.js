@@ -26,7 +26,9 @@ const FormList = () => {
         formStatus: status,
       });
       fetchFormStatus();
+      alert("Form status updated successfully!");
     } catch (error) {
+      alert("Unable to change form status, please try again later.");
       console.error("Error updating form status:", error);
     }
   };

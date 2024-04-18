@@ -35,6 +35,19 @@ const MenteeUpload = ({ closeModal }) => {
       closeModal();
     }
   };
+  const isValidFileType = (fileName) => {
+    const acceptedFileTypes = ["csv"];
+    const fileType = fileName.split(".").pop();
+    return acceptedFileTypes.includes(fileType);
+  };
+
+  const handleFileValidation = (e) => {
+    const fileName = e.target.files[0].name;
+    if (!isValidFileType(fileName)) {
+      alert("Please select a CSV file.");
+      e.target.value = null; // Clear the file input
+    }
+  };
 
   return (
     <div>
@@ -70,7 +83,10 @@ const MenteeUpload = ({ closeModal }) => {
                   className="form-control-file"
                   id="csvFile"
                   accept=".csv"
-                  onChange={handleFileChange}
+                  onChange={(e) => {
+                    handleFileChange(e);
+                    handleFileValidation(e);
+                  }}
                 />
                 <label className="mx-2" htmlFor="csvFile">
                   This will replace the current list with new CSV. Please click

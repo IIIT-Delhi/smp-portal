@@ -20,27 +20,29 @@ const TableRow = ({
       {formType !== "3" && (
         <td className="text-center">
           {isMappingStatusNegativeOne ? (
-            <span style={{color : 'red'}}>&#10006;</span> // Cross sign
-          ):(
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id={response.submitterId}
-            checked={
-              formType === "1"
-                ? (response.consent_status === 1)
-                : response.mapping_status === 1
-            }
-            disabled={
-              (((response.consent_status === 1) && formType === "1") ||
-              ((response.mapping_status === 1 || response.mapping_status===-1) && formType === "2" ))&&
+            <span style={{ color: "red" }}>&#10008;</span> // Cross sign
+          ) : (
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id={response.submitterId}
+              checked={
+                formType === "1"
+                  ? response.consent_status === 1
+                  : response.mapping_status === 1
+              }
+              disabled={
+                ((response.consent_status === 1 && formType === "1") ||
+                  ((response.mapping_status === 1 ||
+                    response.mapping_status === -1) &&
+                    formType === "2")) &&
                 !newlySelectedStudents.includes(response.submitterId)
-            }
-            onChange={() =>
-              handleCheckboxChangeWrapper(response.submitterId, formType)
-            }
-            style={rowStyle}
-          />
+              }
+              onChange={() =>
+                handleCheckboxChangeWrapper(response.submitterId, formType)
+              }
+              style={rowStyle}
+            />
           )}
         </td>
       )}

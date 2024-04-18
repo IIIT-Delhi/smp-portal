@@ -42,15 +42,26 @@ const MenteeProfile = ({ mentee, onClose }) => {
                   }}
                 />
                 {/* Display mentee's profile information here */}
-                <p>Name: {mentee.name}</p>
-                <p>Roll Number: {mentee.id}</p>
-                <p>Email: {mentee.email}</p>
-                <p>Contact: {mentee.contact}</p>
                 <p>
-                  Programme:{" "}
+                  <b>Name:</b> {mentee.name}
+                </p>
+                <p>
+                  <b>Roll Number:</b> {mentee.id}
+                </p>
+                <p>
+                  <b>Email:</b> {mentee.email}
+                </p>
+                <p>
+                  <b>Contact:</b> {mentee.contact}
+                </p>
+                <p>
+                  <b>Programme:</b>{" "}
                   {mentee.department.startsWith("B") ? "B.Tech" : "M.Tech"}
                 </p>
-                <p>Branch:{" "} {departmentOptions[mentee.department]}</p>
+                <p>
+                  <b>Department:</b>{" "}
+                  {departmentOptions[mentee.department].split(" ")[0]}
+                </p>
               </div>
               <div className="col-md-6">
                 <h6>Mentor:</h6>
@@ -67,13 +78,20 @@ const MenteeProfile = ({ mentee, onClose }) => {
                       }}
                     />
                     {/* Display mentor's profile information here */}
-                    <p>Mentor Name: {mentee.mentorName}</p>
-                    <p>Mentor Roll Number: {mentee.mentorId}</p>
-                    <p>Mentor Email: {mentee.mentorEmail}</p>
-                    <p>Mentor Contact: {mentee.mentorContact}</p>
                     <p>
-                      Mentor Department:{" "}
-                      {departmentOptions[mentee.mentorDepartment]}
+                      <b>Name:</b> {mentee.mentorName}
+                    </p>
+                    <p>
+                      <b>Roll Number:</b> {mentee.mentorId}
+                    </p>
+                    <p>
+                      <b>Email:</b> {mentee.mentorEmail}
+                    </p>
+                    <p>
+                      <b>Contact:</b> {mentee.mentorContact}
+                    </p>
+                    <p><b>
+                      Department:</b> {departmentOptions[mentee.mentorDepartment]}
                     </p>
                     {/* Add other mentor profile details */}
                   </>

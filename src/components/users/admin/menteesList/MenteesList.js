@@ -138,8 +138,10 @@ const MenteesList = () => {
               contact: "",
             });
             setAddMenteeModalVisible(false);
-            alert("Mentee added successfully");
+            alert(response.data.message);
             window.location.reload();
+          }else{
+            alert("Mentee could not be added, please try again.")
           }
         });
     } catch (error) {
@@ -196,6 +198,27 @@ const MenteesList = () => {
       console.error("Please fill in all required fields.");
       return;
     }
+
+    // Check if the name is valid (no numbers or special characters)
+    const nameRegex = /^[a-zA-Z\s]+$/; // Allow only letters
+    if (!nameRegex.test(menteeForm.name)) {
+      alert("Please enter a valid name without numbers or special characters.");
+      return;
+    }
+
+    // Modify the name to the desired format
+    const formattedName = menteeForm.name
+      .toLowerCase() // Convert to lowercase
+      .replace(/\s+/g, " ") // Replace multiple spaces with a single space
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
+
+    menteeForm.name = formattedName;
+
+    if (isNaN(Number(menteeForm.contact)) || menteeForm.contact.length !== 10) {
+      alert("Please enter a valid 10-digit contact number.");
+      return;
+    }
+
     // Add the mentee to the list
     addMenteeOnBackend(menteeForm);
   };

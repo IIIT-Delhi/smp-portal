@@ -32,6 +32,13 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
   const handleImageChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
     if (file) {
+
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        e.target.value = null; // Clear the selected file
+        return;
+      }
+
       // Check file size
       if (file.size > 250000) {
         alert("Image size exceeds 250KB. Please select a smaller image.");

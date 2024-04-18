@@ -202,11 +202,11 @@ const Dashboard = () => {
                             <hr />
                             <div className="row">
                               <div className="col-sm-3">
-                                <p className="mb-0">Branch</p>
+                                <p className="mb-0">Department</p>
                               </div>
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0">
-                                  {deparmentOptions[userData.department]}
+                                  {deparmentOptions[userData.department].split(" ")[0]}
                                 </p>
                               </div>
                             </div>
@@ -240,11 +240,11 @@ const Dashboard = () => {
                             <hr />
                             <div className="row">
                               <div className="col-sm-3">
-                                <p className="mb-0">Branch</p>
+                                <p className="mb-0">Department</p>
                               </div>
                               <div className="col-sm-9">
                                 <p className="text-muted mb-0">
-                                  {deparmentOptions[userData.department]}
+                                  {deparmentOptions[userData.department].split(" ")[0]}
                                 </p>
                               </div>
                             </div>
@@ -326,7 +326,7 @@ const Dashboard = () => {
                                 <p className="text-muted mb-0">
                                   {userData.mentorId !== "NULL" ? (
                                     <p className="text-muted mb-0">
-                                      {userData.mentorDepartment}
+                                      {deparmentOptions[userData.mentorDepartment]}
                                     </p>
                                   ) : (
                                     <p>Mentor Not Assigned</p>
