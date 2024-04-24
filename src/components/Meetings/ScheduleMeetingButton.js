@@ -55,7 +55,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
         menteeList: newMeeting.menteeList,
       };
       const response = await axios.post(
-        "http://127.0.0.1:8000/addMeeting/",
+        "http://127.0.0.1:8000/api/addMeeting/",
         meetingData,
         {
           headers: {

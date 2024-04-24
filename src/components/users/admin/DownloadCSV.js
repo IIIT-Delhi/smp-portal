@@ -11,7 +11,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
   // Function to fetch Mentee list from Django endpoint
   const fetchMenteeList = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/getAllMentees/");
+      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentees/");
       setMentees(response.data);
     } catch (error) {
       console.error("Error fetching Mentee list:", error);

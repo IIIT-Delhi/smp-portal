@@ -21,7 +21,7 @@ const MenteeUpload = ({ closeModal }) => {
       console.log(selectedFile);
 
       try {
-        await axios.post("http://127.0.0.1:8000/uploadCSV/", formData, {
+        await axios.post("http://127.0.0.1:8000/api/uploadCSV/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

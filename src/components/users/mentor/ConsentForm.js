@@ -74,7 +74,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
   const sendConsent = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/submitConsentForm/",
+        "http://127.0.0.1:8000/api/submitConsentForm/",
         JSON.stringify(consentData)
       )
       .then((response) => {

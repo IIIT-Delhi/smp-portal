@@ -35,7 +35,7 @@ describe(AdminMeetingList, () => {
 
     // Assert that the axios.post method was called with the correct parameters
     expect(axios.post).toHaveBeenCalledWith(
-      "http://127.0.0.1:8000/deleteMeetingById/",
+      "http://127.0.0.1:8000/api/deleteMeetingById/",
       JSON.stringify({ meetingId: "meetingId" })
     );
 
@@ -61,7 +61,7 @@ describe(AdminMeetingList, () => {
 
     // Assert that the axios.post method was called with the correct parameters
     expect(axios.post).toHaveBeenCalledWith(
-      "http://127.0.0.1:8000/editMeetingById/",
+      "http://127.0.0.1:8000/api/editMeetingById/",
       JSON.stringify({
         meetingId: "meetingId",
         schedulerId: "schedulerId",

@@ -25,7 +25,7 @@ export default function MeetingList() {
   const fetchMeetings = useCallback(async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/getMeetings/",
+        "http://127.0.0.1:8000/api/getMeetings/",
         JSON.stringify({
           id: userDetails.id,
           role: userDetails.role,
@@ -70,7 +70,7 @@ export default function MeetingList() {
   const fetchAttributeId = async (id) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/getMentorById/",
+        "http://127.0.0.1:8000/api/getMentorById/",
         JSON.stringify({ id: id })
       );
 
@@ -109,7 +109,7 @@ export default function MeetingList() {
     // Send a request to delete the meeting on the backend
     axios
       .post(
-        "http://127.0.0.1:8000/deleteMeetingById/",
+        "http://127.0.0.1:8000/api/deleteMeetingById/",
         JSON.stringify({
           meetingId: meetingId,
         })
@@ -128,7 +128,7 @@ export default function MeetingList() {
     try {
       // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
       const response = await axios.post(
-        "http://127.0.0.1:8000/editMeetingById/",
+        "http://127.0.0.1:8000/api/editMeetingById/",
         JSON.stringify({
           meetingId: meeting.meetingId,
           schedulerId: meeting.schedulerId,
