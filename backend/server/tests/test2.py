@@ -132,14 +132,14 @@ class AddMenteeTestCase(TestCase):
             'mentorId': 'mentor123',
         }
 
-        response = self.client.post('http://127.0.0.1:8000/addMentee/', json.dumps(data), content_type='application/json')
+        response = self.client.post('http://127.0.0.1:8000/api/addMentee/', json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'message': 'Mentee with this ID already exist'})
 
     def test_add_mentee_invalid_method(self):
         # Test sending a GET request, which should result in an error
-        response = self.client.get('http://127.0.0.1:8000/addMentee/')
+        response = self.client.get('http://127.0.0.1:8000/api/addMentee/')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'message': 'Invalid request method'})
