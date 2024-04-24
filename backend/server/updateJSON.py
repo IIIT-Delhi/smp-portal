@@ -8,12 +8,3 @@ class JSONConcat(Func):
     output_field = JSONField()
     arg_joiner = ' || '
     template = '(%(expressions)s)'
-
-# from django.db.models import F, Value
-# Attendance.objects.update(meeting=JSONConcat(
-#     F('meeting'),
-#     JSONBuildObject(
-#         Value(meeting_id),  # key
-#         Value('Yes/No/NA'),  # value
-#     )
-# ))
