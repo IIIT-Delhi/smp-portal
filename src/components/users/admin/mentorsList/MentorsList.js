@@ -8,7 +8,7 @@ import departmentOptions from "../../../../data/departmentOptions.json";
 import yearOptions from "../../../../data/yearOptions.json";
 import sizeOptions from "../../../../data/sizeOptions.json";
 import { DownloadCSV } from "../DownloadCSV";
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 const MentorsList = () => {
   // Dummy data (replace with actual data fetching)
@@ -142,6 +142,27 @@ const MentorsList = () => {
       console.error("Please fill in all required fields.");
       return;
     }
+
+    // Check if the name is valid (no numbers or special characters)
+    const nameRegex = /^[a-zA-Z\s]+$/; // Allow only letters
+    if (!nameRegex.test(mentorForm.name)) {
+      alert("Please enter a valid name without numbers or special characters.");
+      return;
+    }
+
+    // Modify the name to the desired format
+    const formattedName = mentorForm.name
+      .toLowerCase() // Convert to lowercase
+      .replace(/\s+/g, " ") // Replace multiple spaces with a single space
+      .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
+
+    mentorForm.name = formattedName;
+
+    if (isNaN(Number(mentorForm.contact)) || mentorForm.contact.length !== 10) {
+      alert("Please enter a valid 10-digit contact number.");
+      return;
+    }
+
     // Add the mentor to the list
     addMentorOnBackend(mentorForm);
   };
@@ -169,20 +190,36 @@ const MentorsList = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
     if (file) {
-      if (file.size > 200000) {
-        alert("Image size exceeds 200KB. Please select a smaller image.");
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        e.target.value = null; // Clear the selected file
+        return;
+      }
+      if (file.size > 250000) {
+        alert("Image size exceeds 250KB. Please select a smaller image.");
         e.target.value = null; // Clear the selected file
       } else {
-        // Handle the selected image, e.g., store it in component state
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const imageBase64 = event.target.result; // Base64-encoded image
-          setMentorForm({
-            ...mentorForm,
-            imgSrc: imageBase64,
-          });
+        // Create an image object to get the dimensions
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+
+        img.onload = function () {
+          // Check image dimensions
+          if (this.width !== 600 || this.height !== 600) {
+            alert("Image dimensions must be 600x600 pixels.");
+            e.target.value = null; // Clear the selected file
+          } else {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const imageBase64 = event.target.result; // Base64-encoded image
+              setMentorForm({
+                ...mentorForm,
+                imgSrc: imageBase64,
+              });
+            };
+            reader.readAsDataURL(file);
+          }
         };
-        reader.readAsDataURL(file);
       }
     }
   };
@@ -433,7 +470,9 @@ const MentorsList = () => {
                   </div>
                   <div className="mb-3">
                     <label className="form-label">
-                      {"Passport-size Photo (Max size - 200KB)"}
+                      {
+                        "Passport-size Photo (Max size - 250KB and dimesnions - 600x600 pixels allowed)"
+                      }
                     </label>
                     <input
                       type="file"
@@ -443,6 +482,18 @@ const MentorsList = () => {
                       required // Make the input required
                       onChange={handleImageChange} // Handle image selection
                     />
+                    <p className="small text-muted">
+                      If your image exceeds the size limit or dimensions, you
+                      can resize it{" "}
+                      <a
+                        href="https://simpleimageresizer.com/resize-image-to-250-kb"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        here
+                      </a>
+                      .
+                    </p>
                   </div>
 
                   <button type="submit" className="btn btn-primary">
@@ -455,7 +506,7 @@ const MentorsList = () => {
         </div>
 
         <DownloadCSV type={"mentorMenteeMapping"}></DownloadCSV>
-        <DownloadCSV type={"mentorImagesDownload"} list = {mentors}></DownloadCSV>
+        <DownloadCSV type={"mentorImagesDownload"} list={mentors}></DownloadCSV>
 
         <div
           className="table-container text-center my-2"

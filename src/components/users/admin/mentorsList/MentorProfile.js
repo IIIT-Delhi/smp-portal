@@ -24,7 +24,10 @@ const MentorProfile = ({ mentor, onClose }) => {
   });
 
   return (
-    <div className="modal fade show" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+    <div
+      className="modal fade show"
+      style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+    >
       <div className="modal-dialog modal-lg">
         <div className="modal-content">
           <div className="modal-header">
@@ -33,27 +36,47 @@ const MentorProfile = ({ mentor, onClose }) => {
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div className="modal-body"
-          style={{ maxHeight: "70vh", overflowY: "scroll", maxWidth: "70vw", overflowX: "scroll" }}>
-            <div className="row">
+          <div
+            className="modal-body"
+            style={{
+              maxHeight: "70vh",
+              overflowY: "scroll",
+              maxWidth: "70vw",
+              overflowX: "scroll",
+            }}
+          >
+            <div className="row ">
               {/* Mentor details column (40%) */}
               <div className="col-md-4">
                 <img
                   src={mentor.imgSrc}
                   alt="Profile"
                   className="img-fluid img-thumbnail mt-4 mb-2"
-                  style={{ width: "100%", borderRadius: "10%"}}
-
+                  style={{ width: "100%", borderRadius: "10%" }}
                 />
-                <p>Name: {mentor.name}</p>
-                <p>Roll Number: {mentor.id}</p>
-                <p>Email: {mentor.email}</p>
-                <p>Contact Number: {mentor.contact}</p>
-                <p>Year: {yearOptions[mentor.year]}</p>
                 <p>
-                  Programme:{" "}{mentor.department.startsWith("B") ? "B.Tech" : "M.Tech"}
+                  <b>Name:</b> {mentor.name}
                 </p>
-                <p>Branch:{ " "} {departmentOptions[mentor.department]}</p>
+                <p>
+                  <b>Roll Number:</b> {mentor.id}
+                </p>
+                <p>
+                  <b>Email:</b> {mentor.email}
+                </p>
+                <p>
+                  <b>Contact Number:</b> {mentor.contact}
+                </p>
+                <p>
+                  <b>Year:</b> {mentor.year[1]}
+                </p>
+                <p>
+                  <b>Programme:</b>{" "}
+                  {mentor.department.startsWith("B") ? "B.Tech" : "M.Tech"}
+                </p>
+                <p><b>
+                  Department:</b>{" "}
+                  {departmentOptions[mentor.department].split(" ")[0]}
+                </p>
                 {/* <p>Goodies Status: {mentor.goodiesStatus}</p> */}
                 {/* Add more mentor profile details here */}
               </div>
