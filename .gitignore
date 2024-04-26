@@ -22,3 +22,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+backend/.pytest_cache/
+backend/core/__pycache__/
+backend/server/migrations/
+backend/server/view/__pycache__/
+backend/server/__pycache__/
+README.md
+node_modules/
+public/
+src/
