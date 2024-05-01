@@ -21,7 +21,7 @@ const AuthButton = () => {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/getFormStatus/"
+          "http://127.0.0.1:8000/api/getFormStatus/"
         );
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"

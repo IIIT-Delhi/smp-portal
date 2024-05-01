@@ -22,7 +22,7 @@ const MenteesList = () => {
   const fetchMenteeList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://127.0.0.1:8000/getAllMentees/"); // Replace with your Django API endpoint
+      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentees/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
@@ -94,7 +94,7 @@ const MenteesList = () => {
   const editMentor = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/editMenteeById/",
+        "http://127.0.0.1:8000/api/editMenteeById/",
         JSON.stringify({
           id: editMentee.menteeId,
           mentorId: editMentee.mentorId,
@@ -124,7 +124,7 @@ const MenteesList = () => {
   const addMenteeOnBackend = async (mentee) => {
     try {
       await axios
-        .post("http://127.0.0.1:8000/addMentee/", mentee)
+        .post("http://127.0.0.1:8000/api/addMentee/", mentee)
         .then((response) => {
           // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
@@ -158,7 +158,7 @@ const MenteesList = () => {
 
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/deleteMenteeById/",
+          "http://127.0.0.1:8000/api/deleteMenteeById/",
           JSON.stringify({ id: menteeToDelete.id })
         );
         if (response.status === 200) {

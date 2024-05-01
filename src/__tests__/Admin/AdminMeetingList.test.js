@@ -35,7 +35,7 @@ describe(AdminMeetingList, () => {
 
     // Assert that the meetings are fetched and displayed
     expect(axios.post).toHaveBeenCalledWith(
-      "http://127.0.0.1:8000/getMeetings/",
+      "http://127.0.0.1:8000/api/getMeetings/",
       JSON.stringify({ id: 1, role: "admin" })
     );
     expect(getByText("Upcoming Meetings")).toBeInTheDocument();

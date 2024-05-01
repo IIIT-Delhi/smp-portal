@@ -24,7 +24,7 @@ export default function RegistrationForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/getFormStatus/"
+          "http://127.0.0.1:8000/api/getFormStatus/"
         );
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
@@ -108,7 +108,7 @@ export default function RegistrationForm() {
   const saveAndContinue = (e) => {
     e.preventDefault();
     axios
-      .post("http://127.0.0.1:8000/addCandidate/", JSON.stringify(formData))
+      .post("http://127.0.0.1:8000/api/addCandidate/", JSON.stringify(formData))
       .then((response) => {
         // Redirect to the next step or do any other necessary actions
         logout();
