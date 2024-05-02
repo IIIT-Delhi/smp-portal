@@ -23,9 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)df$=!nf0oc4#op=%=wn9q=r!it#r2w=#w%_hywo&80b)_7&^+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ['https://smpportal.iiitd.edu.in', 'smpportal.iiitd.edu.in', '192.168.3.168']
+DEBUG = True
+ALLOWED_HOSTS = []
 
 # Application definition
 
