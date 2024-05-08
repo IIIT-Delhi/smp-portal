@@ -32,6 +32,11 @@ def get_id_by_email(request) -> JsonResponse:
                         'id': -2,
                     }
                     return JsonResponse(data_dict)
+                if Admin.objects.filter(email=email).values():
+                    data_dict = {
+                        'id': -2,
+                    }
+                    return JsonResponse(data_dict)
                 entry = Candidate.objects.filter(email=email).values()
             elif role == "mentee":
                 entry = Mentee.objects.filter(email=email).values()
