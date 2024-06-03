@@ -21,7 +21,7 @@ const AuthButton = () => {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/getFormStatus/"
+          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
@@ -71,7 +71,7 @@ const AuthButton = () => {
               style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px"}}
               onClick={() => handleGoogleLogin("admin")}
             >
-              Login as Admin
+              Admin
             </button>
           </div>
           <div className="btn1 my-3">
@@ -81,7 +81,7 @@ const AuthButton = () => {
               style={{ width: "100%",fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentee")}
             >
-              Login as Mentee
+              Mentee
             </button>
           </div>
           <div className="btn2 my-1">
@@ -91,7 +91,17 @@ const AuthButton = () => {
               style={{ width: "100%",fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentor")}
             >
-              {enrollmentFormStatus==="1"? "Apply/Login For Mentor" : "Login as Mentor"}
+              {enrollmentFormStatus === "1" ? (
+  <span>
+    Mentor <span style={{ fontSize: "1vw" }}>(Apply/Login)</span>
+  </span>
+) : (
+  <span>
+    Mentor <span style={{ fontSize: "1vw" }}>(Login)</span>
+  </span>
+)}
+
+
             </button>
           </div>
         </>

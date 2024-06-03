@@ -22,7 +22,7 @@ const MenteesList = () => {
   const fetchMenteeList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentees/"); // Replace with your Django API endpoint
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentees/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
@@ -94,7 +94,7 @@ const MenteesList = () => {
   const editMentor = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/editMenteeById/",
+        "https://smpportal.iiitd.edu.in/api/editMenteeById/",
         JSON.stringify({
           id: editMentee.menteeId,
           mentorId: editMentee.mentorId,
@@ -124,7 +124,7 @@ const MenteesList = () => {
   const addMenteeOnBackend = async (mentee) => {
     try {
       await axios
-        .post("http://127.0.0.1:8000/api/addMentee/", mentee)
+        .post("https://smpportal.iiitd.edu.in/api/addMentee/", mentee)
         .then((response) => {
           // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
@@ -158,7 +158,7 @@ const MenteesList = () => {
 
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/deleteMenteeById/",
+          "https://smpportal.iiitd.edu.in/api/deleteMenteeById/",
           JSON.stringify({ id: menteeToDelete.id })
         );
         if (response.status === 200) {
@@ -191,7 +191,7 @@ const MenteesList = () => {
       !menteeForm.id || // Check if roll number is empty
       !menteeForm.department || // Check if department is empty
       !menteeForm.email || // Check if email is empty
-      !menteeForm.mentorId || // Check if mentor id is empty
+      // !menteeForm.mentorId || // Check if mentor id is empty
       !menteeForm.contact
     ) {
       // You can display an error message or handle validation as needed
@@ -374,7 +374,7 @@ const MenteesList = () => {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Department</label>
+                    <label className="form-label">Department*</label>
                     <Form.Select
                       name="department"
                       value={menteeForm.department}
@@ -501,12 +501,23 @@ const MenteesList = () => {
                             style={{ width: "20px", height: "20px" }}
                           />
                         </button>
-                        <button
+                         <div>{mentee.mentorId !== "NULL" ? (
+                          <button
                           className="btn btn-sm btn-outline-dark ml-4"
                           onClick={() => handleChangeMentor(mentee)}
                         >
                           Change Mentor
                         </button>
+                        ): (
+                  <button
+                          className="btn btn-danger btn-sm btn-outline-dark ml-4"
+                          onClick={() => handleChangeMentor(mentee)}
+                          
+  style={{ color: "white" }}
+                        >
+                          Mentor Not Assigned
+                        </button>
+                )}</div>
                       </div>
                     </td>
                   </tr>

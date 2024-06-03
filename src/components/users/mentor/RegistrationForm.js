@@ -24,7 +24,7 @@ export default function RegistrationForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/getFormStatus/"
+          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
@@ -108,11 +108,11 @@ export default function RegistrationForm() {
   const saveAndContinue = (e) => {
     e.preventDefault();
     axios
-      .post("http://127.0.0.1:8000/api/addCandidate/", JSON.stringify(formData))
+      .post("https://smpportal.iiitd.edu.in/api/addCandidate/", JSON.stringify(formData))
       .then((response) => {
         // Redirect to the next step or do any other necessary actions
         logout();
-        alert("Enrollment Form Submitted Successfully. You are logged out.");
+        alert("Enrollment form submitted successfully. Please wait for further instructions, admin will contact you if you are selected. Please visit again to check the status. You are logged out.");
         navigate("/login");
       })
       .catch((error) => {
@@ -192,7 +192,7 @@ export default function RegistrationForm() {
         // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
-            We have got your consent. You can use portal after mentee
+            Congratulations for successfully completing the Mentorship enrollment process. We have got your consent. You can use portal after mentee
             allocation. We appreciate your patience till then.
           </div>
         </div>

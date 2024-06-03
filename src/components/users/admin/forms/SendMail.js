@@ -27,7 +27,7 @@ export default function SendMail({
   const sendConsentMail = async () => {
     try {
       const response1 = await axios.post(
-        "http://127.0.0.1:8000/api/sendConsentForm/",
+        "https://smpportal.iiitd.edu.in/api/sendConsentForm/",
         JSON.stringify({
           subject: mailSubject,
           body: mailBody,
@@ -48,7 +48,7 @@ export default function SendMail({
   const handleMentorMenteeMapping = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/createMentorMenteePair/",
+        "https://smpportal.iiitd.edu.in/api/createMentorMenteePair/",
         JSON.stringify({
           subject: mailSubject,
           body: mailBody,
@@ -87,7 +87,7 @@ export default function SendMail({
         key = "mapping";
       }
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/getMailSubjectAndBody/",
+        "https://smpportal.iiitd.edu.in/api/getMailSubjectAndBody/",
         JSON.stringify({
           type: key,
         })

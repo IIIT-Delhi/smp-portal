@@ -21,7 +21,7 @@ const MenteeUpload = ({ closeModal }) => {
       console.log(selectedFile);
 
       try {
-        await axios.post("http://127.0.0.1:8000/api/uploadCSV/", formData, {
+        await axios.post("https://smpportal.iiitd.edu.in/api/uploadCSV/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -88,8 +88,8 @@ const MenteeUpload = ({ closeModal }) => {
                     handleFileValidation(e);
                   }}
                 />
-                <label className="mx-2" htmlFor="csvFile">
-                  This will replace the current list with new CSV. Please click
+                <label className="mx-2" htmlFor="csvFile" style={{color:"red"}}>
+                  *This will replace the current list with new CSV. The current data will be erased. Please click
                   on download to save current details locally.
                 </label>
               </div>

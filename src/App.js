@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./components/auth/LoginPage";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -19,6 +19,7 @@ function App() {
       <Router>
         <div>
           <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" Component={LoginPage} />
             <Route path="/google-login" element={<Login />} />
             {/*------------------- Mentor BELOW--------------------------------*/}

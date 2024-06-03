@@ -20,7 +20,7 @@ const Dashboard = () => {
   const fetchAttributeId = async (id) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/getMentorById/",
+        "https://smpportal.iiitd.edu.in/api/getMentorById/",
         JSON.stringify({ id: id })
       );
 

@@ -25,7 +25,7 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
     const fetchAttendance = useCallback( async () => {
         try {
         //   console.log(userDetails)
-          const response = await axios.post("http://127.0.0.1:8000/api/getAttendance/",
+          const response = await axios.post("https://smpportal.iiitd.edu.in/api/getAttendance/",
           JSON.stringify({
             meetingId: meetingId,
           }));
@@ -41,7 +41,7 @@ export default function Attendance({handleClose,handleButtonSave,meetingId,type}
     }, [meetingId]);
 
     const updateAttendance = async() => {
-        const response1 = await axios.post("http://127.0.0.1:8000/api/updateAttendance/",
+        const response1 = await axios.post("https://smpportal.iiitd.edu.in/api/updateAttendance/",
         JSON.stringify({
             meetingId: meetingId,
             attendees : attendanceList

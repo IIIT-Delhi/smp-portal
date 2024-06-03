@@ -33,7 +33,7 @@ const LoginPage = () => {
         <p className="mt-3" style={{fontSize : '1.4vw'}}>
           Student Mentorship Program (SMP) is a program within the IIIT Delhi student community, 
           with the primary objective of enabling constructive and positive interaction, guidance 
-          and mentorship of junior students by senior students. The Student Mentor is generally 
+          and mentorship of junior students (Mentees) by senior students (Mentors). The Student Mentor is generally 
           more experienced than the Mentee and makes use of that experience in a facilitative way 
           to support the first year students for their development. In a nutshell, a Student Mentor’s
           role may be perceived to be facilitative, supportive and developmental for the student 

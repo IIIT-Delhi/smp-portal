@@ -40,7 +40,7 @@ const MentorsList = () => {
   const fetchMentorList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentors/"); // Replace with your Django API endpoint
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentors/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
@@ -97,7 +97,7 @@ const MentorsList = () => {
   const addMentorOnBackend = async (mentor) => {
     try {
       await axios
-        .post("http://127.0.0.1:8000/api/addMentor/", mentor)
+        .post("https://smpportal.iiitd.edu.in/api/addMentor/", mentor)
         .then((response) => {
           // If the backend successfully updates the mentor, update your local state
           if (response.status === 200) {
@@ -231,7 +231,7 @@ const MentorsList = () => {
       // Update the mentors list after successful deletion
       axios
         .post(
-          "http://127.0.0.1:8000/api/deleteMentorById/",
+          "https://smpportal.iiitd.edu.in/api/deleteMentorById/",
           JSON.stringify({ id: mentorToDelete.id })
         )
         .then((response) => {
@@ -486,7 +486,7 @@ const MentorsList = () => {
                       If your image exceeds the size limit or dimensions, you
                       can resize it{" "}
                       <a
-                        href="https://simpleimageresizer.com/resize-image-to-250-kb"
+                        href="https://www.resizepixel.com/edit"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -608,7 +608,7 @@ const MentorsList = () => {
               </div>
               <div className="modal-body">
                 Are you sure you want to delete{" "}
-                {mentorToDelete ? mentorToDelete.name : ""}?
+                {mentorToDelete ? mentorToDelete.name : ""}? If yes, please assign a new mentor to their Mentees.
               </div>
               <div className="modal-footer">
                 <button

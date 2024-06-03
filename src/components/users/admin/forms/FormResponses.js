@@ -45,7 +45,7 @@ const FormResponses = () => {
   const fetchFormResponses = useCallback(async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/getFormResponse/",
+        "https://smpportal.iiitd.edu.in/api/getFormResponse/",
         {
           formType: formType,
         }
@@ -281,10 +281,10 @@ useEffect(() => {
                   Sort By
                 </option>
                 <option value="submitter-id-min-to-max">
-                  Submitter Id (Min to Max)
+                  Roll Number (Min to Max)
                 </option>
                 <option value="submitter-id-max-to-min">
-                  Submitter Id (Max to Min)
+                  Roll Number (Max to Min)
                 </option>
                 {formType === "1" && (
                   <>

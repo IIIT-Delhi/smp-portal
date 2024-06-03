@@ -74,14 +74,14 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
   const sendConsent = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/submitConsentForm/",
+        "https://smpportal.iiitd.edu.in/api/submitConsentForm/",
         JSON.stringify(consentData)
       )
       .then((response) => {
         // If the backend successfully deletes the meeting, update your local state
         if (response.status === 200) {
           logout();
-          alert("Consent Form Submitted Successfully. You are logged out.");
+          alert("Consent form submitted successfully. You are logged out. Please login again to check your status.");
           navigate("/login");
         }
       })
@@ -106,7 +106,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
           for SMP.
           <br />
           Please review the confirmation form attentively, which outlines the
-          commitments expected from you as a mentor and respond back
+          commitments expected from you as a Mentor and respond back
           accordingly.
           <br />
           You're requested to fill out this Confirmation form carefully
@@ -177,7 +177,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
               If your image exceeds the size limit or dimensions, you can resize
               it{" "}
               <a
-                href="https://simpleimageresizer.com/resize-image-to-250-kb"
+                href="https://www.resizepixel.com/edit"
                 target="_blank"
                 rel="noopener noreferrer"
               >

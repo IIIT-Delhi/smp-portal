@@ -11,7 +11,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
   // Function to fetch Mentee list from Django endpoint
   const fetchMenteeList = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentees/");
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentees/");
       setMentees(response.data);
     } catch (error) {
       console.error("Error fetching Mentee list:", error);
@@ -38,18 +38,18 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
       });
 
       const mappedMentees = sortedMentees.map((mentee) => ({
-        "Mentor Roll Number": mentee.mentorId,
-        "Mentor Name": mentee.mentorName,
-        "Mentor Email": mentee.mentorEmail,
+        "Mentor Roll Number": mentee.mentorId === "NULL" ? "" : mentee.mentorId,
+        "Mentor Name": mentee.mentorName === "NULL" ? "" : mentee.mentorName,
+        "Mentor Email": mentee.mentorEmail === "NULL" ? "" : mentee.mentorEmail,
         "Mentor Programme":
-          mentee.mentorDepartment[0] === "B" ? "B.Tech" : "M.Tech",
+          mentee.mentorDepartment[0] === "B" ? "B.Tech" : mentee.mentorDepartment[0] === "M" ? "M.Tech" : "",
         "Mentor Department":
           departmentOptions[mentee.mentorDepartment].split(" ")[0],
-        "Mentor Contact": mentee.mentorContact,
+        "Mentor Contact": mentee.mentorContact === "NULL" ? "" : mentee.mentorContact,
         "Mentee Roll Number": mentee.id,
         "Mentee Name": mentee.name,
         "Mentee Email": mentee.email,
-        "Mentee Programme": mentee.department[0] === "B" ? "B.Tech" : "M.Tech",
+        "Mentee Programme": mentee.department[0] === "B" ? "B.Tech" : mentee.department[0] === "M" ? "M.Tech" : "",
         "Mentee Department": departmentOptions[mentee.department].split(" ")[0],
         "Mentee Contact": mentee.contact,
       }));

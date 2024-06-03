@@ -9,7 +9,7 @@ const FormList = () => {
   const navigate = useNavigate();
   const fetchFormStatus = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/getFormStatus/");
+      const response = await axios.post("https://smpportal.iiitd.edu.in/api/getFormStatus/");
       setFormStatus(response.data);
     } catch (error) {
       console.error("Error fetching form status:", error);
@@ -21,7 +21,7 @@ const FormList = () => {
 
   const handleStatusChange = async (formId, status) => {
     try {
-      await axios.post("http://127.0.0.1:8000/api/updateFormStatus/", {
+      await axios.post("https://smpportal.iiitd.edu.in/api/updateFormStatus/", {
         formId,
         formStatus: status,
       });
@@ -44,6 +44,11 @@ const FormList = () => {
       <Navbar className="fixed-top" />
       <div className="container mt-5">
         <h1 className="text-center mb-4">Form List</h1>
+        <div>
+          <p>1. "Consent Form" can be sent through Enrollment Form section</p>
+          <p>2. "Mentor-Mentee Mapping" can be done through Consent Form section</p>
+          <p>3. "Excellence Award List" can be accessed in Feeback Form section</p>
+        </div>
         <ul className="list-group">
           {formStatus
             .sort((a, b) => parseInt(a.formId) - parseInt(b.formId))
