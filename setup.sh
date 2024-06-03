@@ -38,7 +38,7 @@ source sdos/bin/activate
 
 # Install Python dependencies
 pip3 install typing-extensions sqlparse asgiref django
-pip3 install django gunicorn
+pip3 install django gunicorn psycopg2-binary
 pip3 install pytz typing-extensions sqlparse psycopg2 psutil asgiref Django==4.2.5 djangorestframework==3.14.0 django-cors-headers==4.3.0
 
 

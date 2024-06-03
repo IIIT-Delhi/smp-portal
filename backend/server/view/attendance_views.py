@@ -29,7 +29,7 @@ def get_attendance(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body.decode('utf-8'))
-            meeting_id = data.get("meeting_id")
+            meeting_id = data.get("meetingId")
             if meeting_id is None:
                 return JsonResponse({"error": "Meeting ID is required"}, status=400)
             meeting = Meetings.objects.get(meetingId=meeting_id)

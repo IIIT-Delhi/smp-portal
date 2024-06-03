@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-)df$=!nf0oc4#op=%=wn9q=r!it#r2w=#w%_hywo&80b)_7&^+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://smpportal.iiitd.edu.in', 'smpportal.iiitd.edu.in', '192.168.3.168']
+ALLOWED_HOSTS = ['smpportal.iiitd.edu.in', '192.168.3.168', 'backendsmpportal.iiitd.edu.in', 'backendsmpportal.iiitd.edu.in', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -83,10 +83,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'smp',
-        'USER': 'postgres',
+        'USER': 'admin',
         'PASSWORD': '12345',
-        'host': 'localhost',
-        'port': ''
+        'HOST': 'localhost',
+        'PORT': ''
     }
 }
 
@@ -125,7 +125,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# import os
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
