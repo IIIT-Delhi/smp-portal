@@ -1,7 +1,7 @@
 # Student Mentorship Portal
 
 ## Introduction
-SMP Portal is a web application developed to streamline the student mentorship program at IIIT-Delhi. It provides functionalities for students and mentors to interact, schedule meetings, and manage mentorship tasks effectively.
+Student Mentorship Portal is a web application developed to streamline the student mentorship program at IIIT-Delhi. It provides functionalities for students and mentors to interact, schedule meetings, and manage mentorship tasks effectively.
 
 ## Features
 - Student and mentor profiles
