@@ -37,7 +37,7 @@ Student Mentorship Portal is a web application developed to streamline the stude
     ```bash
     cd backend
     python -m venv env
-    source env/bin/activate
+    .\env\Scripts\activate
     ```
 
 3. Setup the frontend:
