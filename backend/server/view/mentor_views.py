@@ -5,9 +5,6 @@ from server.models import *
 from django.conf import settings
 from server.view.helper_functions import send_emails_to, get_mail_content
 import threading
-import os
-import shutil
-from datetime import datetime
 
 
 @csrf_exempt
