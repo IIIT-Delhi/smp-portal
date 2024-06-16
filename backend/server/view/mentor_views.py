@@ -5,6 +5,9 @@ from server.models import *
 from django.conf import settings
 from server.view.helper_functions import send_emails_to, get_mail_content
 import threading
+import os
+import shutil
+from datetime import datetime
 
 
 @csrf_exempt
@@ -295,3 +298,46 @@ def delete_mentor_by_id(request):
             return JsonResponse({"message": "Mentor not found"})
     else:
         return JsonResponse({"message": "No new mentor to replace"})
+
+
+@csrf_exempt
+def upload_mentor_mentee_list(request):
+    """
+    Upload and archive the mentor-mentee list.
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Files: {
+                "file": The file containing the new mentor-mentee list.
+            }
+    Returns:
+        JsonResponse: A JSON response indicating the success or failure of the operation.
+            Example response:
+                {"message": "Mentor-mentee list uploaded successfully and previous list archived."}
+    """
+    if request.method == 'POST':
+        file = request.FILES.get('file')
+        if not file:
+            return JsonResponse({'message': 'No file provided'}, status=400)
+
+        current_file_path = os.path.join(settings.MEDIA_ROOT, 'mentor_mentee_lists/current_year/mentor-mentee-list.csv')
+        archive_dir = os.path.join(settings.MEDIA_ROOT, 'mentor_mentee_lists/archive/')
+
+        # Ensure directories exist
+        os.makedirs(os.path.dirname(current_file_path), exist_ok=True)
+        os.makedirs(archive_dir, exist_ok=True)
+
+        # Archive current list
+        if os.path.exists(current_file_path):
+            timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            archive_file_path = os.path.join(archive_dir, f'mentor-mentee-list_{timestamp}.csv')
+            shutil.move(current_file_path, archive_file_path)
+
+        # Save new file
+        with open(current_file_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+        return JsonResponse({'message': 'Mentor-mentee list uploaded successfully and previous list archived.'})
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=405)
