@@ -59,7 +59,4 @@ urlpatterns = [
 
     # Mail APIs 
     path('api/getMailSubjectAndBody/', views.get_mail_subject_and_body, name="getMailSubjectAndBody"),
-
-    # New upload mentor-mentee list API
-    path('api/uploadMentorMenteeList/', views.upload_mentor_mentee_list, name='uploadMentorMenteeList'),
 ]
