@@ -22,11 +22,11 @@ urlpatterns = [
     # Mentor and mentee get by Id 
     path('api/getMentorById/', views.get_mentor_by_id, name='getMentorById'),
     path('api/getMenteeById/', views.get_mentee_by_id, name='getMenteeById'),
-    
+
     # Mentor and mentee delete all 
     path('api/deleteAllMentors/', views.delete_all_mentors, name='deleteAllMentors'),
     path('api/deleteAllMentees/', views.delete_all_mentees, name='deleteAllMentees'),
-    
+
     # Mentor and mentee delete by Id
     path('api/deleteMentorById/', views.delete_mentor_by_id, name='deleteMentorById'),
     path('api/deleteMenteeById/', views.delete_mentee_by_id, name='deleteMenteeById'),
@@ -43,7 +43,7 @@ urlpatterns = [
     # attendance apis
     path('api/getAttendance/', views.get_attendance, name='getAttendance'),
     path('api/updateAttendance/', views.update_attendance, name='updateAttendance'),
-    
+
     # mentor mentee pairing
     path('api/createMentorMenteePair/', views.create_mentor_mentee_pairs, name='createMentorMenteePair'),
 
@@ -59,4 +59,7 @@ urlpatterns = [
 
     # Mail APIs 
     path('api/getMailSubjectAndBody/', views.get_mail_subject_and_body, name="getMailSubjectAndBody"),
+
+    # New upload mentor-mentee list API
+    path('api/uploadMentorMenteeList/', views.upload_mentor_mentee_list, name='uploadMentorMenteeList'),
 ]
