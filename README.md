@@ -42,7 +42,7 @@ Student Mentorship Portal is a web application developed to streamline the stude
 
 3. Setup the frontend:
     ```bash
-    cd ../frontend
+    cd ..
     npm install
     ```
 
