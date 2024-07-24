@@ -8,6 +8,7 @@ const AuthButton = () => {
   const {userDetails, logout } = useAuth();
   const navigate = useNavigate();
   const [enrollmentFormStatus, setEnrollmentFormStatus] = useState([]);
+
   
 
   const handleGoogleLogin = (role) => {
@@ -26,16 +27,17 @@ const AuthButton = () => {
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
         );
-        
-        setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
-
+    
+        if (filteredEnrollmentFormStatus.length > 0) {
+          setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+        } else {
+          // Handle case when no matching form status is found
+          console.error("No matching form status found");
+        }
       } catch (error) {
         console.error("Error fetching form status:", error);
       }
-    };
-
-    fetchFormStatus();
-  }, []);
+    }}, []);
 
   return (
     <div>

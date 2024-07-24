@@ -4,6 +4,7 @@ import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./components/auth/LoginPage";
 import Dashboard from "./components/dashboard/Dashboard";
 import MenteesList from "./components/users/admin/menteesList/MenteesList";
+import MtechMenteesList from "./components/users/admin/menteesList/MtechMenteesList";
 import MentorsList from "./components/users/admin/mentorsList/MentorsList";
 import FormList from "./components/users/admin/forms/FormList";
 import FeedbackForm from "./components/users/mentee/FeedbackForm";
@@ -118,6 +119,7 @@ function App() {
               element={
                 <PrivateRoute path="/users/admin/mentees" allowedRole={"admin"}>
                   <MenteesList />
+                  <MtechMenteesList />
                 </PrivateRoute>
               }
             />

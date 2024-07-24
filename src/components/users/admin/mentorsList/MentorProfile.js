@@ -1,16 +1,62 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import yearOptions from "../../../../data/yearOptions.json";
 import departmentOptions from "../../../../data/departmentOptions.json";
+
 const MentorProfile = ({ mentor, onClose }) => {
+  const [remarks, setRemarks] = useState("");
+  const [newRemarks, setNewRemarks] = useState("");
+
+  useEffect(() => {
+    if (mentor) {
+      fetch(`/api/${mentor.id}/getMentorRemarks/`)
+        .then((response) => {
+          console.log(response);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.remarks) {
+            setRemarks(data.remarks);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching remarks:', error);
+          // Optionally, display an error message to the user
+        });
+    }
+  }, [mentor]);
+  
+
+  const saveRemarks = async () => {
+    try {
+      const response = await fetch(`/api/${mentor.id}/saveMentorRemarks/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ remarks: newRemarks }),
+      });
+
+      if (response.ok) {
+        alert('Remarks saved successfully!');
+        setRemarks(newRemarks);
+      } else {
+        alert('Failed to save remarks');
+      }
+    } catch (error) {
+      console.error('Error saving remarks:', error);
+      alert('An error occurred while saving remarks');
+    }
+  };
+
   if (!mentor) {
     return null;
   }
 
-  // Function to find mentee details by ID
-  // Create a table row for each mentee
   const menteeRows = mentor.menteesToMentors.map((mentee) => {
-    // mentee should be an array with id, name, and email
-    const [id, name, email, contact,department] = mentee;
+    const [id, name, email, contact, department] = mentee;
 
     return (
       <tr key={id}>
@@ -46,7 +92,6 @@ const MentorProfile = ({ mentor, onClose }) => {
             }}
           >
             <div className="row ">
-              {/* Mentor details column (40%) */}
               <div className="col-md-4">
                 <img
                   src={mentor.imgSrc}
@@ -73,14 +118,11 @@ const MentorProfile = ({ mentor, onClose }) => {
                   <b>Programme:</b>{" "}
                   {mentor.department.startsWith("B") ? "B.Tech" : "M.Tech"}
                 </p>
-                <p><b>
-                  Department:</b>{" "}
+                <p>
+                  <b>Department:</b>{" "}
                   {departmentOptions[mentor.department].split(" ")[0]}
                 </p>
-                {/* <p>Goodies Status: {mentor.goodiesStatus}</p> */}
-                {/* Add more mentor profile details here */}
               </div>
-              {/* Mentees table column (60%) */}
               <div className="col-md-8">
                 <h5>Mentees:</h5>
                 <table className="table table-bordered">
@@ -95,6 +137,23 @@ const MentorProfile = ({ mentor, onClose }) => {
                   </thead>
                   <tbody>{menteeRows}</tbody>
                 </table>
+                <div>
+                  <h5>Remarks:</h5>
+                  <p>{remarks}</p>
+                  <textarea
+                    value={newRemarks}
+                    onChange={(e) => setNewRemarks(e.target.value)}
+                    className="form-control"
+                    rows="3"
+                    placeholder="Add your remarks here"
+                  ></textarea>
+                  <button
+                    onClick={saveRemarks}
+                    className="btn btn-primary mt-2"
+                  >
+                    Save Remarks
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -106,9 +165,6 @@ const MentorProfile = ({ mentor, onClose }) => {
             >
               Close
             </button>
-            {/* <button type="button" className="btn btn-primary" onClick={onEdit}>
-              Edit
-            </button> */}
           </div>
         </div>
       </div>

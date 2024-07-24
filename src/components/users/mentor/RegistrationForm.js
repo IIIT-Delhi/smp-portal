@@ -26,14 +26,22 @@ export default function RegistrationForm() {
         const response = await axios.post(
           "http://127.0.0.1:8000/api/getFormStatus/"
         );
+        console.log("Response data:", response.data);
+
         const filteredEnrollmentFormStatus = response.data.filter(
-          (status) => status.formId === "1"
+          (status) => status.formId === "1" 
         );
         const filteredConsentFormStatus = response.data.filter(
           (status) => status.formId === "2"
         );
-        setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
-        setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+
+        if (filteredEnrollmentFormStatus.length > 0) {
+          setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+        }
+        if (filteredConsentFormStatus.length > 0) {
+          setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
+        }
+
       } catch (error) {
         console.error("Error fetching form status:", error);
       }

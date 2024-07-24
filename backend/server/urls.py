@@ -18,6 +18,8 @@ urlpatterns = [
     # Mentor and mentee get all 
     path('api/getAllMentors/', views.get_all_mentors, name='getAllMentors'),
     path('api/getAllMentees/', views.get_all_mentees, name='getAllMentees'),
+    path('api/getAllMtechMentees/', views.get_all_mtech_mentees, name='getAllMtechMentees'),
+
 
     # Mentor and mentee get by Id 
     path('api/getMentorById/', views.get_mentor_by_id, name='getMentorById'),
@@ -30,6 +32,12 @@ urlpatterns = [
     # Mentor and mentee delete by Id
     path('api/deleteMentorById/', views.delete_mentor_by_id, name='deleteMentorById'),
     path('api/deleteMenteeById/', views.delete_mentee_by_id, name='deleteMenteeById'),
+
+    # Save Mentor Remarks
+    path('api/<str:candidate_id>/saveMentorRemarks/', views.save_mentor_remarks, name='saveMentorRemarks'),
+
+    # Get Mentor Remarks
+    path('api/<str:candidate_id>/getMentorRemarks/', views.get_mentor_remarks, name='getMentorRemarks'),    
 
     # add menteee in bulk 
     path('api/uploadCSV/', views.upload_CSV, name='uploadCSV'),

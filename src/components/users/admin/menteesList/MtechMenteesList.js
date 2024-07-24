@@ -10,7 +10,7 @@ import departmentOptions from "../../../../data/departmentOptions.json";
 import { DownloadCSV } from "../DownloadCSV";
 import {Form} from 'react-bootstrap';
 
-const MenteesList = () => {
+const MtechMenteesList = () => {
   // Dummy data (replace with actual data fetching)
   const { userDetails } = useAuth();
   const [mentees, setMentees] = useState([]);
@@ -22,7 +22,9 @@ const MenteesList = () => {
   const fetchMenteeList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentees/"); // Replace with your Django API endpoint
+      const response = await axios.get("http://127.0.0.1:8000/api/getAllMtechMentees/"); // Replace with your Django API endpoint
+
+      
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
@@ -259,10 +261,10 @@ const MenteesList = () => {
 
   return (
     <div>
-      <Navbar className="fixed-top" userDetails={userDetails} />
-      <div className="container mb-5">
+      {/* <Navbar className="fixed-top" userDetails={userDetails} /> */}
+      <div className="container">
         <div className="text-center my-3">
-          <h4>B.Tech Mentees List</h4>
+          <h4>M.Tech Mentees List</h4>
           <p>Total Entries: {totalEntries}</p>
         </div>
         <div className="input-group my-3">
@@ -600,4 +602,4 @@ const MenteesList = () => {
   );
 };
 
-export default MenteesList;
+export default MtechMenteesList;

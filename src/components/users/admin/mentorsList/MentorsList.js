@@ -36,6 +36,18 @@ const MentorsList = () => {
     score: 100,
   });
 
+  const [filteredDepartmentOptions, setFilteredDepartmentOptions] = useState([]);
+
+  useEffect(() => {
+    if (mentorForm.year) {
+      const yearPrefix = mentorForm.year.charAt(0).toUpperCase();
+      const filteredDepts = Object.entries(departmentOptions).filter(([key]) => key.startsWith(yearPrefix));
+      setFilteredDepartmentOptions(filteredDepts);
+    } else {
+      setFilteredDepartmentOptions([]);
+    }
+  }, [mentorForm.year]);
+
   // Function to fetch Mentor list from Django endpoint
   const fetchMentorList = async () => {
     try {
@@ -205,8 +217,8 @@ const MentorsList = () => {
 
         img.onload = function () {
           // Check image dimensions
-          if (this.width !== 600 || this.height !== 600) {
-            alert("Image dimensions must be 600x600 pixels.");
+          if (this.width > 600 || this.height > 600) {
+            alert("Image dimensions must be less than 600x600 pixels.");
             e.target.value = null; // Clear the selected file
           } else {
             const reader = new FileReader();
@@ -265,7 +277,7 @@ const MentorsList = () => {
       <Navbar className="fixed-top" />
       <div className="container">
         <div className="text-center my-3">
-          <h4>Mentors List</h4>
+          <h4>Btech Mentors List</h4>
           <p>Total Entries: {totalEntries}</p>
         </div>
         <div className="input-group my-3">
@@ -395,55 +407,38 @@ const MentorsList = () => {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Year</label>
-                    <Form.Select
-                      name="year"
-                      value={mentorForm.year}
-                      required // Make the select required
-                      onChange={(e) =>
-                        setMentorForm({
-                          ...mentorForm,
-                          year: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="" disabled>
-                        Select Year
-                      </option>
-                      {Object.entries(yearOptions).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </div>
+            <label className="form-label">Year</label>
+            <Form.Select
+              name="year"
+              value={mentorForm.year}
+              required
+              onChange={(e) => {
+                const selectedYear = e.target.value;
+                setMentorForm({ ...mentorForm, year: selectedYear, department: "" });
+              }}
+            >
+              <option value="" disabled>Select Year</option>
+              {Object.entries(yearOptions).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </Form.Select>
+          </div>
 
-                  <div className="mb-3">
-                    <label className="form-label">Department</label>
-                    <Form.Select
-                      name="department"
-                      value={mentorForm.department}
-                      required // Make the select required
-                      onChange={(e) =>
-                        setMentorForm({
-                          ...mentorForm,
-                          department: e.target.value,
-                        })
-                      }
-                      disabled={!mentorForm.year} // Disable if year not selected
-                    >
-                      <option value="" disabled>
-                        Select Department
-                      </option>
-                      {Object.entries(departmentOptions).map(
-                        ([value, label]) => (
-                          <option key={value} value={value}>
-                            {label}
-                          </option>
-                        )
-                      )}
-                    </Form.Select>
-                  </div>
+          <div className="mb-3">
+            <label className="form-label">Department</label>
+            <Form.Select
+              name="department"
+              value={mentorForm.department}
+              required
+              onChange={(e) => setMentorForm({ ...mentorForm, department: e.target.value })}
+              disabled={!mentorForm.year}
+            >
+              <option value="" disabled>Select Department</option>
+              {filteredDepartmentOptions.map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </Form.Select>
+          </div>
 
                   <div className="mb-3">
                     <label className="form-label">T-Shirt Size</label>

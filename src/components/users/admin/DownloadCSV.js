@@ -3,7 +3,6 @@ import axios from "axios";
 import departmentOptions from "../../../data/departmentOptions.json";
 import JSZip from "jszip";
 
-
 export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
   const [mentees, setMentees] = useState([]);
   const [isFirstTime, setisFirstTime] = useState(true);
@@ -37,22 +36,30 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
         return a.mentorName.localeCompare(b.mentorName);
       });
 
-      const mappedMentees = sortedMentees.map((mentee) => ({
-        "Mentor Roll Number": mentee.mentorId,
-        "Mentor Name": mentee.mentorName,
-        "Mentor Email": mentee.mentorEmail,
-        "Mentor Programme":
-          mentee.mentorDepartment[0] === "B" ? "B.Tech" : "M.Tech",
-        "Mentor Department":
-          departmentOptions[mentee.mentorDepartment].split(" ")[0],
-        "Mentor Contact": mentee.mentorContact,
-        "Mentee Roll Number": mentee.id,
-        "Mentee Name": mentee.name,
-        "Mentee Email": mentee.email,
-        "Mentee Programme": mentee.department[0] === "B" ? "B.Tech" : "M.Tech",
-        "Mentee Department": departmentOptions[mentee.department].split(" ")[0],
-        "Mentee Contact": mentee.contact,
-      }));
+      const mappedMentees = sortedMentees.map((mentee) => {
+        const mentorDepartmentOption = departmentOptions[mentee.mentorDepartment];
+        const menteeDepartmentOption = departmentOptions[mentee.department];
+        
+        if (!mentorDepartmentOption || !menteeDepartmentOption) {
+          console.error("Invalid department options for mentee:", mentee);
+          return null;
+        }
+
+        return {
+          "Mentor Roll Number": mentee.mentorId,
+          "Mentor Name": mentee.mentorName,
+          "Mentor Email": mentee.mentorEmail,
+          "Mentor Programme": mentee.mentorDepartment[0] === "B" ? "B.Tech" : "M.Tech",
+          "Mentor Department": mentorDepartmentOption.split(" ")[0],
+          "Mentor Contact": mentee.mentorContact,
+          "Mentee Roll Number": mentee.id,
+          "Mentee Name": mentee.name,
+          "Mentee Email": mentee.email,
+          "Mentee Programme": mentee.department[0] === "B" ? "B.Tech" : "M.Tech",
+          "Mentee Department": menteeDepartmentOption.split(" ")[0],
+          "Mentee Contact": mentee.contact,
+        };
+      }).filter(Boolean); // Remove any null entries
 
       const csvData = convertToCSV(mappedMentees);
       downloadCSV(csvData, "Mentor-Mentees_AY_.csv");

@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/sdos
+./sdos
 /.pnp
 .pnp.js
 

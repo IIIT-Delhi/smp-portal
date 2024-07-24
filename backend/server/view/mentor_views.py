@@ -115,6 +115,7 @@ def add_mentor(request):
     """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        print("mentor data", data)
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'),
                           size=data.get('size'), score=data.get('score'),contact=data.get('contact'),
@@ -295,3 +296,34 @@ def delete_mentor_by_id(request):
             return JsonResponse({"message": "Mentor not found"})
     else:
         return JsonResponse({"message": "No new mentor to replace"})
+    
+
+@csrf_exempt
+def save_mentor_remarks(request, candidate_id):
+    if request.method == 'POST':
+        remarks = request.POST.get('remarks', '')
+
+        try:
+            candidate = Candidate.objects.get(id=candidate_id)
+            candidate.remarks = remarks
+            candidate.save()
+            return JsonResponse({'success': True})
+        except Candidate.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Candidate not found'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@csrf_exempt
+def get_mentor_remarks(request, candidate_id):
+    print("Hi")
+    print(request)
+    try:
+        candidate = Candidate.objects.get(id=candidate_id)
+        remarks = candidate.remarks
+        print(remarks)
+        return JsonResponse({'remarks': remarks})
+
+
+    except Candidate.DoesNotExist:
+        return JsonResponse({'error': 'Candidate not found'}, status=404)

@@ -10,6 +10,8 @@ class Candidate(models.Model):
     contact = models.CharField(null=False)  # Ensure contact is not null
     size = models.CharField() 
     score = models.CharField(null=False)  # Ensure score is not null
+    remarks = models.TextField(blank=True, null=True) 
+    
     """
     1 - Form filled 
     2 - mentor selected and consent form mail send 
