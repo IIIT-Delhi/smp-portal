@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   const fetchAttributeId = async (email, role) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/getIdByEmail/",
+        "http://127.0.0.1:8000/api/getIdByEmail/",
         JSON.stringify({ email: email, role: role })
       );
   
@@ -56,9 +56,15 @@ export const AuthProvider = ({ children }) => {
 
    const login = async (user) => {
      const userData = await fetchAttributeId(user.email, user.role);
-     const updatedUserData = { ...userData, role: user.role };
+     const updatedUserData = { ...userData, role: user.role, email: user.email};
 
      setUserDetails(updatedUserData);
+
+    //  if(userDetails.id === -1){
+    //   setUserDetails({...userDetails,email : user.email})
+    //  }
+
+    // console.log(updatedUserData)
 
      // Save user details to localStorage on successful login
      localStorage.setItem("userDetails", JSON.stringify(updatedUserData));
