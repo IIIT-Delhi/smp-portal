@@ -20,7 +20,7 @@ const Dashboard = () => {
   const fetchAttributeId = async (id) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/getMentorById/",
+        "http://smpportal.iiitd.edu.in/api/getMentorById/",
         JSON.stringify({ id: id })
       );
 
@@ -162,17 +162,17 @@ const Dashboard = () => {
                         )}
                         {(userDetails.role === "mentor" ||
                           userDetails.role === "mentee") && (
-                          <div className="row">
-                            <div className="col-sm-3">
-                              <p className="mb-0">Contact</p>
+                            <div className="row">
+                              <div className="col-sm-3">
+                                <p className="mb-0">Contact</p>
+                              </div>
+                              <div className="col-sm-9">
+                                <p className="text-muted mb-0">
+                                  {userData.contact}
+                                </p>
+                              </div>
                             </div>
-                            <div className="col-sm-9">
-                              <p className="text-muted mb-0">
-                                {userData.contact}
-                              </p>
-                            </div>
-                          </div>
-                        )}
+                          )}
                         <hr />
                         {userDetails.role === "mentor" && (
                           <div>

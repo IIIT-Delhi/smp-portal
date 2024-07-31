@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import {React} from 'react'
+import { React } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import consentQuestions from '../../../data/consentQuestions.json';
 import { useAuth } from '../../../context/AuthContext';
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
-export default function ConsentForm({ userDetails , sizeOptions}) {
+export default function ConsentForm({ userDetails, sizeOptions }) {
   // const [selectedOption, setSelectedOption] = useState(""); // State to store the selected option
   const navigate = useNavigate();
-  const {logout} = useAuth();
+  const { logout } = useAuth();
   const [consentData, setConsentData] = useState({
     id: userDetails.id,
     imgSrc: "",
-    size:"",
+    size: "",
   });
   const handleChange = (e) => {
     setConsentData({
@@ -74,7 +74,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
   const sendConsent = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/submitConsentForm/",
+        "http://smpportal.iiitd.edu.in/api/submitConsentForm/",
         JSON.stringify(consentData)
       )
       .then((response) => {
@@ -115,9 +115,8 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
         <form onSubmit={handleSubmit}>
           {consentQuestions["questions"].map((question, i) => (
             <div key={question.id} className="mx-2 mb-3">
-              <label className="form-label">{`${i + 1}. ${
-                question.question
-              }`}</label>
+              <label className="form-label">{`${i + 1}. ${question.question
+                }`}</label>
               {question.options.map((option, index) => (
                 <div key={index} className="mx-2 form-check">
                   <input

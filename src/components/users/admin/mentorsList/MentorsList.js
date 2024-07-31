@@ -52,7 +52,7 @@ const MentorsList = () => {
   const fetchMentorList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentors/"); // Replace with your Django API endpoint
+      const response = await axios.get("http://smpportal.iiitd.edu.in/api/getAllMentors/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
@@ -109,7 +109,7 @@ const MentorsList = () => {
   const addMentorOnBackend = async (mentor) => {
     try {
       await axios
-        .post("http://127.0.0.1:8000/api/addMentor/", mentor)
+        .post("http://smpportal.iiitd.edu.in/api/addMentor/", mentor)
         .then((response) => {
           // If the backend successfully updates the mentor, update your local state
           if (response.status === 200) {
@@ -243,7 +243,7 @@ const MentorsList = () => {
       // Update the mentors list after successful deletion
       axios
         .post(
-          "http://127.0.0.1:8000/api/deleteMentorById/",
+          "http://smpportal.iiitd.edu.in/api/deleteMentorById/",
           JSON.stringify({ id: mentorToDelete.id })
         )
         .then((response) => {
@@ -407,38 +407,38 @@ const MentorsList = () => {
                     />
                   </div>
                   <div className="mb-3">
-            <label className="form-label">Year</label>
-            <Form.Select
-              name="year"
-              value={mentorForm.year}
-              required
-              onChange={(e) => {
-                const selectedYear = e.target.value;
-                setMentorForm({ ...mentorForm, year: selectedYear, department: "" });
-              }}
-            >
-              <option value="" disabled>Select Year</option>
-              {Object.entries(yearOptions).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </Form.Select>
-          </div>
+                    <label className="form-label">Year</label>
+                    <Form.Select
+                      name="year"
+                      value={mentorForm.year}
+                      required
+                      onChange={(e) => {
+                        const selectedYear = e.target.value;
+                        setMentorForm({ ...mentorForm, year: selectedYear, department: "" });
+                      }}
+                    >
+                      <option value="" disabled>Select Year</option>
+                      {Object.entries(yearOptions).map(([value, label]) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))}
+                    </Form.Select>
+                  </div>
 
-          <div className="mb-3">
-            <label className="form-label">Department</label>
-            <Form.Select
-              name="department"
-              value={mentorForm.department}
-              required
-              onChange={(e) => setMentorForm({ ...mentorForm, department: e.target.value })}
-              disabled={!mentorForm.year}
-            >
-              <option value="" disabled>Select Department</option>
-              {filteredDepartmentOptions.map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </Form.Select>
-          </div>
+                  <div className="mb-3">
+                    <label className="form-label">Department</label>
+                    <Form.Select
+                      name="department"
+                      value={mentorForm.department}
+                      required
+                      onChange={(e) => setMentorForm({ ...mentorForm, department: e.target.value })}
+                      disabled={!mentorForm.year}
+                    >
+                      <option value="" disabled>Select Department</option>
+                      {filteredDepartmentOptions.map(([value, label]) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))}
+                    </Form.Select>
+                  </div>
 
                   <div className="mb-3">
                     <label className="form-label">T-Shirt Size</label>

@@ -55,7 +55,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
         menteeList: newMeeting.menteeList,
       };
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/addMeeting/",
+        "http://smpportal.iiitd.edu.in/api/addMeeting/",
         meetingData,
         {
           headers: {
@@ -132,27 +132,27 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
       if (isChecked) {
         return val === "Mentor"
           ? {
-              ...prevDetails,
-              mentorBranches: [...prevDetails.mentorBranches, value],
-            }
+            ...prevDetails,
+            mentorBranches: [...prevDetails.mentorBranches, value],
+          }
           : {
-              ...prevDetails,
-              menteeBranches: [...prevDetails.menteeBranches, value],
-            };
+            ...prevDetails,
+            menteeBranches: [...prevDetails.menteeBranches, value],
+          };
       } else {
         return val === "Mentor"
           ? {
-              ...prevDetails,
-              mentorBranches: prevDetails.mentorBranches.filter(
-                (mentorBranches) => mentorBranches !== value
-              ),
-            }
+            ...prevDetails,
+            mentorBranches: prevDetails.mentorBranches.filter(
+              (mentorBranches) => mentorBranches !== value
+            ),
+          }
           : {
-              ...prevDetails,
-              menteeBranches: prevDetails.menteeBranches.filter(
-                (menteeBranches) => menteeBranches !== value
-              ),
-            };
+            ...prevDetails,
+            menteeBranches: prevDetails.menteeBranches.filter(
+              (menteeBranches) => menteeBranches !== value
+            ),
+          };
       }
     });
   };
@@ -166,24 +166,24 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
         // If "All Branches" is checked, set mentorBranches to all branch keys
         return val === "Mentor"
           ? {
-              ...prevDetails,
-              mentorBranches: allBranches,
-            }
+            ...prevDetails,
+            mentorBranches: allBranches,
+          }
           : {
-              ...prevDetails,
-              menteeBranches: allBranches,
-            };
+            ...prevDetails,
+            menteeBranches: allBranches,
+          };
       } else {
         // Set mentorBranches to an empty array if no individual branch is selected
         return val === "Mentor"
           ? {
-              ...prevDetails,
-              mentorBranches: [],
-            }
+            ...prevDetails,
+            mentorBranches: [],
+          }
           : {
-              ...prevDetails,
-              menteeBranches: [],
-            };
+            ...prevDetails,
+            menteeBranches: [],
+          };
       }
     });
   };
@@ -211,7 +211,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
 
   return (
     <>
-      <div style={userDetails.role === 'mentor' ? {display:'flex', alignContent:'center',justifyContent:'center'} : { float: "right", paddingRight: "1.25rem"}}>
+      <div style={userDetails.role === 'mentor' ? { display: 'flex', alignContent: 'center', justifyContent: 'center' } : { float: "right", paddingRight: "1.25rem" }}>
         <button
           type="button"
           className="btn btn-primary"

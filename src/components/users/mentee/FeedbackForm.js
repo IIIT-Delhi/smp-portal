@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import Navbar from "../../navbar/Navbar";
 import axios from "axios";
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 export default function MenteeForm() {
   const { userDetails } = useAuth();
@@ -24,7 +24,7 @@ export default function MenteeForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/getFormStatus/"
+          "http://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         const filteredFormStatus = response.data.filter(
           (status) => status.formId === "3"
@@ -46,7 +46,7 @@ export default function MenteeForm() {
   const submit = async (e) => {
     e.preventDefault();
     axios
-      .post("http://127.0.0.1:8000/api/menteeFilledFeedback/", formData)
+      .post("http://smpportal.iiitd.edu.in/api/menteeFilledFeedback/", formData)
       .then((response) => {
         console.log("Data sent to the backend:", response.data);
         alert("Feedback Form Submitted Successfully.");

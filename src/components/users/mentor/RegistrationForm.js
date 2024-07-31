@@ -24,12 +24,12 @@ export default function RegistrationForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/getFormStatus/"
+          "http://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         console.log("Response data:", response.data);
 
         const filteredEnrollmentFormStatus = response.data.filter(
-          (status) => status.formId === "1" 
+          (status) => status.formId === "1"
         );
         const filteredConsentFormStatus = response.data.filter(
           (status) => status.formId === "2"
@@ -116,7 +116,7 @@ export default function RegistrationForm() {
   const saveAndContinue = (e) => {
     e.preventDefault();
     axios
-      .post("http://127.0.0.1:8000/api/addCandidate/", JSON.stringify(formData))
+      .post("http://smpportal.iiitd.edu.in/api/addCandidate/", JSON.stringify(formData))
       .then((response) => {
         // Redirect to the next step or do any other necessary actions
         logout();
@@ -221,7 +221,7 @@ export default function RegistrationForm() {
           <div className="card p-4 mt-5">
             You have been removed from the program. Please contact admin.
           </div>
-           
+
         </div>
       )}
     </div>

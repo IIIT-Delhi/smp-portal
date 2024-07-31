@@ -8,7 +8,7 @@ import axios from "axios";
 import ChangeMentor from "./ChangeMentor";
 import departmentOptions from "../../../../data/departmentOptions.json";
 import { DownloadCSV } from "../DownloadCSV";
-import {Form} from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 const MtechMenteesList = () => {
   // Dummy data (replace with actual data fetching)
@@ -22,9 +22,9 @@ const MtechMenteesList = () => {
   const fetchMenteeList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://127.0.0.1:8000/api/getAllMtechMentees/"); // Replace with your Django API endpoint
+      const response = await axios.get("http://smpportal.iiitd.edu.in/api/getAllMtechMentees/"); // Replace with your Django API endpoint
 
-      
+
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
@@ -96,7 +96,7 @@ const MtechMenteesList = () => {
   const editMentor = async () => {
     axios
       .post(
-        "http://127.0.0.1:8000/api/editMenteeById/",
+        "http://smpportal.iiitd.edu.in/api/editMenteeById/",
         JSON.stringify({
           id: editMentee.menteeId,
           mentorId: editMentee.mentorId,
@@ -126,7 +126,7 @@ const MtechMenteesList = () => {
   const addMenteeOnBackend = async (mentee) => {
     try {
       await axios
-        .post("http://127.0.0.1:8000/api/addMentee/", mentee)
+        .post("http://smpportal.iiitd.edu.in/api/addMentee/", mentee)
         .then((response) => {
           // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
@@ -142,7 +142,7 @@ const MtechMenteesList = () => {
             setAddMenteeModalVisible(false);
             alert(response.data.message);
             window.location.reload();
-          }else{
+          } else {
             alert("Mentee could not be added, please try again.")
           }
         });
@@ -160,7 +160,7 @@ const MtechMenteesList = () => {
 
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/deleteMenteeById/",
+          "http://smpportal.iiitd.edu.in/api/deleteMenteeById/",
           JSON.stringify({ id: menteeToDelete.id })
         );
         if (response.status === 200) {
@@ -233,7 +233,7 @@ const MtechMenteesList = () => {
     setmenteeUploadCSV(false);
   };
 
-  
+
 
   const filteredMentees = mentees.filter((mentee) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
@@ -584,7 +584,7 @@ const MtechMenteesList = () => {
           <MenteeUpload
             isOpen={menteeUploadCSV}
             closeModal={handleCloseUploadCSV}
-            // onUpload = {onIpload}
+          // onUpload = {onIpload}
           />
         )}
 

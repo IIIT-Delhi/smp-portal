@@ -10,7 +10,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
   // Function to fetch Mentee list from Django endpoint
   const fetchMenteeList = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/getAllMentees/");
+      const response = await axios.get("http://smpportal.iiitd.edu.in/api/getAllMentees/");
       setMentees(response.data);
     } catch (error) {
       console.error("Error fetching Mentee list:", error);
@@ -39,7 +39,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
       const mappedMentees = sortedMentees.map((mentee) => {
         const mentorDepartmentOption = departmentOptions[mentee.mentorDepartment];
         const menteeDepartmentOption = departmentOptions[mentee.department];
-        
+
         if (!mentorDepartmentOption || !menteeDepartmentOption) {
           console.error("Invalid department options for mentee:", mentee);
           return null;
@@ -200,8 +200,8 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
           type === "mentorMenteeMapping"
             ? handleDownloadMentorMenteeCSV
             : type === "excellenceAward"
-            ? handleDownloadExcellenceAwardCSV
-            : handleDownloadMentorImages // Assuming the third condition is for "mentorImagesDownload"
+              ? handleDownloadExcellenceAwardCSV
+              : handleDownloadMentorImages // Assuming the third condition is for "mentorImagesDownload"
         }
         data-toggle="tooltip"
         data-placement="bottom"
@@ -209,15 +209,15 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
           type === "mentorMenteeMapping"
             ? "Download Mentor-Mentee Pairings in CSV format"
             : type === "excellenceAward"
-            ? "Send mail, Save and Download Excellence Award List in CSV format"
-            : "Download Mentor Images"
+              ? "Send mail, Save and Download Excellence Award List in CSV format"
+              : "Download Mentor Images"
         }
       >
         {type === "mentorMenteeMapping"
           ? "Download Mentor-Mentee Pairings"
           : type === "excellenceAward"
-          ? "Save and Downlaod"
-          : "Download Mentor Images"}
+            ? "Save and Downlaod"
+            : "Download Mentor Images"}
       </button>
     </>
   );

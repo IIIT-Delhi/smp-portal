@@ -1,15 +1,15 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const AuthButton = () => {
-  const {userDetails, logout } = useAuth();
+  const { userDetails, logout } = useAuth();
   const navigate = useNavigate();
   const [enrollmentFormStatus, setEnrollmentFormStatus] = useState([]);
 
-  
+
 
   const handleGoogleLogin = (role) => {
     navigate(`/google-login?role=${role}`);
@@ -22,12 +22,12 @@ const AuthButton = () => {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/getFormStatus/"
+          "http://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
         );
-    
+
         if (filteredEnrollmentFormStatus.length > 0) {
           setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
         } else {
@@ -37,7 +37,8 @@ const AuthButton = () => {
       } catch (error) {
         console.error("Error fetching form status:", error);
       }
-    }}, []);
+    }
+  }, []);
 
   return (
     <div>
@@ -57,7 +58,7 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              style={{ width: "100%",fontSize: "1.2em", borderWidth: "1.5px" }}
+              style={{ width: "100%", fontSize: "1.2em", borderWidth: "1.5px" }}
               onClick={() => logout()}
             >
               Logout
@@ -70,7 +71,7 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px"}}
+              style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("admin")}
             >
               Login as Admin
@@ -80,7 +81,7 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              style={{ width: "100%",fontSize: "1.5vw", borderWidth: "1.5px" }}
+              style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentee")}
             >
               Login as Mentee
@@ -90,10 +91,10 @@ const AuthButton = () => {
             <button
               className="btn btn-outline-light"
               data-mdb-ripple-color="light"
-              style={{ width: "100%",fontSize: "1.5vw", borderWidth: "1.5px" }}
+              style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentor")}
             >
-              {enrollmentFormStatus==="1"? "Apply/Login For Mentor" : "Login as Mentor"}
+              {enrollmentFormStatus === "1" ? "Apply/Login For Mentor" : "Login as Mentor"}
             </button>
           </div>
         </>

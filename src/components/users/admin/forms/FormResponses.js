@@ -7,7 +7,7 @@ import formNames from "../../../../data/formNames.json";
 import departmentOptions from "../../../../data/departmentOptions.json";
 import SendMail from "./SendMail";
 import ExcellenceAward from "./ExcellenceAward";
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import {
   getQuestionSet,
   statusOptions,
@@ -45,7 +45,7 @@ const FormResponses = () => {
   const fetchFormResponses = useCallback(async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/getFormResponse/",
+        "http://smpportal.iiitd.edu.in/api/getFormResponse/",
         {
           formType: formType,
         }
@@ -55,7 +55,7 @@ const FormResponses = () => {
     } catch (error) {
       console.error("Error fetching form responses:", error);
     }
-  },[formType]);
+  }, [formType]);
 
   useEffect(() => {
 
@@ -197,21 +197,21 @@ const FormResponses = () => {
 
   const changeSelectAllType = () => {
     setSelectAll((prevSelectAll) => {
-        // Toggle the select all state
-        const newSelectAll = !prevSelectAll;
-        
-        // Return the new select all state
-        return newSelectAll;
-    });
-};
+      // Toggle the select all state
+      const newSelectAll = !prevSelectAll;
 
-useEffect(() => {
+      // Return the new select all state
+      return newSelectAll;
+    });
+  };
+
+  useEffect(() => {
     // This effect will be triggered after the component re-renders
     // It ensures that the state update from setSelectAll has been applied
     handleSelectAll(selectAll, setFilteredResponses, setNewlySelectedStudents, newlySelectedStudents, formType);
-}, [selectAll]); // Only re-run the effect if selectAll changes
+  }, [selectAll]); // Only re-run the effect if selectAll changes
 
-// Call the changeSelectAllType function whenever needed
+  // Call the changeSelectAllType function whenever needed
 
 
   return (
@@ -350,7 +350,7 @@ useEffect(() => {
                     id={'all'}
                     checked={selectAll}
                     onChange={changeSelectAllType}
-                    style={{marginRight:'0.75rem', marginLeft:'0.50rem'}}
+                    style={{ marginRight: '0.75rem', marginLeft: '0.50rem' }}
                   />
                   Select All
                 </div>
@@ -416,7 +416,7 @@ useEffect(() => {
             handleSave={handleSave}
             newlySelectedStudents={newlySelectedStudents}
             formType={formType}
-            fetchFormResponses= {fetchFormResponses}
+            fetchFormResponses={fetchFormResponses}
             setLoading={setLoading}
           />
         )}
