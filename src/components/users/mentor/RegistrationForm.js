@@ -24,7 +24,7 @@ export default function RegistrationForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://smpportal.iiitd.edu.in/api/getFormStatus/"
+          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         console.log("Response data:", response.data);
 
@@ -116,7 +116,7 @@ export default function RegistrationForm() {
   const saveAndContinue = (e) => {
     e.preventDefault();
     axios
-      .post("http://smpportal.iiitd.edu.in/api/addCandidate/", JSON.stringify(formData))
+      .post("https://smpportal.iiitd.edu.in/api/addCandidate/", JSON.stringify(formData))
       .then((response) => {
         // Redirect to the next step or do any other necessary actions
         logout();
@@ -175,7 +175,7 @@ export default function RegistrationForm() {
         // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
-            Enrollment Form submitted. Please wait for approval.
+            Enrollment Form submitted. You will be notified via mail once shortlisted.
           </div>
         </div>
       )}

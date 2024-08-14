@@ -9,7 +9,7 @@ const FormList = () => {
   const navigate = useNavigate();
   const fetchFormStatus = async () => {
     try {
-      const response = await axios.post("http://smpportal.iiitd.edu.in/api/getFormStatus/");
+      const response = await axios.post("https://smpportal.iiitd.edu.in/api/getFormStatus/");
       setFormStatus(response.data);
     } catch (error) {
       console.error("Error fetching form status:", error);
@@ -21,7 +21,7 @@ const FormList = () => {
 
   const handleStatusChange = async (formId, status) => {
     try {
-      await axios.post("http://smpportal.iiitd.edu.in/api/updateFormStatus/", {
+      await axios.post("https://smpportal.iiitd.edu.in/api/updateFormStatus/", {
         formId,
         formStatus: status,
       });

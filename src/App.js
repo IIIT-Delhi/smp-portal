@@ -13,6 +13,7 @@ import RegistrationForm from "./components/users/mentor/RegistrationForm";
 import PrivateRoute from "./routes/PrivateRoute";
 import FormResponses from "./components/users/admin/forms/FormResponses";
 import MeetingList from "./components/Meetings/MeetingList";
+import MtechMentorsList from "./components/users/admin/mentorsList/MtechMentorsList";
 
 function App() {
   return (
@@ -112,6 +113,7 @@ function App() {
               element={
                 <PrivateRoute path="/users/admin/mentors" allowedRole={"admin"}>
                   <MentorsList />
+                  <MtechMentorsList />
                 </PrivateRoute>
               }
             />

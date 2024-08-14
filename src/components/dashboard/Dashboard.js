@@ -15,12 +15,13 @@ const Dashboard = () => {
     name: "",
     email: "",
     contact: "",
+    department: "",
   };
 
   const fetchAttributeId = async (id) => {
     try {
       const response = await axios.post(
-        "http://smpportal.iiitd.edu.in/api/getMentorById/",
+        "https://smpportal.iiitd.edu.in/api/getMentorById/",
         JSON.stringify({ id: id })
       );
 
@@ -62,7 +63,7 @@ const Dashboard = () => {
 
             if (menteeDetails.length > 0) {
               const menteeRows = menteeDetails.map((mentee) => {
-                const [id, name, email, contact] = mentee;
+                const [id, name, email, contact, department] = mentee;
 
                 return (
                   <tr key={id}>
@@ -70,6 +71,7 @@ const Dashboard = () => {
                     <td>{name}</td>
                     <td>{email}</td>
                     <td>{contact}</td>
+                    <td>{deparmentOptions[department]}</td>
                   </tr>
                 );
               });

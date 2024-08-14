@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/getAllMentors/', views.get_all_mentors, name='getAllMentors'),
     path('api/getAllMentees/', views.get_all_mentees, name='getAllMentees'),
     path('api/getAllMtechMentees/', views.get_all_mtech_mentees, name='getAllMtechMentees'),
+    path('api/getAllMtechMentors/', views.get_all_mtech_mentors, name='getAllMtechMentors'),
 
 
     # Mentor and mentee get by Id 

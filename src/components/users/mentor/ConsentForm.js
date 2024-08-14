@@ -74,7 +74,7 @@ export default function ConsentForm({ userDetails, sizeOptions }) {
   const sendConsent = async () => {
     axios
       .post(
-        "http://smpportal.iiitd.edu.in/api/submitConsentForm/",
+        "https://smpportal.iiitd.edu.in/api/submitConsentForm/",
         JSON.stringify(consentData)
       )
       .then((response) => {
@@ -102,14 +102,10 @@ export default function ConsentForm({ userDetails, sizeOptions }) {
         <p className="text-left">
           Dear Student,
           <br />
-          Congratulations to you on getting shortlisted to be a Student Mentors
-          for SMP.
+          Congratulations on being shortlisted as Student Mentor for the Student Mentorship Program (SMP).
+          Please review the confirmation form attentively, which outlines the commitments expected from
+          you as a mentor, and respond accordingly. Please fill out this Confirmation/Consent Form carefully.
           <br />
-          Please review the confirmation form attentively, which outlines the
-          commitments expected from you as a mentor and respond back
-          accordingly.
-          <br />
-          You're requested to fill out this Confirmation form carefully
         </p>
         <hr />
         <form onSubmit={handleSubmit}>
@@ -176,7 +172,7 @@ export default function ConsentForm({ userDetails, sizeOptions }) {
               If your image exceeds the size limit or dimensions, you can resize
               it{" "}
               <a
-                href="https://simpleimageresizer.com/resize-image-to-250-kb"
+                href="https://imresizer.com/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -185,6 +181,12 @@ export default function ConsentForm({ userDetails, sizeOptions }) {
               .
             </p>
           </div>
+          <br />
+          Please review these commitments carefully and indicate your agreement or disagreement with each
+          statement. Your role as a mentor is crucial in supporting and guiding new students, and your
+          adherence to these guidelines is essential for the integrity and success of the SMP.
+          Thank you for your dedication and participation.
+          <br />
           <button type="submit" className="btn btn-primary mt-3">
             Submit
           </button>

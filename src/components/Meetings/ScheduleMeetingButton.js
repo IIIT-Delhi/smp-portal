@@ -55,7 +55,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
         menteeList: newMeeting.menteeList,
       };
       const response = await axios.post(
-        "http://smpportal.iiitd.edu.in/api/addMeeting/",
+        "https://smpportal.iiitd.edu.in/api/addMeeting/",
         meetingData,
         {
           headers: {
