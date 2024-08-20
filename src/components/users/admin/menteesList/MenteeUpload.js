@@ -17,8 +17,8 @@ const MenteeUpload = ({ closeModal }) => {
       const formData = new FormData();
       formData.append("csvFile", selectedFile);
 
-      console.log(typeof formData);
-      console.log(selectedFile);
+      // console.log(typeof formData);
+      // console.log(selectedFile);
 
       try {
         await axios.post("http://localhost:8000/api/uploadCSV/", formData, {
