@@ -472,14 +472,17 @@ const MenteesList = () => {
                 </tr>
               </thead>
               <tbody>
+                {/* Display the list of mentees */}
                 {filteredMentees.map((mentee) => (
                   <tr
-                    className=""
+                    className="table-row"
                     key={mentee.id}
                     // onClick={() => openMenteeProfile(mentee)}
                     style={{ cursor: "pointer" }}
                   >
-                    <td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >
                       <button
                         className="btn btn-link"
                         onClick={() => openMenteeProfile(mentee)}
@@ -487,9 +490,17 @@ const MenteesList = () => {
                         {mentee.name}
                       </button>
                     </td>
-                    <td>{mentee.id}</td>
-                    <td>{departmentOptions[mentee.department]}</td>
-                    <td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >{mentee.id}</td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >
+                      {departmentOptions[mentee.department]}
+                    </td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >
                       <div className="d-flex">
                         <button
                           className="btn btn-sm mr-2"

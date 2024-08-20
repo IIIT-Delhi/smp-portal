@@ -5,6 +5,11 @@ import axios from "axios"; // Import Axios
 import departmentOptions from "../../data/departmentOptions.json";
 
 const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
+
+  if (userDetails.role === "admin") {
+    userDetails.id = 1;
+  }
+
   const [showModal, setShowModal] = useState(false);
   const [currmeeting, setcurrmeeting] = useState({
     id: null,
