@@ -26,6 +26,8 @@ def get_form_status(request):
     if request.method == "POST":
         form = FormStatus.objects.all().values()
         return JsonResponse(list(form), safe=False)
+
+
     else:
         return JsonResponse({"message": "Invalid request method"}, status=400)
 

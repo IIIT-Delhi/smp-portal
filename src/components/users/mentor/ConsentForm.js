@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import {React} from 'react'
+import { React } from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import consentQuestions from '../../../data/consentQuestions.json';
 import { useAuth } from '../../../context/AuthContext';
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
-export default function ConsentForm({ userDetails , sizeOptions}) {
+export default function ConsentForm({ userDetails, sizeOptions }) {
   // const [selectedOption, setSelectedOption] = useState(""); // State to store the selected option
   const navigate = useNavigate();
-  const {logout} = useAuth();
+  const { logout } = useAuth();
   const [consentData, setConsentData] = useState({
     id: userDetails.id,
     imgSrc: "",
-    size:"",
+    size: "",
   });
   const handleChange = (e) => {
     setConsentData({
@@ -81,7 +81,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
         // If the backend successfully deletes the meeting, update your local state
         if (response.status === 200) {
           logout();
-          alert("Consent form submitted successfully. You are logged out. Please login again to check your status.");
+          alert("Consent Form Submitted Successfully. You are logged out.");
           navigate("/login");
         }
       })
@@ -102,22 +102,17 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
         <p className="text-left">
           Dear Student,
           <br />
-          Congratulations to you on getting shortlisted to be a Student Mentors
-          for SMP.
+          Congratulations on being shortlisted as Student Mentor for the Student Mentorship Program (SMP).
+          Please review the confirmation form attentively, which outlines the commitments expected from
+          you as a mentor, and respond accordingly. Please fill out this Confirmation/Consent Form carefully.
           <br />
-          Please review the confirmation form attentively, which outlines the
-          commitments expected from you as a Mentor and respond back
-          accordingly.
-          <br />
-          You're requested to fill out this Confirmation form carefully
         </p>
         <hr />
         <form onSubmit={handleSubmit}>
           {consentQuestions["questions"].map((question, i) => (
             <div key={question.id} className="mx-2 mb-3">
-              <label className="form-label">{`${i + 1}. ${
-                question.question
-              }`}</label>
+              <label className="form-label">{`${i + 1}. ${question.question
+                }`}</label>
               {question.options.map((option, index) => (
                 <div key={index} className="mx-2 form-check">
                   <input
@@ -177,7 +172,7 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
               If your image exceeds the size limit or dimensions, you can resize
               it{" "}
               <a
-                href="https://www.resizepixel.com/edit"
+                href="https://imresizer.com/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -186,6 +181,12 @@ export default function ConsentForm({ userDetails , sizeOptions}) {
               .
             </p>
           </div>
+          <br />
+          Please review these commitments carefully and indicate your agreement or disagreement with each
+          statement. Your role as a mentor is crucial in supporting and guiding new students, and your
+          adherence to these guidelines is essential for the integrity and success of the SMP.
+          Thank you for your dedication and participation.
+          <br />
           <button type="submit" className="btn btn-primary mt-3">
             Submit
           </button>

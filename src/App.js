@@ -1,9 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./components/auth/LoginPage";
 import Dashboard from "./components/dashboard/Dashboard";
 import MenteesList from "./components/users/admin/menteesList/MenteesList";
+import MtechMenteesList from "./components/users/admin/menteesList/MtechMenteesList";
 import MentorsList from "./components/users/admin/mentorsList/MentorsList";
 import FormList from "./components/users/admin/forms/FormList";
 import FeedbackForm from "./components/users/mentee/FeedbackForm";
@@ -12,6 +13,7 @@ import RegistrationForm from "./components/users/mentor/RegistrationForm";
 import PrivateRoute from "./routes/PrivateRoute";
 import FormResponses from "./components/users/admin/forms/FormResponses";
 import MeetingList from "./components/Meetings/MeetingList";
+import MtechMentorsList from "./components/users/admin/mentorsList/MtechMentorsList";
 
 function App() {
   return (
@@ -19,7 +21,7 @@ function App() {
       <Router>
         <div>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/" Component={LoginPage} />
             <Route path="/login" Component={LoginPage} />
             <Route path="/google-login" element={<Login />} />
             {/*------------------- Mentor BELOW--------------------------------*/}
@@ -111,6 +113,7 @@ function App() {
               element={
                 <PrivateRoute path="/users/admin/mentors" allowedRole={"admin"}>
                   <MentorsList />
+                  <MtechMentorsList />
                 </PrivateRoute>
               }
             />
@@ -119,6 +122,7 @@ function App() {
               element={
                 <PrivateRoute path="/users/admin/mentees" allowedRole={"admin"}>
                   <MenteesList />
+                  <MtechMenteesList />
                 </PrivateRoute>
               }
             />

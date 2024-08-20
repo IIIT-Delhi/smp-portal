@@ -115,6 +115,7 @@ def add_mentor(request):
     """
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))
+        print("mentor data", data)
         new_candidate = Candidate(id=data.get('id'), name=data.get('name'), email=data.get('email'),
                           department=data.get('department'), year=data.get('year'),
                           size=data.get('size'), score=data.get('score'),contact=data.get('contact'),
@@ -199,6 +200,47 @@ def get_all_mentors(request):
     """
     if request.method == "GET":
         mentors_from_candidates = Candidate.objects.filter(status=5).values()
+        # for mentor in mentors_from_candidates:
+        #     print(mentor)
+        mentors_from_candidates = [mentors for mentors in mentors_from_candidates if mentors['department'][0] == "B"]
+        for mentor in mentors_from_candidates:
+            # adding menteesToMentors list
+            menteesToMentors = []
+            mentees = Mentee.objects.filter(mentorId=str(mentor['id'])).values()
+            
+            for mentee in mentees:
+                menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact'], mentee['department']])
+            mentor.update({'menteesToMentors': menteesToMentors})
+            total_meetings = Meetings.objects.filter(schedulerId=str(mentor['id'])).count()
+            # Add total meeting count to the mentor
+            mentor.update({"totalMeetings": total_meetings})
+        return JsonResponse(list(mentors_from_candidates), safe=False)
+    else:
+        return JsonResponse({"message": "Invalid request method"})
+
+@csrf_exempt
+def get_all_mtech_mentors(request):
+    """
+    Get details of all mentors.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: GET
+
+    Returns:
+        JsonResponse: A JSON response containing details of all mentors.
+            Example response:
+                [
+                    {"id": "//mentor_id1//", "name": "//mentor_name1//", "menteesToMentors": [...], ...},
+                    {"id": "//mentor_id2//", "name": "//mentor_name2//", "menteesToMentors": [...], ...},
+                    ...
+                ]
+    """
+    if request.method == "GET":
+        mentors_from_candidates = Candidate.objects.filter(status=5).values()
+        # print(mentors_from_candidates)
+        mentors_from_candidates = [mentors for mentors in mentors_from_candidates if mentors['department'][0] == "M"]
+        # print(mentors_from_candidates)
         for mentor in mentors_from_candidates:
             # adding menteesToMentors list
             menteesToMentors = []
@@ -236,7 +278,7 @@ def get_mentor_by_id(request):
         menteesToMentors = []
         mentees = Mentee.objects.filter(mentorId=str(id_to_search)).values()
         for mentee in mentees:
-            menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact']])
+            menteesToMentors.append([mentee['id'], mentee['name'], mentee['email'], mentee['contact'], mentee['department']])
         mentor_dict = dict(mentor[0])
         mentor_dict.update({'menteesToMentors': menteesToMentors})
         return JsonResponse(mentor_dict, safe=False)
@@ -295,3 +337,34 @@ def delete_mentor_by_id(request):
             return JsonResponse({"message": "Mentor not found"})
     else:
         return JsonResponse({"message": "No new mentor to replace"})
+    
+
+@csrf_exempt
+def save_mentor_remarks(request, candidate_id):
+    if request.method == 'POST':
+        remarks = request.POST.get('remarks', '')
+
+        try:
+            candidate = Candidate.objects.get(id=candidate_id)
+            candidate.remarks = remarks
+            candidate.save()
+            return JsonResponse({'success': True})
+        except Candidate.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Candidate not found'})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@csrf_exempt
+def get_mentor_remarks(request, candidate_id):
+    print("Hi")
+    print(request)
+    try:
+        candidate = Candidate.objects.get(id=candidate_id)
+        remarks = candidate.remarks
+        print(remarks)
+        return JsonResponse({'remarks': remarks})
+
+
+    except Candidate.DoesNotExist:
+        return JsonResponse({'error': 'Candidate not found'}, status=404)

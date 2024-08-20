@@ -2,58 +2,107 @@
   "questions": [
     {
       "id": "cq1",
-      "question": "I understand that my active participation in the SMP Mentor Orientation and all other SMP departmental sessions getting organized by Mentor Review Board will be mandatory.",
-      "options": ["Agree", "Disagree"]
+      "question": "I understand that my active participation in the SMP Mentor Orientation and all other SMP departmental sessions organized by the Mentor Review Board (MRB) will be mandatory.",
+      "options": [
+        "Agree",
+        "Disagree"
+      ]
     },
     {
       "id": "cq2",
-      "question": "I understand that my participation in the SMP as a Student Mentor requires me to stay connected to my mentees and provide them mentorship through regular interactions.",
-      "options": ["Agree", "Disagree"]
+      "question": "I agree to participate in every mandatory meeting (two meetings per semester) organized by the MRB. I understand that failing to attend these meetings may result in the MRB asking me to step down from the SMP.",
+      "options": [
+        "Agree",
+        "Disagree"
+      ]
     },
     {
       "id": "cq3",
-      "question": "I understand that my role as a Student Mentor requires me to be sensitive towards the information and issues that my mentees share with me.",
-      "options": ["Agree", "Disagree"]
+      "question": "I agree to meet my mentees, either in a group or individually, at least twice a month.",
+      "options": [
+        "Agree",
+        "Disagree"
+      ]
     },
     {
       "id": "cq4",
-      "question": "I would therefore protect the privacy of my mentees by not discussing/sharing/joking about what they have shared in casual conversations with friends.",
-      "options": ["Consent", "Reject"]
+      "question": "I understand that my participation in the SMP as a Student Mentor requires me to stay connected to my mentees and provide mentorship through regular interactions.",
+      "options": [
+        "Agree",
+        "Disagree"
+      ]
     },
     {
       "id": "cq5",
-      "question": "I would therefore protect the privacy of my mentees by not posting about what mentees have shared on social media.",
-      "options": ["Consent", "Reject"]
+      "question": "I understand that my role as a Student Mentor requires me to be sensitive to the information and issues that my mentees share with me.",
+      "options": [
+        "Agree",
+        "Disagree"
+      ]
     },
     {
       "id": "cq6",
-      "question": "I would therefore protect the privacy of my mentees by not using the information they are sharing against them.",
-      "options": ["Consent", "Reject"]
+      "question": "I will protect the privacy of my mentees by not discussing, sharing, or joking about what they have shared with me in casual conversations with friends.",
+      "options": [
+        "Consent",
+        "Reject"
+      ]
     },
     {
       "id": "cq7",
-      "question": "I would therefore protect the privacy of my mentees by not using information shared by the mentees to pass value judgements on them.",
-      "options": ["Consent", "Reject"]
+      "question": "I will protect the privacy of my mentees by not posting about what they have shared on social media.",
+      "options": [
+        "Consent",
+        "Reject"
+      ]
     },
     {
       "id": "cq8",
-      "question": "I would therefore protect the privacy of my mentees by not using information shared by mentees to coerce them into giving favours",
-      "options": ["Consent", "Reject"]
+      "question": "I will protect the privacy of my mentees by not using the information they share against them.",
+      "options": [
+        "Consent",
+        "Reject"
+      ]
     },
     {
       "id": "cq9",
-      "question": "I would therefore protect the privacy of my mentees by respecting their agency in deciding when and what to share with you",
-      "options": ["Consent", "Reject"]
+      "question": "I will protect the privacy of my mentees by not using information they share to pass value judgments on them.",
+      "options": [
+        "Consent",
+        "Reject"
+      ]
     },
     {
       "id": "cq10",
-      "question": "I would therefore protect the privacy of my mentees by not using anything shared by mentees for any other purposes outside of the scope of SMP mentorship",
-      "options": ["Consent", "Reject"]
+      "question": "I will protect the privacy of my mentees by not using information shared by them to coerce them into giving favors.",
+      "options": [
+        "Consent",
+        "Reject"
+      ]
     },
     {
       "id": "cq11",
+      "question": "I will respect the agency of my mentees in deciding when and what to share with me.",
+      "options": [
+        "Consent",
+        "Reject"
+      ]
+    },
+    {
+      "id": "cq12",
+      "question": "I will not use any information shared by mentees for purposes outside the scope of SMP mentorship.",
+      "options": [
+        "Consent",
+        "Reject"
+      ]
+    },
+    {
+      "id": "cq13",
       "question": "I hereby confirm my participation in the SMP as a Student Mentor.",
-      "options": ["Confirm", "Deny"]
+      "options": [
+        "Confirm",
+        "Deny"
+      ]
     }
   ]
 }

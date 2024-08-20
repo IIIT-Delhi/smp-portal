@@ -23,9 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)df$=!nf0oc4#op=%=wn9q=r!it#r2w=#w%_hywo&80b)_7&^+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-ALLOWED_HOSTS = ['smpportal.iiitd.edu.in', '192.168.3.168', 'backendsmpportal.iiitd.edu.in', 'backendsmpportal.iiitd.edu.in', 'localhost', '127.0.0.1']
+DEBUG = True
+ALLOWED_HOSTS = ["smpportal.iiitd.edu.in"]
 
 # Application definition
 
@@ -85,8 +84,8 @@ DATABASES = {
         'NAME': 'smp',
         'USER': 'admin',
         'PASSWORD': '12345',
-        'HOST': 'localhost',
-        'PORT': ''
+        'host': 'localhost',
+        'port': '5432'
     }
 }
 
@@ -125,9 +124,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# import os
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

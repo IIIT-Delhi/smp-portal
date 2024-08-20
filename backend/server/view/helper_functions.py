@@ -37,7 +37,7 @@ def send_emails_to_attendees(meeting, type):
         user_email = admin.email
         if attendees == 1:  # Mentor
             # Filter mentors based on mentorBranches
-            mentors = Candidate.objects.filter(department__in=meeting.mentorBranches, ,status=5).values()
+            mentors = Candidate.objects.filter(department__in=meeting.mentorBranches, status=5).values()
             for mentor in mentors:
                 attendees_list.append(mentor['email'])
 

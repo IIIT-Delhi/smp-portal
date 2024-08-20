@@ -36,10 +36,20 @@ export default function Questions({
       <div className="card p-4 mt-2">
         <h1 className="text-center mb-4">Enrollment Form</h1>
         <p className="text-left">
-        Dear Students,
-            <br />
-            You're requested to fill out this form carefully. There are 6 Multiple choice questions in this and you're suggested to read them properly and answer based on your own thought process.
-            </p>
+          Dear Students,
+          <br />
+          Thank you for showing interest in joining the Student Mentorship Program at IIITD. Your participation is crucial in helping new students navigate both academic and personal experiences smoothly.
+          <br />
+          <b>Instructions:</b>
+          <br />
+          <b>Commitment:</b> Please apply to the SMP only if you are committed and willing to invest your time and effort in mentorship activities.
+          <br />
+          <b>Identification Details:</b> Carefully fill in your identification details.
+          <br />
+          <b>Questionnaire:</b> The form includes a short questionnaire with six multiple-choice questions. Please read them carefully and answer based on your own perspective. There are no right or wrong answers.
+          <br />
+          Thank you for your cooperation.
+        </p>
         <form>
           {questions.map((question) => (
             <div key={question.id} className="mx-2 mb-3">

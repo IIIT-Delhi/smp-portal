@@ -40,12 +40,6 @@ function UserDetails(props) {
       .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize the first letter of each word
 
     inputValues.name = formattedName;
-    // Check if the id is alphanumeric and convert to uppercase
-    const formattedId = inputValues.id
-        .replace(/[^a-zA-Z0-9]/g, "") // Remove any characters that are not alphanumeric
-        .toUpperCase(); // Convert to uppercase
-
-    inputValues.id = formattedId;
 
     if (
       isNaN(Number(inputValues.contact)) ||

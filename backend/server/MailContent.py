@@ -3,17 +3,17 @@ mail_content = [
     {
         "type" : "registration",
         "subject" : "Registration Form Filled",
-        "body": "Dear Student,\n\nThank you for submitting your registration form. We have received your information successfully.\n\nPlease note that our team will carefully review all applications, and if you are selected, we will contact you with further instructions. In the meantime, we encourage you to stay updated by visiting our website at https://smpportal.iiitd.edu.in/login regularly.\n\nIf you have any questions or concerns, feel free to reach out to us.\n\nBest regards,\nStudent Mentorship Programme"
-        },
+        "body" : "Registration form successfully filled. Please wait for further instructions"
+    },
     {
-        "type" : "consent",
-        "subject" : "Request to Fill Mentor Consent Form",
-        "body" : "Dear Student,\n\nCongratulations on being selected as a mentor!\n\nTo move forward, please complete the Mentor Consent Form using the link below:\n\nhttps://smpportal.iiitd.edu.in/login\n\nYour prompt response is appreciated.\n\nBest regards,"
+        "type": "consent",
+        "subject": "Congratulations on Your Selection as a Student Mentor for Student Mentorship Program (2024-25)",
+        "body": "Dear Student,\n\nCongratulations on being selected as a Student Mentor for the Student Mentorship Program 2024-25!\n\nThis is an important responsibility that you have been entrusted with, and we truly appreciate your commitment. You will be assigned a group of mentees for the entire academic year, and it is expected that you will fulfil this role with dedication and enthusiasm.\n\nWe encourage you to actively participate in all SMP activities, and the Mentor Review Board will always be available to offer support and guidance.\n\nTo be an official part of the SMP team, you must carefully read and understand the Mentor Consent/Confirmation Form and submit it by August 18th, 2024.\n\nPlease submit the consent/confirmation form using the link below:\nhttps://smpportal.iiitd.edu.in/login\n\nYour prompt response will be greatly appreciated.\n\nBest regards,\nKhushpinder P. Sharma\nCoordinator\nSMP"
     },
     {
         "type" : "consent_filled",
         "subject" : "Consent From Filled",
-        "body" : "Dear Student, Consent form successfully filled. Please check your status by loggin in to https://smpportal.iiitd.edu.in/login \n\n \n\nIf you have any questions or concerns, feel free to reach out to us.\n\nBest regards,\nStudent Mentorship Programme"
+        "body" : "Consent form successfully filled. Please wait for furter Instructions"
     },
     {
         "type" : "feedback_filled",
@@ -23,12 +23,11 @@ mail_content = [
     {
         "type" : "mapping",
         "subject" : "Important: Congratulations on being selected as an Student Mentor for SMP(20AY-AY).",
-        "body" : "Dear Student\nI hope you're doing well and staying safe.\
+        "body" : "Hello dear...\nI hope you're doing well and staying safe.\
             \n\nCongratulations on being selected as an M.Tech\B.Tech Student Mentor for SMP(20AY-AY).\
-            \n You have been assigned Mentees from your respective department. Kindly visit website https://smpportal.iiitd.edu.in/login to check the details. Please contact them at the earlieset.\
             \n\nAs a Student Mentor, you will be having a vital role in guiding and supporting M.Tech\B.Tech first year students throughout their first academic year at IIITD.\
             \n\nWe look forward to witnessing your positive impact as an M.Tech\B.Tech Student Mentor.\
-            \n\nFor any queries, please feel free to contact.\n\nBest Regards"
+            \n\nFor any queries, please feel free to contact.\n\nBest Regard"
     },
     {
         "type" : "feedback_open",

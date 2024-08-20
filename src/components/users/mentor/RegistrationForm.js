@@ -26,14 +26,22 @@ export default function RegistrationForm() {
         const response = await axios.post(
           "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
+        console.log("Response data:", response.data);
+
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
         );
         const filteredConsentFormStatus = response.data.filter(
           (status) => status.formId === "2"
         );
-        setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
-        setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+
+        if (filteredEnrollmentFormStatus.length > 0) {
+          setEnrollmentFormStatus(filteredEnrollmentFormStatus[0]["formStatus"]);
+        }
+        if (filteredConsentFormStatus.length > 0) {
+          setConsentFormStatus(filteredConsentFormStatus[0]["formStatus"]);
+        }
+
       } catch (error) {
         console.error("Error fetching form status:", error);
       }
@@ -112,7 +120,7 @@ export default function RegistrationForm() {
       .then((response) => {
         // Redirect to the next step or do any other necessary actions
         logout();
-        alert("Enrollment form submitted successfully. Please wait for further instructions, admin will contact you if you are selected. Please visit again to check the status. You are logged out.");
+        alert("Enrollment Form Submitted Successfully. You are logged out.");
         navigate("/login");
       })
       .catch((error) => {
@@ -167,7 +175,7 @@ export default function RegistrationForm() {
         // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
-            Enrollment Form submitted. Please wait for approval.
+            Enrollment Form submitted. You will be notified via mail once shortlisted.
           </div>
         </div>
       )}
@@ -192,7 +200,7 @@ export default function RegistrationForm() {
         // If userDetails.id is not -1 and userDetails.status is 2, show ConsentForm component
         <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
           <div className="card p-4 mt-5">
-            Congratulations for successfully completing the Mentorship enrollment process. We have got your consent. You can use portal after mentee
+            We have got your consent. You can use portal after mentee
             allocation. We appreciate your patience till then.
           </div>
         </div>
@@ -213,7 +221,7 @@ export default function RegistrationForm() {
           <div className="card p-4 mt-5">
             You have been removed from the program. Please contact admin.
           </div>
-           
+
         </div>
       )}
     </div>

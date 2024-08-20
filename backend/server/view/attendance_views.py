@@ -35,7 +35,6 @@ def get_attendance(request):
             meeting = Meetings.objects.get(meetingId=meeting_id)
         except Meetings.DoesNotExist:
             return JsonResponse({"error": "Meeting not found"}, status=404)
-
         scheduler_id = meeting.schedulerId
 
         attendees_list = []
@@ -43,7 +42,7 @@ def get_attendance(request):
 
         try:
             admin = Admin.objects.get(id=scheduler_id)
-
+ 
             if attendees == 1:  # Mentor
                 # Filter mentors based on mentorBranches
                 mentors = Candidate.objects.filter(status=5, department__in=meeting.mentorBranches).values()

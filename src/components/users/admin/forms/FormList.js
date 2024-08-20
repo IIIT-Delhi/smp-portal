@@ -44,11 +44,6 @@ const FormList = () => {
       <Navbar className="fixed-top" />
       <div className="container mt-5">
         <h1 className="text-center mb-4">Form List</h1>
-        <div>
-          <p>1. "Consent Form" can be sent through Enrollment Form section</p>
-          <p>2. "Mentor-Mentee Mapping" can be done through Consent Form section</p>
-          <p>3. "Excellence Award List" can be accessed in Feeback Form section</p>
-        </div>
         <ul className="list-group">
           {formStatus
             .sort((a, b) => parseInt(a.formId) - parseInt(b.formId))

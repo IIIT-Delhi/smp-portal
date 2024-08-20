@@ -10,7 +10,7 @@ import sizeOptions from "../../../../data/sizeOptions.json";
 import { DownloadCSV } from "../DownloadCSV";
 import { Form } from "react-bootstrap";
 
-const MentorsList = () => {
+const MtechMentorsList = () => {
   // Dummy data (replace with actual data fetching)
   // const { userDetails } = useAuth();
   const [mentors, setMentors] = useState([]);
@@ -51,8 +51,8 @@ const MentorsList = () => {
   // Function to fetch Mentor list from Django endpoint
   const fetchMentorList = async () => {
     try {
-      // Make an https GET request to your Django endpoint
-      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentors/"); // Replace with your Django API endpoint
+      // Make an HTTP GET request to your Django endpoint
+      const response = await axios.get("http://localhost:8000/api/getAllMtechMentors/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
@@ -109,7 +109,7 @@ const MentorsList = () => {
   const addMentorOnBackend = async (mentor) => {
     try {
       await axios
-        .post("https://smpportal.iiitd.edu.in/api/addMentor/", mentor)
+        .post("http://localhost:8000/api/addMentor/", mentor)
         .then((response) => {
           // If the backend successfully updates the mentor, update your local state
           if (response.status === 200) {
@@ -243,7 +243,7 @@ const MentorsList = () => {
       // Update the mentors list after successful deletion
       axios
         .post(
-          "https://smpportal.iiitd.edu.in/api/deleteMentorById/",
+          "http://localhost:8000/api/deleteMentorById/",
           JSON.stringify({ id: mentorToDelete.id })
         )
         .then((response) => {
@@ -274,10 +274,9 @@ const MentorsList = () => {
 
   return (
     <div>
-      <Navbar className="fixed-top" />
       <div className="container">
         <div className="text-center my-3">
-          <h4>Btech Mentors List</h4>
+          <h4>Mtech Mentors List</h4>
           <p>Total Entries: {totalEntries}</p>
         </div>
         <div className="input-group my-3">
@@ -481,7 +480,7 @@ const MentorsList = () => {
                       If your image exceeds the size limit or dimensions, you
                       can resize it{" "}
                       <a
-                        href="httpss://simpleimageresizer.com/resize-image-to-250-kb"
+                        href="https://simpleimageresizer.com/resize-image-to-250-kb"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -631,4 +630,4 @@ const MentorsList = () => {
   );
 };
 
-export default MentorsList;
+export default MtechMentorsList;

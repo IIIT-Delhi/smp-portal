@@ -1,5 +1,5 @@
-from django.http import HttpResponse
+from http.client import HTTPResponse
 from django.shortcuts import render
 
 def index(request):
-    return HttpResponse("home")
+    return HTTPResponse("home")

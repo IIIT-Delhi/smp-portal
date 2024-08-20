@@ -1,8 +1,8 @@
 {
-    "S": "Small (S)",
-    "M": "Medium (M)",
-    "L": "Large (L)",
-    "XL": "Extra Large (XL)",
-    "XXL": "Double Extra Large (XXL)",
-    "XXXL": "Triple Extra Large (XXXL)"
-  }
+  "S": "Small",
+  "M": "Medium",
+  "L": "Large",
+  "XL": "Extra Large",
+  "XXL": "Double Extra Large",
+  "XXXL": "Triple Extra Large"
+}

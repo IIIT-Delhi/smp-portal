@@ -44,16 +44,7 @@ const Login = () => {
   useEffect(() => {
     if (userDetails) {
       const id = userDetails.id;
-      if(id === null){
-          alert("There is some network problem. Please try again later.")
-          const interval = setInterval(() => {
-          setTimer((prevTimer) => prevTimer - 1);
-        }, 1000);
-          setTimeout(() => {
-            clearInterval(interval);
-            navigate("/login"); // Redirect to login page
-          }, 3000); // Wait for 3 seconds before redirecting
-        } else if (id === -2) {
+      if (id === -2) {
         setvaliduser(false);
         const interval = setInterval(() => {
           setTimer((prevTimer) => prevTimer - 1);
