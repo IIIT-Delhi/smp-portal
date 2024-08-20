@@ -45,7 +45,7 @@ const FormResponses = () => {
   const fetchFormResponses = useCallback(async () => {
     try {
       const response = await axios.post(
-        "https://smpportal.iiitd.edu.in/api/getFormResponse/",
+        "http://localhost:8000/api/getFormResponse/",
         {
           formType: formType,
         }

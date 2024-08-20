@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-)df$=!nf0oc4#op=%=wn9q=r!it#r2w=#w%_hywo&80b)_7&^+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["smpportal.iiitd.edu.in"]
+ALLOWED_HOSTS = ["smpportal.iiitd.edu.in", 'localhost']
 
 # Application definition
 

@@ -22,7 +22,7 @@ const MenteesList = () => {
   const fetchMenteeList = async () => {
     try {
       // Make an https GET request to your Django endpoint
-      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentees/"); // Replace with your Django API endpoint
+      const response = await axios.get("http://localhost:8000/api/getAllMentees/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
@@ -94,7 +94,7 @@ const MenteesList = () => {
   const editMentor = async () => {
     axios
       .post(
-        "https://smpportal.iiitd.edu.in/api/editMenteeById/",
+        "http://localhost:8000/api/editMenteeById/",
         JSON.stringify({
           id: editMentee.menteeId,
           mentorId: editMentee.mentorId,
@@ -124,7 +124,7 @@ const MenteesList = () => {
   const addMenteeOnBackend = async (mentee) => {
     try {
       await axios
-        .post("https://smpportal.iiitd.edu.in/api/addMentee/", mentee)
+        .post("http://localhost:8000/api/addMentee/", mentee)
         .then((response) => {
           // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
@@ -158,7 +158,7 @@ const MenteesList = () => {
 
       try {
         const response = await axios.post(
-          "https://smpportal.iiitd.edu.in/api/deleteMenteeById/",
+          "http://localhost:8000/api/deleteMenteeById/",
           JSON.stringify({ id: menteeToDelete.id })
         );
         if (response.status === 200) {
@@ -472,14 +472,17 @@ const MenteesList = () => {
                 </tr>
               </thead>
               <tbody>
+                {/* Display the list of mentees */}
                 {filteredMentees.map((mentee) => (
                   <tr
-                    className=""
+                    className="table-row"
                     key={mentee.id}
                     // onClick={() => openMenteeProfile(mentee)}
                     style={{ cursor: "pointer" }}
                   >
-                    <td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >
                       <button
                         className="btn btn-link"
                         onClick={() => openMenteeProfile(mentee)}
@@ -487,9 +490,17 @@ const MenteesList = () => {
                         {mentee.name}
                       </button>
                     </td>
-                    <td>{mentee.id}</td>
-                    <td>{departmentOptions[mentee.department]}</td>
-                    <td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >{mentee.id}</td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >
+                      {departmentOptions[mentee.department]}
+                    </td>
+                    <td
+                      style={{ backgroundColor: mentee.mentorId === "NULL" ? "yellow" : "" }}
+                    >
                       <div className="d-flex">
                         <button
                           className="btn btn-sm mr-2"

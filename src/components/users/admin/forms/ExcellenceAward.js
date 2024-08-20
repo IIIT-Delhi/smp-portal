@@ -28,7 +28,7 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
   const fetchMentorsList = useCallback(async () => {
     try {
       const response = await axios.post(
-        "https://smpportal.iiitd.edu.in/api/getExcellenceAward/"
+        "http://localhost:8000/api/getExcellenceAward/"
       );
 
       if (response.status === 200) {
@@ -46,7 +46,7 @@ export default function ExcellenceAward({ handleClose, handleButtonSave }) {
 
   const updateExcellenceAward = async () => {
     const response1 = await axios.post(
-      "https://smpportal.iiitd.edu.in/api/updateExcellenceAward/",
+      "http://localhost:8000/api/updateExcellenceAward/",
       JSON.stringify({
         candidateList: mentorsList,
       })

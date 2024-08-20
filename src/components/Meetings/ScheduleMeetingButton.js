@@ -6,6 +6,12 @@ import departmentOptions from "../../data/departmentOptions.json";
 
 const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
   const [showModal, setShowModal] = useState(false);
+  // console.log(userDetails.id);
+
+  if (userDetails.role === "admin") {
+    userDetails.id = 1;
+  }
+
   const [currmeeting, setcurrmeeting] = useState({
     id: null,
     schedulerId: userDetails.id,
@@ -42,6 +48,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
   const handleSaveModal = async () => {
     try {
       const newMeeting = { ...currmeeting, id: Date.now() };
+      // console.log(newMeeting);
       setcurrmeeting(newMeeting); // Update the current meeting state
       const meetingData = {
         title: newMeeting.title,
@@ -54,8 +61,10 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
         menteeBranches: newMeeting.menteeBranches,
         menteeList: newMeeting.menteeList,
       };
+
+      // console.log(meetingData);
       const response = await axios.post(
-        "https://smpportal.iiitd.edu.in/api/addMeeting/",
+        "http://localhost:8000/api/addMeeting/",
         meetingData,
         {
           headers: {

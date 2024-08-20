@@ -21,7 +21,7 @@ const MenteeUpload = ({ closeModal }) => {
       console.log(selectedFile);
 
       try {
-        await axios.post("https://smpportal.iiitd.edu.in/api/uploadCSV/", formData, {
+        await axios.post("http://localhost:8000/api/uploadCSV/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -91,6 +91,12 @@ const MenteeUpload = ({ closeModal }) => {
                 <label className="mx-2" htmlFor="csvFile">
                   This will replace the current list with new CSV. Please click
                   on download to save current details locally.
+                  <br />
+                  The CSV file should have the following columns:
+                  <br />
+                  Roll | Name | Email | Contact | Department
+                  <br />
+                  (Format for the department should be B-CSE for B.Tech CSE and for M.Tech CSB use M-CB)
                 </label>
               </div>
             </div>

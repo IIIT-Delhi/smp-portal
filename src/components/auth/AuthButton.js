@@ -22,7 +22,7 @@ const AuthButton = () => {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
+          "http://localhost:8000/api/getFormStatus/"
         );
         const filteredEnrollmentFormStatus = response.data.filter(
           (status) => status.formId === "1"
