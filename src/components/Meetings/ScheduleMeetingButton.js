@@ -7,7 +7,7 @@ import departmentOptions from "../../data/departmentOptions.json";
 const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
 
   if (userDetails.role === "admin") {
-    userDetails.id = 1;
+    userDetails.id = '1';
   }
 
   const [showModal, setShowModal] = useState(false);
