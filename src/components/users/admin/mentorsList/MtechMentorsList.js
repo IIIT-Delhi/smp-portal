@@ -52,7 +52,7 @@ const MtechMentorsList = () => {
   const fetchMentorList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://localhost:8000/api/getAllMtechMentors/"); // Replace with your Django API endpoint
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMtechMentors/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);

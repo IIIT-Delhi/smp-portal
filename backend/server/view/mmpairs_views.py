@@ -57,8 +57,11 @@ def create_mentor_mentee_pairs(request):
                 candidates_dict = {candidate.id: 0 for candidate in candidates}
                 if len(candidates_dict) == 0: 
                     continue
-                mentee_batch_size = math.ceil(len(mentees) / len(candidates_dict))
+                mentee_batch_size = min(math.ceil(len(mentees) / len(candidates_dict)), 6)
                 for mentee in mentees:
+                    available_candidates = [key for key, value in candidates_dict.items() if value < mentee_batch_size]
+                    if not available_candidates:
+                        break
                     candidate_id = random.choice([key for key, value in candidates_dict.items() if value < mentee_batch_size])
                     mentee.mentorId = candidate_id
                     emails_mentees.append(mentee.email)
