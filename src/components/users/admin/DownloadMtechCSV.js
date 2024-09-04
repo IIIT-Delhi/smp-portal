@@ -11,7 +11,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
     try {
       const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMtechMentees/");
       setMtechMentees(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching Mentee list:", error);
     }

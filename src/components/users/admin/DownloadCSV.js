@@ -62,7 +62,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
       }).filter(Boolean); // Remove any null entries
 
       const csvData = convertToCSV(mappedMentees);
-      downloadCSV(csvData, "Mentor-Mentees_AY_.csv");
+      downloadCSV(csvData, "Mentor-Mentees_Btech_AY_.csv");
     } catch (error) {
       console.error("Error creating CSV and downloading:", error);
       alert("Error creating CSV and downloading");

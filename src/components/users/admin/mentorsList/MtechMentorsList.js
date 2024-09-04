@@ -109,7 +109,7 @@ const MtechMentorsList = () => {
   const addMentorOnBackend = async (mentor) => {
     try {
       await axios
-        .post("http://localhost:8000/api/addMentor/", mentor)
+        .post("https://smpportal.iiitd.edu.in/api/addMentor/", mentor)
         .then((response) => {
           // If the backend successfully updates the mentor, update your local state
           if (response.status === 200) {
@@ -138,7 +138,7 @@ const MtechMentorsList = () => {
 
   // Function to handle the form submission when adding a mentor
   const handleAddMentor = () => {
-    console.log(mentorForm);
+    // console.log(mentorForm);
     // Form validation
     if (
       !mentorForm.name || // Check if name is empty
