@@ -7,7 +7,7 @@ import MentorProfile from "./MentorProfile";
 import departmentOptions from "../../../../data/departmentOptions.json";
 import yearOptions from "../../../../data/yearOptions.json";
 import sizeOptions from "../../../../data/sizeOptions.json";
-import { DownloadCSV } from "../DownloadCSV";
+import { DownloadCSV } from "../DownloadMtechCSV";
 import { Form } from "react-bootstrap";
 
 const MtechMentorsList = () => {
