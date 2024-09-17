@@ -1,0 +1,28 @@
+python --version
+pip --version
+
+node -v
+npm -v
+npm install
+
+
+CREATE DATABASE smp;
+CREATE USER admin WITH PASSWORD '12345';
+ALTER ROLE admin SET client_encoding TO 'utf8';
+ALTER ROLE admin SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE smp TO admin;
+ALTER USER admin CREATEDB;
+
+
+
+pip install virtualenv
+python -m venv sdos
+.\sdos\Scripts\activate
+
+pip install -r requirements.txt
+
+cd backend
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+
