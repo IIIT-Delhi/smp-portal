@@ -62,7 +62,7 @@ Student Mentorship Portal is a web application developed to streamline the stude
 ## Usage
 
 ### Running the Application
-- The backend will run on `http://localhost:8000/`
+- The backend will run on `https://smpportal.iiitd.edu.in/`
 - The frontend will run on `http://localhost:3000/`
 
 ### Available Scripts

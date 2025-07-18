@@ -33,7 +33,7 @@ export default function SendMail({
 
       // Call the new API to save changes permanently
       const response = await axios.post(
-        "http://localhost:8000/api/updateMailContent/",
+        "https://smpportal.iiitd.edu.in/api/updateMailContent/",
         JSON.stringify({
           type: key,
           subject: mailSubject,

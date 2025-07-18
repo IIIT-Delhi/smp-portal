@@ -73,7 +73,7 @@ const FormManagement = () => {
       
       if (formConfig && formConfig.jsonData) {
         // Load questions from JSON API for JSON-based forms
-        const response = await axios.get(`http://localhost:8000/api/json/getFormQuestions/${formType}/`);
+        const response = await axios.get(`https://smpportal.iiitd.edu.in/api/json/getFormQuestions/${formType}/`);
         setQuestions(response.data);
       } else {
         // For forms without JSON data, show empty state
@@ -130,10 +130,10 @@ const FormManagement = () => {
       if (formConfig && formConfig.jsonData) {
         // For JSON-based forms, use the JSON API
         if (editingQuestion) {
-          await axios.put(`http://localhost:8000/api/json/updateFormQuestion/${selectedForm.id}/${editingQuestion.id}/`, newQuestion);
+          await axios.put(`https://smpportal.iiitd.edu.in/api/json/updateFormQuestion/${selectedForm.id}/${editingQuestion.id}/`, newQuestion);
           showAlert("Question updated successfully in JSON file", "success");
         } else {
-          await axios.post(`http://localhost:8000/api/json/addFormQuestion/${selectedForm.id}/`, newQuestion);
+          await axios.post(`https://smpportal.iiitd.edu.in/api/json/addFormQuestion/${selectedForm.id}/`, newQuestion);
           showAlert("Question added successfully to JSON file", "success");
         }
         fetchQuestions(selectedForm.id);
@@ -156,7 +156,7 @@ const FormManagement = () => {
         
         if (formConfig && formConfig.jsonData) {
           // For JSON-based forms, use the JSON API
-          await axios.delete(`http://localhost:8000/api/json/deleteFormQuestion/${selectedForm.id}/${questionId}/`);
+          await axios.delete(`https://smpportal.iiitd.edu.in/api/json/deleteFormQuestion/${selectedForm.id}/${questionId}/`);
           showAlert("Question deleted successfully from JSON file", "success");
           fetchQuestions(selectedForm.id);
         } else {
@@ -200,7 +200,7 @@ const FormManagement = () => {
       
       if (formConfig && formConfig.jsonData) {
         // For JSON-based forms, export the current JSON structure
-        const response = await axios.get(`http://localhost:8000/api/json/getFormQuestions/${formType}/`);
+        const response = await axios.get(`https://smpportal.iiitd.edu.in/api/json/getFormQuestions/${formType}/`);
         const jsonData = { questions: response.data };
         const jsonString = JSON.stringify(jsonData, null, 2);
         downloadFile(jsonString, `${formType}Questions.json`, 'application/json');

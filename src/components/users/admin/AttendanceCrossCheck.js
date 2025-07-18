@@ -20,7 +20,7 @@ const AttendanceCrossCheck = () => {
 
   const fetchMentors = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/getAllMentors/");
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentors/");
       setMentors(response.data);
     } catch (error) {
       console.error("Error fetching mentors:", error);
@@ -33,7 +33,7 @@ const AttendanceCrossCheck = () => {
       setLoading(true);
       
       // Fetch mentor's mentees
-      const mentorResponse = await axios.get(`http://localhost:8000/api/getMentorById/`, {
+      const mentorResponse = await axios.get(`https://smpportal.iiitd.edu.in/api/getMentorById/`, {
         params: { id: mentorId }
       });
       
@@ -43,7 +43,7 @@ const AttendanceCrossCheck = () => {
         setMentorMentees(mentor.menteesToMentors || []);
         
         // Fetch meetings scheduled by this mentor
-        const meetingsResponse = await axios.get("http://localhost:8000/api/getMeetings/", {
+        const meetingsResponse = await axios.get("https://smpportal.iiitd.edu.in/api/getMeetings/", {
           params: { schedulerId: mentorId }
         });
         setMeetings(meetingsResponse.data || []);
@@ -62,7 +62,7 @@ const AttendanceCrossCheck = () => {
   const fetchAttendanceData = async (mentorMeetings) => {
     try {
       const attendancePromises = mentorMeetings.map(async (meeting) => {
-        const response = await axios.get("http://localhost:8000/api/getAttendance/", {
+        const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAttendance/", {
           params: { meetingId: meeting.meetingId }
         });
         return {

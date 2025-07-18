@@ -51,7 +51,7 @@ const BackupSystem = () => {
 
   const fetchBackupHistory = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/getBackupHistory/");
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getBackupHistory/");
       setBackupHistory(response.data);
     } catch (error) {
       console.error("Error fetching backup history:", error);
@@ -134,8 +134,8 @@ const BackupSystem = () => {
     
     for (const formType of formTypes) {
       try {
-        const questionsResponse = await axios.get(`http://localhost:8000/api/getFormQuestions/${formType}/`);
-        const responsesResponse = await axios.get(`http://localhost:8000/api/exportFormData/${formType}/`);
+        const questionsResponse = await axios.get(`https://smpportal.iiitd.edu.in/api/getFormQuestions/${formType}/`);
+        const responsesResponse = await axios.get(`https://smpportal.iiitd.edu.in/api/exportFormData/${formType}/`);
         
         formsData[formType] = {
           questions: questionsResponse.data,
@@ -165,13 +165,13 @@ const BackupSystem = () => {
     updateProgress(30);
     
     // Backup mentors
-    const mentorsResponse = await axios.get("http://localhost:8000/api/getAllMentors/");
+    const mentorsResponse = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentors/");
     zip.file("users/mentors.json", JSON.stringify(mentorsResponse.data, null, 2));
     
     updateProgress(50);
     
     // Backup mentees
-    const menteesResponse = await axios.get("http://localhost:8000/api/getAllMentees/");
+    const menteesResponse = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentees/");
     zip.file("users/mentees.json", JSON.stringify(menteesResponse.data, null, 2));
     
     updateProgress(70);
@@ -190,7 +190,7 @@ const BackupSystem = () => {
     updateProgress(40);
     
     // Backup meetings
-    const meetingsResponse = await axios.get("http://localhost:8000/api/getMeetings/");
+    const meetingsResponse = await axios.get("https://smpportal.iiitd.edu.in/api/getMeetings/");
     zip.file("meetings/meetings.json", JSON.stringify(meetingsResponse.data, null, 2));
     
     updateProgress(70);
@@ -199,7 +199,7 @@ const BackupSystem = () => {
     const attendanceData = {};
     for (const meeting of meetingsResponse.data) {
       try {
-        const attendanceResponse = await axios.get("http://localhost:8000/api/getAttendance/", {
+        const attendanceResponse = await axios.get("https://smpportal.iiitd.edu.in/api/getAttendance/", {
           params: { meetingId: meeting.meetingId }
         });
         attendanceData[meeting.meetingId] = attendanceResponse.data;
@@ -257,7 +257,7 @@ const BackupSystem = () => {
 
   const recordBackup = async (backupType, filename) => {
     try {
-      await axios.post("http://localhost:8000/api/recordBackup/", {
+      await axios.post("https://smpportal.iiitd.edu.in/api/recordBackup/", {
         type: backupType,
         filename: filename,
         timestamp: new Date().toISOString()

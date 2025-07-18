@@ -243,7 +243,7 @@ const MtechMentorsList = () => {
       // Update the mentors list after successful deletion
       axios
         .post(
-          "http://localhost:8000/api/deleteMentorById/",
+          "https://smpportal.iiitd.edu.in/api/deleteMentorById/",
           JSON.stringify({ id: mentorToDelete.id })
         )
         .then((response) => {
