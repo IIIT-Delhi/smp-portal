@@ -21,7 +21,7 @@ const MenteeUpload = ({ closeModal }) => {
       // console.log(selectedFile);
 
       try {
-        await axios.post("http://localhost:8000/api/uploadCSV/", formData, {
+        await axios.post("https://smpportal.iiitd.edu.in/api/uploadCSV/", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

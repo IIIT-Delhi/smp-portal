@@ -24,7 +24,7 @@ export default function RegistrationForm() {
     const fetchFormStatus = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/getFormStatus/"
+          "https://smpportal.iiitd.edu.in/api/getFormStatus/"
         );
         console.log("Response data:", response.data);
 
@@ -116,7 +116,7 @@ export default function RegistrationForm() {
   const saveAndContinue = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:8000/api/addCandidate/", JSON.stringify(formData))
+      .post("https://smpportal.iiitd.edu.in/api/addCandidate/", JSON.stringify(formData))
       .then((response) => {
         // Redirect to the next step or do any other necessary actions
         logout();

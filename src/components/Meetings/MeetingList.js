@@ -25,7 +25,7 @@ export default function MeetingList() {
   const fetchMeetings = useCallback(async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/getMeetings/",
+        "https://smpportal.iiitd.edu.in/api/getMeetings/",
         JSON.stringify({
           id: userDetails.id,
           role: userDetails.role,
@@ -70,7 +70,7 @@ export default function MeetingList() {
   const fetchAttributeId = async (id) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/getMentorById/",
+        "https://smpportal.iiitd.edu.in/api/getMentorById/",
         JSON.stringify({ id: id })
       );
 
@@ -109,7 +109,7 @@ export default function MeetingList() {
     // Send a request to delete the meeting on the backend
     axios
       .post(
-        "http://localhost:8000/api/deleteMeetingById/",
+        "https://smpportal.iiitd.edu.in/api/deleteMeetingById/",
         JSON.stringify({
           meetingId: meetingId,
         })
@@ -128,7 +128,7 @@ export default function MeetingList() {
     try {
       // Replace 'your_api_endpoint' with the actual endpoint where you want to update the meeting on the backend.
       const response = await axios.post(
-        "http://localhost:8000/api/editMeetingById/",
+        "https://smpportal.iiitd.edu.in/api/editMeetingById/",
         JSON.stringify({
           meetingId: meeting.meetingId,
           schedulerId: meeting.schedulerId,

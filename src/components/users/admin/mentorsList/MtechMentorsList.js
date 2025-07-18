@@ -52,7 +52,7 @@ const MtechMentorsList = () => {
   const fetchMentorList = async () => {
     try {
       // Make an HTTP GET request to your Django endpoint
-      const response = await axios.get("http://localhost:8000/api/getAllMtechMentors/"); // Replace with your Django API endpoint
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMtechMentors/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
@@ -109,7 +109,7 @@ const MtechMentorsList = () => {
   const addMentorOnBackend = async (mentor) => {
     try {
       await axios
-        .post("http://localhost:8000/api/addMentor/", mentor)
+        .post("https://smpportal.iiitd.edu.in/api/addMentor/", mentor)
         .then((response) => {
           // If the backend successfully updates the mentor, update your local state
           if (response.status === 200) {
@@ -138,7 +138,7 @@ const MtechMentorsList = () => {
 
   // Function to handle the form submission when adding a mentor
   const handleAddMentor = () => {
-    console.log(mentorForm);
+    // console.log(mentorForm);
     // Form validation
     if (
       !mentorForm.name || // Check if name is empty
@@ -501,7 +501,6 @@ const MtechMentorsList = () => {
 
         <DownloadCSV type={"mentorMenteeMapping"}></DownloadCSV>
         <DownloadCSV type={"mentorImagesDownload"} list={mentors}></DownloadCSV>
-        <DownloadCSV type={"tshirtSizes"} list={mentors}></DownloadCSV>
 
         <div
           className="table-container text-center my-2"

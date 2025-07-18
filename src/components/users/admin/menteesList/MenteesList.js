@@ -22,7 +22,7 @@ const MenteesList = () => {
   const fetchMenteeList = async () => {
     try {
       // Make an https GET request to your Django endpoint
-      const response = await axios.get("http://localhost:8000/api/getAllMentees/"); // Replace with your Django API endpoint
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentees/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentee list
       setMentees(response.data);
@@ -94,7 +94,7 @@ const MenteesList = () => {
   const editMentor = async () => {
     axios
       .post(
-        "http://localhost:8000/api/editMenteeById/",
+        "https://smpportal.iiitd.edu.in/api/editMenteeById/",
         JSON.stringify({
           id: editMentee.menteeId,
           mentorId: editMentee.mentorId,
@@ -124,7 +124,7 @@ const MenteesList = () => {
   const addMenteeOnBackend = async (mentee) => {
     try {
       await axios
-        .post("http://localhost:8000/api/addMentee/", mentee)
+        .post("https://smpportal.iiitd.edu.in/api/addMentee/", mentee)
         .then((response) => {
           // If the backend successfully updates the mentee, update your local state
           if (response.status === 200) {
@@ -158,7 +158,7 @@ const MenteesList = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:8000/api/deleteMenteeById/",
+          "https://smpportal.iiitd.edu.in/api/deleteMenteeById/",
           JSON.stringify({ id: menteeToDelete.id })
         );
         if (response.status === 200) {

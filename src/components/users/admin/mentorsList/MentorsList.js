@@ -52,7 +52,7 @@ const MentorsList = () => {
   const fetchMentorList = async () => {
     try {
       // Make an https GET request to your Django endpoint
-      const response = await axios.get("http://localhost:8000/api/getAllMentors/"); // Replace with your Django API endpoint
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentors/"); // Replace with your Django API endpoint
 
       // Update the state with the fetched Mentor list
       setMentors(response.data);
@@ -109,7 +109,7 @@ const MentorsList = () => {
   const addMentorOnBackend = async (mentor) => {
     try {
       await axios
-        .post("http://localhost:8000/api/addMentor/", mentor)
+        .post("https://smpportal.iiitd.edu.in/api/addMentor/", mentor)
         .then((response) => {
           // If the backend successfully updates the mentor, update your local state
           if (response.status === 200) {
@@ -243,7 +243,7 @@ const MentorsList = () => {
       // Update the mentors list after successful deletion
       axios
         .post(
-          "http://localhost:8000/api/deleteMentorById/",
+          "https://smpportal.iiitd.edu.in/api/deleteMentorById/",
           JSON.stringify({ id: mentorToDelete.id })
         )
         .then((response) => {

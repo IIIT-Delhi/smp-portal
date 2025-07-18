@@ -10,7 +10,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
   // Function to fetch Mentee list from Django endpoint
   const fetchMenteeList = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/getAllMentees/");
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMentees/");
       setMentees(response.data);
     } catch (error) {
       console.error("Error fetching Mentee list:", error);
@@ -62,7 +62,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
       }).filter(Boolean); // Remove any null entries
 
       const csvData = convertToCSV(mappedMentees);
-      downloadCSV(csvData, "Mentor-Mentees_AY_.csv");
+      downloadCSV(csvData, "Mentor-Mentees_Btech_AY_.csv");
     } catch (error) {
       console.error("Error creating CSV and downloading:", error);
       alert("Error creating CSV and downloading");
@@ -229,9 +229,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
             ? handleDownloadMentorMenteeCSV
             : type === "excellenceAward"
               ? handleDownloadExcellenceAwardCSV
-              : type === "tshirtSizes"
-                ? handleDownloadTShirtSizes
-                : handleDownloadMentorImages // Assuming the fourth condition is for "mentorImagesDownload"
+              : handleDownloadMentorImages // Assuming the third condition is for "mentorImagesDownload"
         }
         data-toggle="tooltip"
         data-placement="bottom"
@@ -240,18 +238,14 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
             ? "Download Mentor-Mentee Pairings in CSV format"
             : type === "excellenceAward"
               ? "Send mail, Save and Download Excellence Award List in CSV format"
-              : type === "tshirtSizes"
-                ? "Download T-Shirt Sizes in CSV format"
-                : "Download Mentor Images"
+              : "Download Mentor Images"
         }
       >
         {type === "mentorMenteeMapping"
           ? "Download Mentor-Mentee Pairings"
           : type === "excellenceAward"
             ? "Save and Downlaod"
-            : type === "tshirtSizes"
-              ? "Download T-Shirt Sizes"
-              : "Download Mentor Images"}
+            : "Download Mentor Images"}
       </button>
     </>
   );

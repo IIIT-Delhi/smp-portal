@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   const fetchAttributeId = async (email, role) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/getIdByEmail/",
+        "https://smpportal.iiitd.edu.in/api/getIdByEmail/",
         JSON.stringify({ email: email, role: role })
       );
 

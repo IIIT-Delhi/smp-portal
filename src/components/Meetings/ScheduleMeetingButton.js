@@ -7,7 +7,7 @@ import departmentOptions from "../../data/departmentOptions.json";
 const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
 
   if (userDetails.role === "admin") {
-    userDetails.id = 1;
+    userDetails.id = '1';
   }
 
   const [showModal, setShowModal] = useState(false);
@@ -69,7 +69,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
 
       // console.log(meetingData);
       const response = await axios.post(
-        "http://localhost:8000/api/addMeeting/",
+        "https://smpportal.iiitd.edu.in/api/addMeeting/",
         meetingData,
         {
           headers: {

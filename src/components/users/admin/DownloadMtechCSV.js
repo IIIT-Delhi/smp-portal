@@ -9,7 +9,7 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
 
   const fetchMtechMenteeList = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/getAllMtechMentees/");
+      const response = await axios.get("https://smpportal.iiitd.edu.in/api/getAllMtechMentees/");
       setMtechMentees(response.data);
       // console.log(response.data);
     } catch (error) {
