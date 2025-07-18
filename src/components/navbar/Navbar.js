@@ -174,6 +174,19 @@ const Navbar = () => {
                 <div className="underline" style={underlineStyle}></div>
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink
+                to={`/users/${role}/form-management`}
+                className="nav-link"
+                style={linkStyle}
+                activestyle={activeLinkStyle}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                FORM MANAGEMENT
+                <div className="underline" style={underlineStyle}></div>
+              </NavLink>
+            </li>
             {/* Add more admin-specific tabs here */}
           </>
         )}

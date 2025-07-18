@@ -82,7 +82,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'smp',
-        'USER': 'admin',
+        'USER': 'postgres',
         'PASSWORD': '12345',
         'host': 'localhost',
         'port': '5432'
@@ -134,5 +134,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PRT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'smp@iiitd.ac.in'
-EMAIL_HOST_PASSWORD = 'pzcvqtyknxewwiro'
+EMAIL_HOST_USER = 'harshmistry159@gmail.com'
+EMAIL_HOST_PASSWORD = 'cmsc xqfh syfw noqn'

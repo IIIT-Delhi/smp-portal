@@ -2,6 +2,7 @@ from .admin_views import *
 from .auth_view import *
 from .attendance_views import *
 from .forms_views import *
+from .json_form_management_views import *
 from .mail_views import *
 from .meeting_views import *
 from .mentor_views import *

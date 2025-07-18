@@ -7,6 +7,7 @@ import MenteesList from "./components/users/admin/menteesList/MenteesList";
 import MtechMenteesList from "./components/users/admin/menteesList/MtechMenteesList";
 import MentorsList from "./components/users/admin/mentorsList/MentorsList";
 import FormList from "./components/users/admin/forms/FormList";
+import FormManagement from "./components/users/admin/FormManagement";
 import FeedbackForm from "./components/users/mentee/FeedbackForm";
 import Login from "./components/auth/Login";
 import RegistrationForm from "./components/users/mentor/RegistrationForm";
@@ -131,6 +132,14 @@ function App() {
               element={
                 <PrivateRoute path="/users/admin/form" allowedRole={"admin"}>
                   <FormList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/users/admin/form-management"
+              element={
+                <PrivateRoute path="/users/admin/form-management" allowedRole={"admin"}>
+                  <FormManagement />
                 </PrivateRoute>
               }
             />

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 import server.view as views
+from server.view import json_form_management_views as json_views
 
 urlpatterns = [
     path('', views.index, name="home"),
@@ -66,6 +67,15 @@ urlpatterns = [
     path('api/getExcellenceAward/', views.get_excellence_award, name='getExcellenceAward'),
     path('api/updateExcellenceAward/', views.update_excellence_award, name='updateExcellenceAward'),
 
+
+    # JSON Form Management APIs
+    path('api/json/getFormQuestions/<str:form_type>/', json_views.get_json_form_questions, name='getJsonFormQuestions'),
+    path('api/json/updateFormQuestions/<str:form_type>/', json_views.update_json_form_questions, name='updateJsonFormQuestions'),
+    path('api/json/addFormQuestion/<str:form_type>/', json_views.add_json_form_question, name='addJsonFormQuestion'),
+    path('api/json/updateFormQuestion/<str:form_type>/<str:question_id>/', json_views.update_json_form_question, name='updateJsonFormQuestion'),
+    path('api/json/deleteFormQuestion/<str:form_type>/<str:question_id>/', json_views.delete_json_form_question, name='deleteJsonFormQuestion'),
+
     # Mail APIs 
     path('api/getMailSubjectAndBody/', views.get_mail_subject_and_body, name="getMailSubjectAndBody"),
+    path('api/updateMailContent/', views.update_mail_content, name="updateMailContent"),
 ]

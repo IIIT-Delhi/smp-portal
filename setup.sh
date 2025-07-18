@@ -1,25 +1,7 @@
 #!/bin/bash
 
-# Install Python and pip
-sudo apt-get update
-sudo apt-get install -y python3 python3-pip
-
-# Install virtualenv
-sudo pip3 install virtualenv
-
-# Set up virtual environment
-virtualenv myenv
-sudo apt update 
-sudo apt install python3-pip python3-dev nginx
-
-
-
-# Install Node.js
-sudo apt install nodejs npm
-npm install
-
 #Install prostresql
-sudo apt-get install -y postgresql
+sudo pacman -S postgresql
 
 # Create PostgreSQL database and user
 sudo -u postgres psql -c "CREATE DATABASE smp;"

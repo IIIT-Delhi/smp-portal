@@ -342,7 +342,13 @@ def delete_mentor_by_id(request):
 @csrf_exempt
 def save_mentor_remarks(request, candidate_id):
     if request.method == 'POST':
-        remarks = request.POST.get('remarks', '')
+        try:
+            # Handle JSON data
+            data = json.loads(request.body.decode('utf-8'))
+            remarks = data.get('remarks', '')
+        except json.JSONDecodeError:
+            # Fall back to form data
+            remarks = request.POST.get('remarks', '')
 
         try:
             candidate = Candidate.objects.get(id=candidate_id)

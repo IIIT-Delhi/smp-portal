@@ -14,14 +14,54 @@ export default function SendMail({
   const [mailSubject, setmailSubject] = useState("");
   const [mailBody, setmailBody] = useState("");
   const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleEdit = () => {
     setEditMode(true);
   };
 
-  const handleSaveChanges = () => {
-    setEditMode(false);
-    // Add logic to save changes to the backend if needed
+  const handleSaveChanges = async () => {
+    setSaving(true);
+    try {
+      // Determine the mail type based on formType
+      var key = "";
+      if (formType === "1") {
+        key = "consent";
+      } else {
+        key = "mapping";
+      }
+
+      // Call the new API to save changes permanently
+      const response = await axios.post(
+        "http://localhost:8000/api/updateMailContent/",
+        JSON.stringify({
+          type: key,
+          subject: mailSubject,
+          body: mailBody,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Mail content updated successfully and saved to MailContent.py!");
+        setEditMode(false);
+      } else {
+        alert("Failed to update mail content: " + response.data.message);
+      }
+    } catch (error) {
+      console.error("Error updating mail content:", error);
+      if (error.response && error.response.data && error.response.data.message) {
+        alert("Error: " + error.response.data.message);
+      } else {
+        alert("Error updating mail content. Please try again.");
+      }
+    } finally {
+      setSaving(false);
+    }
   };
 
   const sendConsentMail = async () => {
@@ -173,8 +213,9 @@ export default function SendMail({
                   type="button"
                   className="btn btn-primary"
                   onClick={handleSaveChanges}
+                  disabled={saving}
                 >
-                  Save Changes
+                  {saving ? "Saving..." : "Save Changes"}
                 </button>
               ) : (
                 <button

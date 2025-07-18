@@ -501,6 +501,7 @@ const MtechMentorsList = () => {
 
         <DownloadCSV type={"mentorMenteeMapping"}></DownloadCSV>
         <DownloadCSV type={"mentorImagesDownload"} list={mentors}></DownloadCSV>
+        <DownloadCSV type={"tshirtSizes"} list={mentors}></DownloadCSV>
 
         <div
           className="table-container text-center my-2"

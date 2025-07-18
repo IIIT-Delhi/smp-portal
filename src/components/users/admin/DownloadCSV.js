@@ -81,6 +81,21 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
     }
   };
 
+  // Function to handle downloading T-Shirt Sizes CSV
+  const handleDownloadTShirtSizes = () => {
+    try {
+      if (!list || list.length === 0) {
+        alert("No data found. Unable to download T-shirt sizes.");
+        return;
+      }
+      const csvData = generateTShirtSizesCSV(list);
+      downloadCSV(csvData, "T-Shirt_Sizes.csv");
+    } catch (error) {
+      console.error("Error creating CSV and downloading:", error);
+      alert("Error creating CSV and downloading");
+    }
+  };
+
   // Function to handle downloading Mentor Images as a zip file
   const handleDownloadMentorImages = () => {
     try {
@@ -192,6 +207,19 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
     return convertToCSV(csvData);
   };
 
+  const generateTShirtSizesCSV = (list) => {
+    const csvData = list.map((mentor) => ({
+      "Roll Number": mentor.id,
+      Name: mentor.name,
+      Email: mentor.email,
+      Programme: mentor.department[0] === "B" ? "B.Tech" : "M.Tech",
+      Department: departmentOptions[mentor.department].split(" ")[0],
+      Contact: mentor.contact,
+      "T-Shirt Size": mentor.size || "Not Specified",
+    }));
+    return convertToCSV(csvData);
+  };
+
   return (
     <>
       <button
@@ -201,7 +229,9 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
             ? handleDownloadMentorMenteeCSV
             : type === "excellenceAward"
               ? handleDownloadExcellenceAwardCSV
-              : handleDownloadMentorImages // Assuming the third condition is for "mentorImagesDownload"
+              : type === "tshirtSizes"
+                ? handleDownloadTShirtSizes
+                : handleDownloadMentorImages // Assuming the fourth condition is for "mentorImagesDownload"
         }
         data-toggle="tooltip"
         data-placement="bottom"
@@ -210,14 +240,18 @@ export const DownloadCSV = ({ type, list, handleExcellentListSave }) => {
             ? "Download Mentor-Mentee Pairings in CSV format"
             : type === "excellenceAward"
               ? "Send mail, Save and Download Excellence Award List in CSV format"
-              : "Download Mentor Images"
+              : type === "tshirtSizes"
+                ? "Download T-Shirt Sizes in CSV format"
+                : "Download Mentor Images"
         }
       >
         {type === "mentorMenteeMapping"
           ? "Download Mentor-Mentee Pairings"
           : type === "excellenceAward"
             ? "Save and Downlaod"
-            : "Download Mentor Images"}
+            : type === "tshirtSizes"
+              ? "Download T-Shirt Sizes"
+              : "Download Mentor Images"}
       </button>
     </>
   );

@@ -1,15 +1,15 @@
 from django.db import models
 
 class Candidate(models.Model):
-    id = models.CharField(primary_key=True)
-    email = models.CharField(null=False)  # Ensure email is not null
-    name = models.CharField(null=False)  # Ensure name is not null
-    department = models.CharField(null=False)  # Ensure department is not null
-    year = models.CharField(null=False)  # Ensure year is not null
+    id = models.CharField(primary_key=True, max_length=50)
+    email = models.CharField(null=False, max_length=100)  # Ensure email is not null
+    name = models.CharField(null=False, max_length=100)  # Ensure name is not null
+    department = models.CharField(null=False, max_length=50)  # Ensure department is not null
+    year = models.CharField(null=False, max_length=20)  # Ensure year is not null
     status = models.IntegerField(null=False)  # Ensure status is not null
-    contact = models.CharField(null=False)  # Ensure contact is not null
-    size = models.CharField() 
-    score = models.CharField(null=False)  # Ensure score is not null
+    contact = models.CharField(null=False, max_length=20)  # Ensure contact is not null
+    size = models.CharField(max_length=10) 
+    score = models.CharField(null=False, max_length=20)  # Ensure score is not null
     remarks = models.TextField(blank=True, null=True) 
     
     """
@@ -30,13 +30,13 @@ class Candidate(models.Model):
 
 
 class Mentee(models.Model):
-    id = models.CharField(primary_key=True)
-    email = models.CharField(null=False)  # Ensure email is not null
-    name = models.CharField(null=False)  # Ensure name is not null
-    department = models.CharField(null=False)  # Ensure department is not null
-    contact = models.CharField(null=False)  # Ensure contact is not null
+    id = models.CharField(primary_key=True, max_length=50)
+    email = models.CharField(null=False, max_length=100)  # Ensure email is not null
+    name = models.CharField(null=False, max_length=100)  # Ensure name is not null
+    department = models.CharField(null=False, max_length=50)  # Ensure department is not null
+    contact = models.CharField(null=False, max_length=20)  # Ensure contact is not null
     imgSrc = models.TextField()  # Ensure imgSrc is not null
-    mentorId = models.CharField()  # Ensure mentorId is not null
+    mentorId = models.CharField(max_length=50)  # Ensure mentorId is not null
 
     def __str__(self):
         return self.id
@@ -46,12 +46,12 @@ class Mentee(models.Model):
 
 
 class Admin(models.Model):
-    id = models.CharField(primary_key=True)
-    email = models.CharField(null=False)  # Ensure email is not null
-    name = models.CharField(null=False)  # Ensure name is not null
-    department = models.CharField(null=False)  # Ensure department is not null
-    phone = models.CharField(null=False)  # Ensure phone is not null
-    address = models.CharField(null=False)  # Ensure address is not null
+    id = models.CharField(primary_key=True, max_length=50)
+    email = models.CharField(null=False, max_length=100)  # Ensure email is not null
+    name = models.CharField(null=False, max_length=100)  # Ensure name is not null
+    department = models.CharField(null=False, max_length=50)  # Ensure department is not null
+    phone = models.CharField(null=False, max_length=20)  # Ensure phone is not null
+    address = models.CharField(null=False, max_length=200)  # Ensure address is not null
     imgSrc = models.TextField()  # Ensure imgSrc is not null
 
     def __str__(self):
@@ -87,11 +87,11 @@ class Meetings(models.Model):
 
 class Attendance(models.Model):
     id = models.AutoField(primary_key=True)
-    attendeeId = models.CharField(null=False)  # Ensure attendeeId is not null
+    attendeeId = models.CharField(null=False, max_length=50)  # Ensure attendeeId is not null
     meetingId = models.JSONField(null=True)  # meetingId can be null
 
     def __str__(self):
-        return self.id
+        return str(self.id)
     
     class Meta:
         app_label = 'server'
@@ -99,20 +99,20 @@ class Attendance(models.Model):
 
 class FormResponses(models.Model):
     SubmissionId = models.AutoField(primary_key=True)
-    submitterId = models.CharField(null=False)  # Ensure submitterId is not null
-    FormType =  models.CharField(null=False)  # Ensure FormType is not null
+    submitterId = models.CharField(null=False, max_length=50)  # Ensure submitterId is not null
+    FormType = models.CharField(null=False, max_length=50)  # Ensure FormType is not null
     responses = models.JSONField(null=True)
 
     def __str__(self):
-        return self.SubmissionId
+        return str(self.SubmissionId)
     
     class Meta:
         app_label = 'server'
 
 
 class FormStatus(models.Model):
-    formId = models.CharField(primary_key=True)
-    formStatus = models.CharField(null=False)  # Ensure formStatus is not null
+    formId = models.CharField(primary_key=True, max_length=50)
+    formStatus = models.CharField(null=False, max_length=10)  # Ensure formStatus is not null
 
     def __str__(self):
         return self.formId
@@ -121,9 +121,26 @@ class FormStatus(models.Model):
         app_label = 'server'
 
 
+class FormQuestions(models.Model):
+    id = models.AutoField(primary_key=True)
+    formType = models.CharField(null=False, max_length=50)  # Form type (registration, consent, feedback, etc.)
+    question = models.TextField(null=False)  # The question text
+    type = models.CharField(null=False, default='text', max_length=50)  # Question type (text, select, radio, etc.)
+    options = models.TextField(null=True, blank=True)  # JSON string for options
+    required = models.BooleanField(default=True)  # Whether the question is required
+    order = models.IntegerField(null=True, blank=True)  # Order of question in form
+    
+    def __str__(self):
+        return f"{self.formType} - {self.question[:50]}"
+    
+    class Meta:
+        app_label = 'server'
+        ordering = ['order', 'id']
+
+
 class ExcellenceAward(models.Model):
     id = models.AutoField(primary_key=True)
-    candidateId = models.CharField(null=False)  # Ensure candidateId is not null
+    candidateId = models.CharField(null=False, max_length=50)  # Ensure candidateId is not null
 
     def __str__(self):
         return str(self.id)
