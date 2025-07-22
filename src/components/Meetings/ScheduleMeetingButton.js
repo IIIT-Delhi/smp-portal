@@ -6,16 +6,8 @@ import departmentOptions from "../../data/departmentOptions.json";
 
 const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
 
-  if (userDetails.role === "admin") {
-    userDetails.id = 1;
-  }
-
   const [showModal, setShowModal] = useState(false);
   // console.log(userDetails.id);
-
-  if (userDetails.role === "admin") {
-    userDetails.id = 1;
-  }
 
   const [currmeeting, setcurrmeeting] = useState({
     id: null,
@@ -24,7 +16,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
     date: "",
     title: "",
     description: "",
-    attendee: userDetails.role === "mentor" ? "Mentees" : [],
+    attendee: userDetails.role === "mentor" ? ["Mentees"] : [],
     mentorBranches: [],
     menteeBranches: [],
     menteeList: [],
@@ -38,7 +30,7 @@ const ScheduleMeetingButton = ({ userDetails, fetchMeetings, mentees }) => {
       date: "",
       title: "",
       description: "",
-      attendee: userDetails.role === "mentor" ? "Mentees" : [],
+      attendee: userDetails.role === "mentor" ? ["Mentees"] : [],
       mentorBranches: [],
       menteeBranches: [],
       menteeList: [],

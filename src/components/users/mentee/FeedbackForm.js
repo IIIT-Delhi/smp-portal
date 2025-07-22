@@ -7,15 +7,14 @@ import { Form } from "react-bootstrap";
 export default function MenteeForm() {
   const { userDetails } = useAuth();
   const [formStatus, setFormStatus] = useState([]);
+  const [feedbackQuestions, setFeedbackQuestions] = useState([]);
+  const [hasSubmittedFeedback, setHasSubmittedFeedback] = useState(false);
+  const [checkingSubmission, setCheckingSubmission] = useState(true);
 
   const [formData, setFormData] = useState({
     id: userDetails.id,
     mentorId: userDetails.mentorId,
     mentorName: userDetails.mentorName,
-    fq1: "",
-    fq2: "",
-    fq3: "",
-    fq4: "",
   });
 
   const quesOptions = ["Pathetic", "Bad", "No Comments", "Good", "Excellent"];
@@ -35,8 +34,49 @@ export default function MenteeForm() {
       }
     };
 
+    const fetchFeedbackQuestions = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/json/getFormQuestions/feedback/"
+        );
+        setFeedbackQuestions(response.data);
+        
+        // Initialize form data with empty values for each question
+        const initialFormData = {
+          id: userDetails.id,
+          mentorId: userDetails.mentorId,
+          mentorName: userDetails.mentorName,
+        };
+        
+        response.data.forEach(question => {
+          initialFormData[question.id] = "";
+        });
+        
+        setFormData(initialFormData);
+      } catch (error) {
+        console.error("Error fetching feedback questions:", error);
+      }
+    };
+
+    const checkFeedbackSubmission = async () => {
+      try {
+        setCheckingSubmission(true);
+        const response = await axios.post(
+          "http://localhost:8000/api/checkFeedbackSubmission/",
+          { id: userDetails.id }
+        );
+        setHasSubmittedFeedback(response.data.hasSubmitted);
+      } catch (error) {
+        console.error("Error checking feedback submission:", error);
+      } finally {
+        setCheckingSubmission(false);
+      }
+    };
+
     fetchFormStatus();
-  }, []);
+    fetchFeedbackQuestions();
+    checkFeedbackSubmission();
+  }, [userDetails.id, userDetails.mentorId, userDetails.mentorName]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,16 +91,30 @@ export default function MenteeForm() {
         console.log("Data sent to the backend:", response.data);
         alert("Feedback Form Submitted Successfully.");
         // Clear the form after successful submission
-        setFormData({
-          ...formData,
-          fq1: "",
-          fq2: "",
-          fq3: "",
-          fq4: "",
+        const clearedFormData = {
+          id: userDetails.id,
+          mentorId: userDetails.mentorId,
+          mentorName: userDetails.mentorName,
+        };
+        
+        feedbackQuestions.forEach(question => {
+          clearedFormData[question.id] = "";
         });
+        
+        setFormData(clearedFormData);
       })
       .catch((error) => {
         console.error("Error sending data to the backend:", error);
+        if (error.response && error.response.status === 400) {
+          // Check if it's the "already submitted" error
+          if (error.response.data && error.response.data.message === "Feedback form already submitted") {
+            alert("You have already submitted your feedback form. Thank you!");
+          } else {
+            alert("Error submitting form. Please try again.");
+          }
+        } else {
+          alert("Error submitting form. Please try again.");
+        }
       });
   };
 
@@ -74,7 +128,30 @@ export default function MenteeForm() {
           </div>
         </div>
       )}
-      {userDetails.mentorId !== "NULL" && formStatus === "1" && (
+      {checkingSubmission && (
+        <div>
+          <Navbar className="fixed-top" />
+          <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+            <div className="card p-4 mt-5">Loading...</div>
+          </div>
+        </div>
+      )}
+      {!checkingSubmission && hasSubmittedFeedback && userDetails.mentorId !== "NULL" && (
+        <div>
+          <Navbar className="fixed-top" />
+          <div className="container d-flex justify-content-center justify-text-center align-items-center h-100-center">
+            <div className="card p-4 mt-5">
+              <h3 className="text-center text-success">
+                <strong>Feedback Already Submitted</strong>
+              </h3>
+              <p className="text-center">
+                Thank you! You have already submitted your feedback form for your mentor <strong>{userDetails.mentorName}</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      {!checkingSubmission && !hasSubmittedFeedback && userDetails.mentorId !== "NULL" && formStatus === "1" && (
         <div>
           <Navbar className="fixed-top" />
           <div className="container">
@@ -100,64 +177,56 @@ export default function MenteeForm() {
                 </div>
               </div>
               <form onSubmit={submit}>
-                <div className="form-group mb-2">
-                  <label className="mb-1">
-                    1. How many meetings your mentor had with you till date?
-                    (only number allowed)
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    name="fq1"
-                    value={formData.fq1}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="form-group mb-2">
-                  <label className="mb-1">
-                    2. How many times your mentor has given you treat till date?
-                    (only number allowed)
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    name="fq2"
-                    value={formData.fq2}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="form-group mb-2">
-                  <label className="mb-1">
-                    3. How has the mentor helped you? or any remarks.
-                  </label>
-                  <textarea
-                    className="form-control"
-                    name="fq3"
-                    value={formData.fq3}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">4. Rate your mentor</label>
-                  <Form.Select
-                    name="fq4"
-                    value={formData.fq4}
-                    onChange={handleChange}
-                    required // Make the select required
-                  >
-                    <option value="" disabled>
-                      Select Option
-                    </option>
-                    {quesOptions.map((option, index) => (
-                      <option key={index} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </div>
+                {feedbackQuestions.map((question, index) => (
+                  <div key={question.id} className="form-group mb-2">
+                    <label className="mb-1">
+                      {question.question}
+                    </label>
+                    {question.id === "fq1" || question.id === "fq2" ? (
+                      <input
+                        type="number"
+                        className="form-control"
+                        name={question.id}
+                        value={formData[question.id] || ""}
+                        onChange={handleChange}
+                        required
+                      />
+                    ) : question.id === "fq3" ? (
+                      <textarea
+                        className="form-control"
+                        name={question.id}
+                        value={formData[question.id] || ""}
+                        onChange={handleChange}
+                        required
+                      />
+                    ) : question.id === "fq4" ? (
+                      <Form.Select
+                        name={question.id}
+                        value={formData[question.id] || ""}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="" disabled>
+                          Select Option
+                        </option>
+                        {quesOptions.map((option, optionIndex) => (
+                          <option key={optionIndex} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    ) : (
+                      <input
+                        type="text"
+                        className="form-control"
+                        name={question.id}
+                        value={formData[question.id] || ""}
+                        onChange={handleChange}
+                        required
+                      />
+                    )}
+                  </div>
+                ))}
                 <button type="submit" className="btn btn-primary">
                   Submit
                 </button>
@@ -166,7 +235,7 @@ export default function MenteeForm() {
           </div>
         </div>
       )}
-      {userDetails.mentorId !== "NULL" && formStatus === "0" && (
+      {!checkingSubmission && !hasSubmittedFeedback && userDetails.mentorId !== "NULL" && formStatus === "0" && (
         // If userDetails.id is not -1 and userDetails.status is 1, show "Form submitted. Please wait for approval."
         <div>
           <Navbar className="fixed-top" />

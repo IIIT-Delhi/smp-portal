@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from server.models import *
 from django.conf import settings
 import threading
-from server.view.helper_functions import get_mail_content, send_emails_to
+from server.view.helper_functions import get_mail_content, send_emails_to, schedule_department_wise_emails
 
 
 def infer_gender_from_name(name):
@@ -165,13 +165,39 @@ def create_mentor_mentee_pairs(request):
                     candidate.status = '5'
                     candidate.save()
 
-            thread = threading.Thread(target=send_emails_to, args=(subject, message, settings.EMAIL_HOST_USER, emails_mentor))
-            thread.start()
-            mail_content = get_mail_content("mentor_Assigned")
-            thread = threading.Thread(target=send_emails_to, args=(mail_content["subject"], mail_content["body"], settings.EMAIL_HOST_USER,emails_mentees))
-            thread.start()
+            # Use department-wise email scheduling instead of immediate sending
+            mentor_emails = []
+            mentee_emails = []
+            
+            for candidate_id in candidate_ids:
+                candidate = Candidate.objects.get(id=candidate_id)
+                mentor_emails.append(candidate.email)
+            
+            for email in emails_mentees:
+                mentee_emails.append(email)
 
-            return JsonResponse({'message': "Mail sent successfully"})
+            # Schedule mentor emails department-wise
+            mentor_schedule_summary = schedule_department_wise_emails(
+                subject=subject,
+                body=message,
+                email_list=mentor_emails,
+                schedule_type='mentor_mapping'
+            )
+            
+            # Schedule mentee emails department-wise  
+            mail_content = get_mail_content("mentor_Assigned")
+            mentee_schedule_summary = schedule_department_wise_emails(
+                subject=mail_content["subject"],
+                body=mail_content["body"],
+                email_list=mentee_emails,
+                schedule_type='mentor_mapping'
+            )
+
+            return JsonResponse({
+                'message': "Mentor-Mentee mapping completed and emails scheduled department-wise",
+                'mentor_email_schedule': mentor_schedule_summary,
+                'mentee_email_schedule': mentee_schedule_summary
+            })
         except Exception as e:
             print(e)
             return JsonResponse({'message': str(e)})

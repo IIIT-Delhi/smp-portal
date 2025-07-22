@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 import server.view as views
 from server.view import json_form_management_views as json_views
+from server.view import email_schedule_views as email_views
 
 urlpatterns = [
     path('', views.index, name="home"),
@@ -63,6 +64,7 @@ urlpatterns = [
     path('api/getFormStatus/', views.get_form_status, name='getFormStatus'),
     path('api/updateFormStatus/', views.update_form_status, name='updateFormStatus'),
     path('api/menteeFilledFeedback/', views.mentee_filled_feedback, name='menteeFilledFeedback'),
+    path('api/checkFeedbackSubmission/', views.check_feedback_submission, name='checkFeedbackSubmission'),
     path('api/sendConsentForm/', views.send_consent_form, name='sendConsentForm'),
     path('api/getExcellenceAward/', views.get_excellence_award, name='getExcellenceAward'),
     path('api/updateExcellenceAward/', views.update_excellence_award, name='updateExcellenceAward'),
@@ -78,4 +80,10 @@ urlpatterns = [
     # Mail APIs 
     path('api/getMailSubjectAndBody/', views.get_mail_subject_and_body, name="getMailSubjectAndBody"),
     path('api/updateMailContent/', views.update_mail_content, name="updateMailContent"),
+    
+    # Email Schedule APIs
+    path('api/getEmailSchedules/', email_views.get_email_schedules, name='getEmailSchedules'),
+    path('api/sendTodaysEmails/', email_views.send_todays_emails, name='sendTodaysEmails'),
+    path('api/rescheduleFailedEmails/', email_views.reschedule_failed_emails, name='rescheduleFailedEmails'),
+    path('api/getEmailLogs/', email_views.get_email_logs, name='getEmailLogs'),
 ]

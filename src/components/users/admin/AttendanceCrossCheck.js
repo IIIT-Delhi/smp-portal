@@ -42,14 +42,32 @@ const AttendanceCrossCheck = () => {
         setSelectedMentor(mentor);
         setMentorMentees(mentor.menteesToMentors || []);
         
-        // Fetch meetings scheduled by this mentor
-        const meetingsResponse = await axios.get("http://localhost:8000/api/getMeetings/", {
-          params: { schedulerId: mentorId }
-        });
-        setMeetings(meetingsResponse.data || []);
+        // Fetch ALL meetings that this mentor's mentees could attend
+        // This includes both mentor-scheduled meetings and admin meetings
+        const allMeetingsResponse = await axios.post("http://localhost:8000/api/getMeetings/", 
+          JSON.stringify({
+            id: mentorId,
+            role: "mentor"
+          })
+        );
+        
+        let allMeetings = [];
+        if (allMeetingsResponse.data) {
+          // Combine both upcoming and previous meetings
+          const meetingsData = typeof allMeetingsResponse.data === 'string' 
+            ? JSON.parse(allMeetingsResponse.data) 
+            : allMeetingsResponse.data;
+          
+          allMeetings = [
+            ...(meetingsData.upcomingMeeting || []),
+            ...(meetingsData.previousMeeting || [])
+          ];
+        }
+        
+        setMeetings(allMeetings);
         
         // Fetch attendance data for all meetings
-        await fetchAttendanceData(meetingsResponse.data || []);
+        await fetchAttendanceData(allMeetings);
       }
     } catch (error) {
       console.error("Error fetching mentor data:", error);
@@ -62,14 +80,16 @@ const AttendanceCrossCheck = () => {
   const fetchAttendanceData = async (mentorMeetings) => {
     try {
       const attendancePromises = mentorMeetings.map(async (meeting) => {
-        const response = await axios.get("http://localhost:8000/api/getAttendance/", {
-          params: { meetingId: meeting.meetingId }
-        });
+        const response = await axios.post("http://localhost:8000/api/getAttendance/", 
+          JSON.stringify({
+            meetingId: meeting.meetingId
+          })
+        );
         return {
           meetingId: meeting.meetingId,
           title: meeting.title,
           date: meeting.date,
-          attendees: response.data || []
+          attendees: response.data?.attendees || []
         };
       });
 

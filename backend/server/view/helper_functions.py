@@ -5,6 +5,9 @@ from django.conf import settings
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from server.MailContent import mail_content
+from datetime import date, timedelta
+import threading
+from django.utils import timezone
 
 def send_emails_to_attendees(meeting, type):
     """
@@ -149,3 +152,192 @@ def get_mail_content(type):
             body = entry.get('body')
             return {"subject": subject, "body": body}
     return None
+
+
+def schedule_department_wise_emails(subject, body, email_list, schedule_type='general', start_date=None):
+    """
+    Schedule emails department-wise to respect SMTP daily limits.
+    
+    Args:
+        subject (str): Email subject
+        body (str): Email body
+        email_list (list): List of email addresses with their associated departments
+        schedule_type (str): Type of email (mentor_mapping, consent, general)
+        start_date (date): Starting date for scheduling (defaults to today)
+    
+    Returns:
+        dict: Summary of scheduled emails by department
+    """
+    if start_date is None:
+        start_date = date.today()
+    
+    # Group emails by department
+    department_emails = {}
+    
+    # Get department information for each email
+    for email in email_list:
+        # Try to find department from Candidate (mentors) first
+        try:
+            candidate = Candidate.objects.get(email=email)
+            dept = candidate.department
+        except Candidate.DoesNotExist:
+            # Try to find department from Mentee
+            try:
+                mentee = Mentee.objects.get(email=email)
+                dept = mentee.department
+            except Mentee.DoesNotExist:
+                # Default department if not found
+                dept = 'UNKNOWN'
+        
+        if dept not in department_emails:
+            department_emails[dept] = []
+        department_emails[dept].append(email)
+    
+    # Schedule emails for each department on different days
+    scheduled_summary = {}
+    current_date = start_date
+    
+    # Get unique departments and sort them for consistent scheduling
+    departments = sorted(department_emails.keys())
+    
+    for i, department in enumerate(departments):
+        emails = department_emails[department]
+        
+        # Schedule this department's emails for current_date
+        email_schedule = EmailSchedule.objects.create(
+            schedule_type=schedule_type,
+            subject=subject,
+            body=body,
+            department=department,
+            recipient_emails=emails,
+            scheduled_date=current_date,
+            status='pending'
+        )
+        
+        scheduled_summary[department] = {
+            'email_count': len(emails),
+            'scheduled_date': current_date.strftime('%Y-%m-%d'),
+            'schedule_id': email_schedule.id
+        }
+        
+        # Move to next day for next department
+        current_date += timedelta(days=1)
+    
+    return scheduled_summary
+
+
+def send_scheduled_emails():
+    """
+    Send emails that are scheduled for today.
+    This function should be called by a daily cron job or scheduler.
+    
+    Returns:
+        dict: Summary of sent emails
+    """
+    today = date.today()
+    pending_schedules = EmailSchedule.objects.filter(
+        scheduled_date=today,
+        status='pending'
+    )
+    
+    sent_summary = {}
+    
+    for schedule in pending_schedules:
+        try:
+            schedule.status = 'in_progress'
+            schedule.save()
+            
+            sent_count = 0
+            failed_count = 0
+            
+            for email in schedule.recipient_emails:
+                try:
+                    validate_email(email)
+                    send_mail(
+                        schedule.subject,
+                        schedule.body,
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                    )
+                    
+                    # Log successful email
+                    EmailLog.objects.create(
+                        email_schedule=schedule,
+                        recipient_email=email,
+                        success=True
+                    )
+                    sent_count += 1
+                    
+                except Exception as e:
+                    # Log failed email
+                    EmailLog.objects.create(
+                        email_schedule=schedule,
+                        recipient_email=email,
+                        success=False,
+                        error_message=str(e)
+                    )
+                    failed_count += 1
+            
+            # Update schedule status
+            if failed_count == 0:
+                schedule.status = 'completed'
+            else:
+                schedule.status = 'failed' if sent_count == 0 else 'completed'
+                schedule.error_message = f"Failed to send {failed_count} out of {len(schedule.recipient_emails)} emails"
+            
+            schedule.sent_at = timezone.now()
+            schedule.save()
+            
+            sent_summary[schedule.department] = {
+                'sent_count': sent_count,
+                'failed_count': failed_count,
+                'status': schedule.status
+            }
+            
+        except Exception as e:
+            schedule.status = 'failed'
+            schedule.error_message = str(e)
+            schedule.save()
+            
+            sent_summary[schedule.department] = {
+                'sent_count': 0,
+                'failed_count': len(schedule.recipient_emails),
+                'status': 'failed',
+                'error': str(e)
+            }
+    
+    return sent_summary
+
+
+def get_email_schedule_status():
+    """
+    Get the status of all email schedules.
+    
+    Returns:
+        dict: Status summary of all email schedules
+    """
+    schedules = EmailSchedule.objects.all().order_by('-created_at')
+    
+    status_summary = {
+        'total_schedules': schedules.count(),
+        'pending': schedules.filter(status='pending').count(),
+        'in_progress': schedules.filter(status='in_progress').count(),
+        'completed': schedules.filter(status='completed').count(),
+        'failed': schedules.filter(status='failed').count(),
+        'schedules': []
+    }
+    
+    for schedule in schedules[:20]:  # Return last 20 schedules
+        status_summary['schedules'].append({
+            'id': schedule.id,
+            'department': schedule.department,
+            'schedule_type': schedule.schedule_type,
+            'scheduled_date': schedule.scheduled_date.strftime('%Y-%m-%d'),
+            'status': schedule.status,
+            'email_count': len(schedule.recipient_emails),
+            'created_at': schedule.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'sent_at': schedule.sent_at.strftime('%Y-%m-%d %H:%M:%S') if schedule.sent_at else None
+        })
+    
+    return status_summary

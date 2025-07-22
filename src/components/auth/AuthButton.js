@@ -94,7 +94,7 @@ const AuthButton = () => {
               style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentor")}
             >
-              {enrollmentFormStatus === "1" ? "Login as Mentor" : "Login as Mentor"}
+              {enrollmentFormStatus == 1 ? "Apply for Mentor": "Login as Mentor"}
             </button>
           </div>
         </>

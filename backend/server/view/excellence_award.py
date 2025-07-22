@@ -85,7 +85,7 @@ def get_excellence_award(request):
                     "department": candidate['department'],
                     "year": candidate['year'],
                     "contact": candidate['contact'],
-                    "score": score,
+                    "score": round(score, 2),
                 }
                 
                 try:

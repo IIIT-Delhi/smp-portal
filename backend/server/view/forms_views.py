@@ -279,13 +279,21 @@ def mentee_filled_feedback(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         submitter_id = data.get('id')
+        
+        # Check if mentee has already submitted a feedback form
+        existing_feedback = FormResponses.objects.filter(
+            submitterId=submitter_id,
+            FormType='3'
+        ).exists()
+        
+        if existing_feedback:
+            return JsonResponse({"message": "Feedback form already submitted"}, status=400)
  
-        responses = {
-            'fq1': data.get('fq1'),
-            'fq2': data.get('fq2'),
-            'fq3': data.get('fq3'),
-            'fq4': data.get('fq4'),
-        }
+        # Build responses dynamically from all fields except id, mentorId, mentorName
+        responses = {}
+        for key, value in data.items():
+            if key not in ['id', 'mentorId', 'mentorName']:
+                responses[key] = value
 
         new_responses = FormResponses(
             submitterId=submitter_id,
@@ -346,6 +354,43 @@ def send_consent_form(request):
         except Exception as e:
             print(e)
             return JsonResponse({'message': str(e)})
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+
+
+@csrf_exempt
+def check_feedback_submission(request):
+    """
+    Checks if a mentee has already submitted their feedback form.
+
+    Args:
+        request (object): The HTTP request object containing information about the request.
+            Method: POST
+            Body (JSON):
+                - id (int): ID of the mentee to check.
+
+    Returns:
+        JsonResponse: A JSON response indicating whether the mentee has submitted feedback.
+            Possible responses:
+                - {"hasSubmitted": true}: If the mentee has already submitted feedback.
+                - {"hasSubmitted": false}: If the mentee has not yet submitted feedback.
+                - {"error": "Missing mentee ID"}: If the mentee ID is not provided.
+                - {"error": "Invalid request method"}: If the request method is not POST.
+    """
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        mentee_id = data.get('id')
+        
+        if not mentee_id:
+            return JsonResponse({"error": "Missing mentee ID"}, status=400)
+        
+        # Check if mentee has already submitted a feedback form
+        has_submitted = FormResponses.objects.filter(
+            submitterId=mentee_id,
+            FormType='3'
+        ).exists()
+        
+        return JsonResponse({"hasSubmitted": has_submitted})
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 
