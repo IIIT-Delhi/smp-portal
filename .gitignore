@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-/sdos
+./sdos
 /.pnp
 .pnp.js
 
@@ -22,3 +22,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+backend/env
+sdos/
+
+# Pycache from all the sub directories
+**/__pycache__/

@@ -24,9 +24,7 @@ SECRET_KEY = 'django-insecure-)df$=!nf0oc4#op=%=wn9q=r!it#r2w=#w%_hywo&80b)_7&^+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["smpportal.iiitd.edu.in", 'localhost']
 
 # Application definition
 
@@ -45,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -54,7 +53,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'core.urls'
@@ -80,13 +78,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'smp',
         'USER': 'postgres',
         'PASSWORD': '12345',
+        'host': 'localhost',
+        'port': '5432'
     }
 }
 
@@ -131,3 +130,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PRT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'harshmistry159@gmail.com'
+EMAIL_HOST_PASSWORD = 'cmsc xqfh syfw noqn'
