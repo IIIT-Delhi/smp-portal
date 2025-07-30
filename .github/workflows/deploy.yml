@@ -8,7 +8,7 @@ on:
 
 env:
   # Production API URL
-  REACT_APP_API_URL: https://smpportal.iiitd.edu.in
+  REACT_APP_API_URL: http://localhost:8000
   
 jobs:
   # Job 1: Replace API URLs in the codebase
@@ -21,11 +21,11 @@ jobs:
     - name: Replace API URLs in React components
       run: |
         # Replace localhost URLs with production URLs in all JavaScript files
-        find src -name "*.js" -type f -exec sed -i 's|http://localhost:8000|https://smpportal.iiitd.edu.in|g' {} \;
+        find src -name "*.js" -type f -exec sed -i 's|http://localhost:8000|http://localhost:8000|g' {} \;
         
         # Replace localhost URLs in any TypeScript files (if any)
-        find src -name "*.ts" -type f -exec sed -i 's|http://localhost:8000|https://smpportal.iiitd.edu.in|g' {} \;
-        find src -name "*.tsx" -type f -exec sed -i 's|http://localhost:8000|https://smpportal.iiitd.edu.in|g' {} \;
+        find src -name "*.ts" -type f -exec sed -i 's|http://localhost:8000|http://localhost:8000|g' {} \;
+        find src -name "*.tsx" -type f -exec sed -i 's|http://localhost:8000|http://localhost:8000|g' {} \;
         
         # Show the changes made
         echo "API URLs updated in the following files:"
@@ -103,7 +103,7 @@ jobs:
     - name: Notify deployment success
       run: |
         echo "🎉 Deployment completed successfully!"
-        echo "Application is now live at: https://smpportal.iiitd.edu.in"
+        echo "Application is now live at: http://localhost:8000"
 
   # Job 4: Backup current deployment (optional)
   backup:

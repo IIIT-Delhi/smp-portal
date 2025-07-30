@@ -8,7 +8,7 @@ const MentorProfile = ({ mentor, onClose }) => {
 
   useEffect(() => {
     if (mentor) {
-      fetch(`/api/${mentor.id}/getMentorRemarks/`)
+      fetch(`http://localhost:8000/api/${mentor.id}/getMentorRemarks/`)
         .then((response) => {
           console.log(response);
           if (!response.ok) {
@@ -19,6 +19,7 @@ const MentorProfile = ({ mentor, onClose }) => {
         .then((data) => {
           if (data.remarks) {
             setRemarks(data.remarks);
+            setNewRemarks(data.remarks); // Pre-populate the textarea with existing remarks
           }
         })
         .catch((error) => {
@@ -31,7 +32,8 @@ const MentorProfile = ({ mentor, onClose }) => {
 
   const saveRemarks = async () => {
     try {
-      const response = await fetch(`/api/${mentor.id}/saveMentorRemarks/`, {
+      console.log("save")
+      const response = await fetch(`http://localhost:8000/api/${mentor.id}/saveMentorRemarks/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,6 +44,7 @@ const MentorProfile = ({ mentor, onClose }) => {
       if (response.ok) {
         alert('Remarks saved successfully!');
         setRemarks(newRemarks);
+        setNewRemarks(''); // Clear the textarea after saving
       } else {
         alert('Failed to save remarks');
       }
@@ -139,13 +142,12 @@ const MentorProfile = ({ mentor, onClose }) => {
                 </table>
                 <div>
                   <h5>Remarks:</h5>
-                  <p>{remarks}</p>
                   <textarea
                     value={newRemarks}
                     onChange={(e) => setNewRemarks(e.target.value)}
                     className="form-control"
-                    rows="3"
-                    placeholder="Add your remarks here"
+                    rows="5"
+                    placeholder="Add or edit remarks here"
                   ></textarea>
                   <button
                     onClick={saveRemarks}

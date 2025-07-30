@@ -16,7 +16,7 @@ on:
         - backend-only
 
 env:
-  PRODUCTION_API_URL: https://smpportal.iiitd.edu.in
+  PRODUCTION_API_URL: http://localhost:8000
   STAGING_API_URL: https://staging.smpportal.iiitd.edu.in
   
 jobs:
@@ -165,7 +165,7 @@ jobs:
         
         # CORS settings for production
         CORS_ALLOWED_ORIGINS = [
-            "https://smpportal.iiitd.edu.in",
+            "http://localhost:8000",
             "https://www.smpportal.iiitd.edu.in",
         ]
         
@@ -209,7 +209,7 @@ jobs:
         echo "Testing API endpoints..."
         
         # Test basic API connectivity
-        curl -f https://smpportal.iiitd.edu.in/api/health/ || echo "Health check completed"
+        curl -f http://localhost:8000/api/health/ || echo "Health check completed"
         
         echo "Integration tests completed!"
 
@@ -231,7 +231,7 @@ jobs:
         
         if [[ "${{ needs.deploy-frontend.result }}" == "success" || "${{ needs.deploy-backend.result }}" == "success" ]]; then
           echo "🎉 Deployment completed successfully!"
-          echo "Application is live at: https://smpportal.iiitd.edu.in"
+          echo "Application is live at: http://localhost:8000"
         else
           echo "❌ Deployment failed. Please check the logs."
         fi

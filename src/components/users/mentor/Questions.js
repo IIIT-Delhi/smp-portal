@@ -44,8 +44,6 @@ export default function Questions({
           <br />
           <b>Commitment:</b> Please apply to the SMP only if you are committed and willing to invest your time and effort in mentorship activities.
           <br />
-          <b>Identification Details:</b> Carefully fill in your identification details.
-          <br />
           <b>Questionnaire:</b> The form includes a short questionnaire with six multiple-choice questions. Please read them carefully and answer based on your own perspective. There are no right or wrong answers.
           <br />
           Thank you for your cooperation.
