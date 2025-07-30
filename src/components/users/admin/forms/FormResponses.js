@@ -217,7 +217,7 @@ const FormResponses = () => {
   return (
     <div>
       <Navbar className="fixed-top" />
-      <div className="container mt-3">
+      <div className="container-fluid mt-3">
         <h4 className="text-center mb-4">{formNames[formType]}</h4>
         <div className="input-group mt-3 mb-2">
           <input
@@ -339,9 +339,14 @@ const FormResponses = () => {
         ) : (
           <div
             className="table-container text-left"
-            style={{ overflow: "auto", maxHeight: "400px" }}
+            style={{ 
+              overflowX: "auto", 
+              overflowY: "auto",
+              maxHeight: "calc(100vh - 250px)",
+              width: "100%"
+            }}
           >
-            <div className="table-responsive">
+            <div className="table-responsive" style={{ minWidth: "100%" }}>
               {formType !== '3' && (
                 <div>
                   <input
@@ -355,7 +360,7 @@ const FormResponses = () => {
                   Select All
                 </div>
               )}
-              <table className="table table-bordered table-hover">
+              <table className="table table-bordered table-hover" style={{ minWidth: "max-content" }}>
                 <thead className="thead-light">
                   <tr>
                     {formType !== "3" && (

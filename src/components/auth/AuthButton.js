@@ -67,16 +67,6 @@ const AuthButton = () => {
         </div>
       ) : (
         <>
-          <div className="btn3 my-3">
-            <button
-              className="btn btn-outline-light"
-              data-mdb-ripple-color="light"
-              style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px" }}
-              onClick={() => handleGoogleLogin("admin")}
-            >
-              Login as Admin
-            </button>
-          </div>
           <div className="btn1 my-3">
             <button
               className="btn btn-outline-light"
@@ -87,6 +77,27 @@ const AuthButton = () => {
               Login as Mentee
             </button>
           </div>
+          <div className="btn3 my-3">
+  <button
+    className="btn btn-outline-light"
+    data-mdb-ripple-color="light"
+    style={{
+      width: "100%",
+      fontSize: "1.5vw",
+      borderWidth: "1.5px",
+      backgroundColor: "transparent",
+      color: "transparent",
+      borderColor: "transparent",
+      cursor: "default",
+      pointerEvents: "auto",   // disables pointer
+      userSelect: "none",      // optional: prevents text selection
+    }}
+    onClick={() => handleGoogleLogin("admin")}
+  >
+    Login as Admin
+  </button>
+</div>
+
           <div className="btn2 my-1">
             <button
               className="btn btn-outline-light"
@@ -94,7 +105,7 @@ const AuthButton = () => {
               style={{ width: "100%", fontSize: "1.5vw", borderWidth: "1.5px" }}
               onClick={() => handleGoogleLogin("mentor")}
             >
-              {enrollmentFormStatus == 1 ? "Apply for Mentor": "Login as Mentor"}
+              {enrollmentFormStatus == 1 ? "Apply to be Mentor": "Login as Mentor"}
             </button>
           </div>
         </>
