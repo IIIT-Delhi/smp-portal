@@ -1,0 +1,24 @@
+{
+  "questions": [
+    {
+      "id": "fq1",
+      "question": "1. How many meetings your mentor had with you till?",
+      "type": "text",
+      "options": [],
+      "required": true,
+      "correctAnswer": null
+    },
+    {
+      "id": "fq2",
+      "question": "2. How many times your mentor has given you treat till date? (only number allowed)"
+    },
+    {
+      "id": "fq3",
+      "question": "3. How has the mentor helped you? or any remarks."
+    },
+    {
+      "id": "fq4",
+      "question": "4. Rate your mentor."
+    }
+  ]
+}
