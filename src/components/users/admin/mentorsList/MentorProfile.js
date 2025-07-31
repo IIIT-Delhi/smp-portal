@@ -44,7 +44,7 @@ const MentorProfile = ({ mentor, onClose }) => {
       if (response.ok) {
         alert('Remarks saved successfully!');
         setRemarks(newRemarks);
-        setNewRemarks(''); // Clear the textarea after saving
+        // Keep the saved remarks in the textarea instead of clearing
       } else {
         alert('Failed to save remarks');
       }
