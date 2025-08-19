@@ -2,14 +2,14 @@ import React from "react";
 
 const Table = (props) => {
   const { headers, rows, searchable = false, sortable = false } = props;
-  
+
   return (
     <div className="table-container" style={{
       backgroundColor: "var(--white)",
       borderRadius: "12px",
       overflow: "hidden",
       boxShadow: "0 2px 12px var(--shadow-light)",
-      border: "1px solid var(--border-light)"
+      border: "none"
     }}>
       {searchable && (
         <div style={{ padding: "1rem", borderBottom: "1px solid var(--border-light)" }}>
@@ -36,7 +36,7 @@ const Table = (props) => {
               />
             </div>
             <div className="col-md-6 text-end">
-              <button 
+              <button
                 className="btn"
                 style={{
                   backgroundColor: "var(--orange-highlight)",
@@ -53,11 +53,12 @@ const Table = (props) => {
           </div>
         </div>
       )}
-      
+
       <div style={{ overflowX: "auto" }}>
         <table className="table mb-0" style={{
           width: "100%",
-          borderCollapse: "collapse"
+          borderCollapse: "collapse",
+          border: "none"
         }}>
           <TableHeader headers={headers} sortable={sortable} />
           <TableBody headers={headers} rows={rows} />
@@ -73,7 +74,7 @@ function capitalizeFirstLetter(str) {
 
 const TableHeader = (props) => {
   const { headers, sortable } = props;
-  
+
   return (
     <thead key="header-1">
       <tr key="header-0" style={{
@@ -83,7 +84,7 @@ const TableHeader = (props) => {
         {headers &&
           headers.map((value, index) => {
             return (
-              <th 
+              <th
                 key={index}
                 style={{
                   padding: "1rem",
@@ -129,15 +130,15 @@ const TableBody = (props) => {
       <tr key={row.id} style={{
         transition: "background-color 0.2s ease"
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = "var(--light-gray)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = "transparent";
-      }}>
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = "var(--light-gray)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = "transparent";
+        }}>
         {headers.map((value, index) => {
           return (
-            <td 
+            <td
               key={index}
               style={{
                 padding: "1rem",
@@ -160,7 +161,7 @@ const TableBody = (props) => {
         rows
       ) : (
         <tr>
-          <td 
+          <td
             colSpan={headers?.length || 1}
             style={{
               padding: "2rem",

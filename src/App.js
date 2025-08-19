@@ -16,6 +16,9 @@ import FormResponses from "./components/users/admin/forms/FormResponses";
 import MeetingList from "./components/Meetings/MeetingList";
 import MtechMentorsList from "./components/users/admin/mentorsList/MtechMentorsList";
 
+// Import responsive styles
+import "./styles/responsive.css";
+
 function App() {
   return (
     <AuthProvider>

@@ -105,7 +105,7 @@ const AuthButton = () => {
             <span>🏠</span>
             Go To Profile
           </button>
-          
+
           <button
             style={outlineButtonStyle}
             onClick={() => logout()}
@@ -168,7 +168,6 @@ const AuthButton = () => {
           <button
             style={disabledButtonStyle}
             onClick={() => handleGoogleLogin("admin")}
-            disabled
           >
             <span>🛠️</span>
             Login as Admin

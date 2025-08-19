@@ -215,222 +215,231 @@ const FormResponses = () => {
 
 
   return (
-    <div>
-      <Navbar className="fixed-top" />
-      <div className="container-fluid mt-3">
-        <h4 className="text-center mb-4">{formNames[formType]}</h4>
-        <div className="input-group mt-3 mb-2">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search"
-            value={searchTerm}
-            onChange={handleSearch}
-          />
-          <div className="input-group-append mx-2">
+    <div style={{ backgroundColor: "var(--light-gray)", minHeight: "100vh" }}>
+      <Navbar />
+      <div
+        className="main-content"
+        style={{
+          marginLeft: "70px",
+          padding: "20px",
+          transition: "margin-left 0.3s ease"
+        }}
+      >
+        <div className="container-fluid">
+          <h4 className="text-center mb-4">{formNames[formType]}</h4>
+          <div className="input-group mt-3 mb-2">
             <input
               type="text"
               className="form-control"
-              placeholder="Top Entries (Number)"
-              value={topEntries}
-              onChange={(e) => setTopEntries(e.target.value)}
+              placeholder="Search"
+              value={searchTerm}
+              onChange={handleSearch}
             />
-          </div>
-          <div className="input-group-append mx-2">
-            <Form.Select
-              value={selectedDepartmentFilter}
-              onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
-            >
-              <option value="">All Departments</option>
-              {Object.keys(departmentOptions).map((department) => (
-                <option key={department} value={department}>
-                  {departmentOptions[department]}
-                </option>
-              ))}
-            </Form.Select>
-          </div>
-          {formType === "2" && (
+            <div className="input-group-append mx-2">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Top Entries (Number)"
+                value={topEntries}
+                onChange={(e) => setTopEntries(e.target.value)}
+              />
+            </div>
             <div className="input-group-append mx-2">
               <Form.Select
-                value={selectedStatusFilter}
-                onChange={(e) => setSelectedStatusFilter(e.target.value)}
+                value={selectedDepartmentFilter}
+                onChange={(e) => setSelectedDepartmentFilter(e.target.value)}
               >
-                <option value="">All Status</option>
-                {Object.keys(statusOptions).map((status) => (
-                  <option key={status} value={status}>
-                    {statusOptions[status]}
+                <option value="">All Departments</option>
+                {Object.keys(departmentOptions).map((department) => (
+                  <option key={department} value={department}>
+                    {departmentOptions[department]}
                   </option>
                 ))}
               </Form.Select>
             </div>
-          )}
-          {["1", "3"].includes(formType) && (
-            <div className="input-group-append mx-2">
-              <Form.Select
-                value={sortOption}
-                onChange={(e) =>
-                  handleSort(
-                    e.target.value,
-                    filteredResponses,
-                    setFilteredResponses,
-                    setSortOption
-                  )
-                }
-              >
-                <option value="default" disabled>
-                  Sort By
-                </option>
-                <option value="submitter-id-min-to-max">
-                  Submitter Id (Min to Max)
-                </option>
-                <option value="submitter-id-max-to-min">
-                  Submitter Id (Max to Min)
-                </option>
-                {formType === "1" && (
-                  <>
-                    <option value="score-max-to-min">Score (Max to Min)</option>
-                    <option value="score-min-to-max">Score (Min to Max)</option>
-                  </>
+            {formType === "2" && (
+              <div className="input-group-append mx-2">
+                <Form.Select
+                  value={selectedStatusFilter}
+                  onChange={(e) => setSelectedStatusFilter(e.target.value)}
+                >
+                  <option value="">All Status</option>
+                  {Object.keys(statusOptions).map((status) => (
+                    <option key={status} value={status}>
+                      {statusOptions[status]}
+                    </option>
+                  ))}
+                </Form.Select>
+              </div>
+            )}
+            {["1", "3"].includes(formType) && (
+              <div className="input-group-append mx-2">
+                <Form.Select
+                  value={sortOption}
+                  onChange={(e) =>
+                    handleSort(
+                      e.target.value,
+                      filteredResponses,
+                      setFilteredResponses,
+                      setSortOption
+                    )
+                  }
+                >
+                  <option value="default" disabled>
+                    Sort By
+                  </option>
+                  <option value="submitter-id-min-to-max">
+                    Submitter Id (Min to Max)
+                  </option>
+                  <option value="submitter-id-max-to-min">
+                    Submitter Id (Max to Min)
+                  </option>
+                  {formType === "1" && (
+                    <>
+                      <option value="score-max-to-min">Score (Max to Min)</option>
+                      <option value="score-min-to-max">Score (Min to Max)</option>
+                    </>
+                  )}
+                  {formType === "3" && (
+                    <>
+                      <option value="meetings-min-to-max">
+                        Meetings (Min to Max)
+                      </option>
+                      <option value="meetings-max-to-min">
+                        Meetings (Max to Min)
+                      </option>
+                      <option value="treats-min-to-max">
+                        Treats (Min to Max)
+                      </option>
+                      <option value="treats-max-to-min">
+                        Treats (Max to Min)
+                      </option>
+                    </>
+                  )}
+                </Form.Select>
+              </div>
+            )}
+            {formType === "2" && (
+              <Button
+                onClick={handleMentorMenteeMapping}
+                disabled={loading}
+                text="Mentor-Mentee Mapping"
+              />
+            )}
+            {formType === "3" && (
+              <Button
+                onClick={handleExcellenceClicked}
+                disabled={loading}
+                text="Excellence Award List"
+              />
+            )}
+            {formType === "1" && (
+              <Button onClick={handleSendConsentEmail} text="Send Consent Form" />
+            )}
+          </div>
+          <p className="mb-2" style={{ color: "red" }}>
+            * Note: The order of applied filters may affect the results. Please be
+            careful when applying filters.
+          </p>
+          <p>Total Entries: {totalEntries}</p>
+          {filteredResponses.length === 0 ? (
+            <p>No responses found for this form.</p>
+          ) : (
+            <div
+              className="table-container text-left"
+              style={{
+                overflowX: "auto",
+                overflowY: "auto",
+                maxHeight: "calc(100vh - 250px)",
+                width: "100%"
+              }}
+            >
+              <div className="table-responsive" style={{ minWidth: "100%" }}>
+                {formType !== '3' && (
+                  <div>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={'all'}
+                      checked={selectAll}
+                      onChange={changeSelectAllType}
+                      style={{ marginRight: '0.75rem', marginLeft: '0.50rem' }}
+                    />
+                    Select All
+                  </div>
                 )}
-                {formType === "3" && (
-                  <>
-                    <option value="meetings-min-to-max">
-                      Meetings (Min to Max)
-                    </option>
-                    <option value="meetings-max-to-min">
-                      Meetings (Max to Min)
-                    </option>
-                    <option value="treats-min-to-max">
-                      Treats (Min to Max)
-                    </option>
-                    <option value="treats-max-to-min">
-                      Treats (Max to Min)
-                    </option>
-                  </>
-                )}
-              </Form.Select>
+                <table className="table table-hover" style={{ minWidth: "max-content", border: "none" }}>
+                  <thead className="thead-light">
+                    <tr>
+                      {formType !== "3" && (
+                        <th className="text-center">Select Student</th>
+                      )}
+                      <th>Roll Number</th>
+                      {formType !== "3" && <th>Applicant Name</th>}
+                      {formType === "3" && <th>Mentee Name</th>}
+                      <th>Email</th>
+                      <th>Contact</th>
+                      {formType !== "3" && <th>Year</th>}
+                      <th>Department</th>
+                      {formType === "3" && <th>Mentor Id</th>}
+                      {formType === "3" && <th>Mentor Name</th>}
+                      {formType === "3" && <th>Mentor Email</th>}
+                      {formType === "3" && <th>Mentor Department</th>}
+                      {formType === "3" && <th>Mentor Year</th>}
+                      {questionSet.map((question, index) => (
+                        <th key={index} className="text-center">
+                          <span
+                            className="truncated"
+                            title={question.question}
+                            onClick={() => handleExpandQuestion(index)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {expandedQuestion === index
+                              ? question.question
+                              : truncateText(question.question, 3)}
+                          </span>
+                        </th>
+                      ))}
+                      {formType === "1" && <th>Score</th>}
+                      {formType === "2" && <th>Status</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredResponses.map((response, index) => (
+                      <TableRow
+                        key={index}
+                        response={response}
+                        formType={formType}
+                        handleCheckboxChangeWrapper={handleCheckboxChangeWrapper}
+                        departmentOptions={departmentOptions}
+                        getAnswerForQuestion={getAnswerForQuestion}
+                        expandedResponse={expandedResponse}
+                        handleExpandResponse={handleExpandResponse}
+                        newlySelectedStudents={newlySelectedStudents}
+                      />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
-          {formType === "2" && (
-            <Button
-              onClick={handleMentorMenteeMapping}
-              disabled={loading}
-              text="Mentor-Mentee Mapping"
+          {showConsentModal && (
+            <SendMail
+              handleClose={handleClose}
+              handleSave={handleSave}
+              newlySelectedStudents={newlySelectedStudents}
+              formType={formType}
+              fetchFormResponses={fetchFormResponses}
+              setLoading={setLoading}
             />
           )}
-          {formType === "3" && (
-            <Button
-              onClick={handleExcellenceClicked}
-              disabled={loading}
-              text="Excellence Award List"
+          {showMentorList && (
+            <ExcellenceAward
+              handleClose={handleCloseMentorList}
+              handleButtonSave={handleSaveMentorList}
             />
-          )}
-          {formType === "1" && (
-            <Button onClick={handleSendConsentEmail} text="Send Consent Form" />
           )}
         </div>
-        <p className="mb-2" style={{ color: "red" }}>
-          * Note: The order of applied filters may affect the results. Please be
-          careful when applying filters.
-        </p>
-        <p>Total Entries: {totalEntries}</p>
-        {filteredResponses.length === 0 ? (
-          <p>No responses found for this form.</p>
-        ) : (
-          <div
-            className="table-container text-left"
-            style={{ 
-              overflowX: "auto", 
-              overflowY: "auto",
-              maxHeight: "calc(100vh - 250px)",
-              width: "100%"
-            }}
-          >
-            <div className="table-responsive" style={{ minWidth: "100%" }}>
-              {formType !== '3' && (
-                <div>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={'all'}
-                    checked={selectAll}
-                    onChange={changeSelectAllType}
-                    style={{ marginRight: '0.75rem', marginLeft: '0.50rem' }}
-                  />
-                  Select All
-                </div>
-              )}
-              <table className="table table-bordered table-hover" style={{ minWidth: "max-content" }}>
-                <thead className="thead-light">
-                  <tr>
-                    {formType !== "3" && (
-                      <th className="text-center">Select Student</th>
-                    )}
-                    <th>Roll Number</th>
-                    {formType !== "3" && <th>Applicant Name</th>}
-                    {formType === "3" && <th>Mentee Name</th>}
-                    <th>Email</th>
-                    <th>Contact</th>
-                    {formType !== "3" && <th>Year</th>}
-                    <th>Department</th>
-                    {formType === "3" && <th>Mentor Id</th>}
-                    {formType === "3" && <th>Mentor Name</th>}
-                    {formType === "3" && <th>Mentor Email</th>}
-                    {formType === "3" && <th>Mentor Department</th>}
-                    {formType === "3" && <th>Mentor Year</th>}
-                    {questionSet.map((question, index) => (
-                      <th key={index} className="text-center">
-                        <span
-                          className="truncated"
-                          title={question.question}
-                          onClick={() => handleExpandQuestion(index)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          {expandedQuestion === index
-                            ? question.question
-                            : truncateText(question.question, 3)}
-                        </span>
-                      </th>
-                    ))}
-                    {formType === "1" && <th>Score</th>}
-                    {formType === "2" && <th>Status</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredResponses.map((response, index) => (
-                    <TableRow
-                      key={index}
-                      response={response}
-                      formType={formType}
-                      handleCheckboxChangeWrapper={handleCheckboxChangeWrapper}
-                      departmentOptions={departmentOptions}
-                      getAnswerForQuestion={getAnswerForQuestion}
-                      expandedResponse={expandedResponse}
-                      handleExpandResponse={handleExpandResponse}
-                      newlySelectedStudents={newlySelectedStudents}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-        {showConsentModal && (
-          <SendMail
-            handleClose={handleClose}
-            handleSave={handleSave}
-            newlySelectedStudents={newlySelectedStudents}
-            formType={formType}
-            fetchFormResponses={fetchFormResponses}
-            setLoading={setLoading}
-          />
-        )}
-        {showMentorList && (
-          <ExcellenceAward
-            handleClose={handleCloseMentorList}
-            handleButtonSave={handleSaveMentorList}
-          />
-        )}
       </div>
     </div>
   );

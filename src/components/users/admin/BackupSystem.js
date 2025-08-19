@@ -70,7 +70,7 @@ const BackupSystem = () => {
       setBackupProgress(0);
 
       const zip = new JSZip();
-      
+
       // Simulate progress updates
       const updateProgress = (progress) => {
         setBackupProgress(progress);
@@ -103,15 +103,15 @@ const BackupSystem = () => {
       // Generate and download the backup
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const filename = `smp_backup_${backupType.id}_${timestamp}.zip`;
-      
+
       const content = await zip.generateAsync({ type: "blob" });
       downloadFile(content, filename);
 
       updateProgress(100);
-      
+
       // Record backup in history
       await recordBackup(backupType.id, filename);
-      
+
       setTimeout(() => {
         setShowProgressModal(false);
         showAlert(`${backupType.name} backup created successfully!`, "success");
@@ -127,16 +127,16 @@ const BackupSystem = () => {
 
   const backupForms = async (zip, updateProgress) => {
     updateProgress(20);
-    
+
     // Backup form configurations
     const formTypes = ["registration", "consent", "feedback", "enrollment"];
     const formsData = {};
-    
+
     for (const formType of formTypes) {
       try {
         const questionsResponse = await axios.get(`http://localhost:8000/api/getFormQuestions/${formType}/`);
         const responsesResponse = await axios.get(`http://localhost:8000/api/exportFormData/${formType}/`);
-        
+
         formsData[formType] = {
           questions: questionsResponse.data,
           responses: responsesResponse.data
@@ -145,11 +145,11 @@ const BackupSystem = () => {
         console.log(`No data for ${formType} form`);
       }
     }
-    
+
     zip.file("forms/forms_data.json", JSON.stringify(formsData, null, 2));
-    
+
     updateProgress(60);
-    
+
     // Create CSV files for each form
     for (const [formType, data] of Object.entries(formsData)) {
       if (data.responses && data.responses.length > 0) {
@@ -157,44 +157,44 @@ const BackupSystem = () => {
         zip.file(`forms/${formType}_responses.csv`, csvContent);
       }
     }
-    
+
     updateProgress(80);
   };
 
   const backupUsers = async (zip, updateProgress) => {
     updateProgress(30);
-    
+
     // Backup mentors
     const mentorsResponse = await axios.get("http://localhost:8000/api/getAllMentors/");
     zip.file("users/mentors.json", JSON.stringify(mentorsResponse.data, null, 2));
-    
+
     updateProgress(50);
-    
+
     // Backup mentees
     const menteesResponse = await axios.get("http://localhost:8000/api/getAllMentees/");
     zip.file("users/mentees.json", JSON.stringify(menteesResponse.data, null, 2));
-    
+
     updateProgress(70);
-    
+
     // Create CSV files
     const mentorsCSV = convertToCSV(mentorsResponse.data);
     const menteesCSV = convertToCSV(menteesResponse.data);
-    
+
     zip.file("users/mentors.csv", mentorsCSV);
     zip.file("users/mentees.csv", menteesCSV);
-    
+
     updateProgress(85);
   };
 
   const backupMeetings = async (zip, updateProgress) => {
     updateProgress(40);
-    
+
     // Backup meetings
     const meetingsResponse = await axios.get("http://localhost:8000/api/getMeetings/");
     zip.file("meetings/meetings.json", JSON.stringify(meetingsResponse.data, null, 2));
-    
+
     updateProgress(70);
-    
+
     // Backup attendance data for each meeting
     const attendanceData = {};
     for (const meeting of meetingsResponse.data) {
@@ -207,14 +207,14 @@ const BackupSystem = () => {
         console.log(`No attendance data for meeting ${meeting.meetingId}`);
       }
     }
-    
+
     zip.file("meetings/attendance.json", JSON.stringify(attendanceData, null, 2));
     updateProgress(85);
   };
 
   const backupFiles = async (zip, updateProgress) => {
     updateProgress(30);
-    
+
     // Note: This would typically backup actual uploaded files
     // For demo purposes, we'll create a manifest of files
     const filesManifest = {
@@ -222,7 +222,7 @@ const BackupSystem = () => {
       timestamp: new Date().toISOString(),
       file_types: ["images", "documents", "csv_uploads"]
     };
-    
+
     zip.file("files/files_manifest.json", JSON.stringify(filesManifest, null, 2));
     updateProgress(85);
   };
@@ -238,7 +238,7 @@ const BackupSystem = () => {
   const convertToCSV = (data) => {
     if (!data || data.length === 0) return "";
     const header = Object.keys(data[0]).join(",");
-    const rows = data.map((entry) => Object.values(entry).map(val => 
+    const rows = data.map((entry) => Object.values(entry).map(val =>
       typeof val === 'string' && val.includes(',') ? `"${val}"` : val
     ).join(","));
     return `${header}\n${rows.join("\n")}`;
@@ -268,98 +268,107 @@ const BackupSystem = () => {
   };
 
   return (
-    <div>
-      <Navbar className="fixed-top" />
-      <Container className="mt-5 pt-4">
-        <h2 className="text-center mb-4">🔄 Backup & Recovery System</h2>
-        
-        {alert.show && (
-          <Alert variant={alert.type} className="mb-4">
-            {alert.message}
-          </Alert>
-        )}
+    <div style={{ backgroundColor: "var(--light-gray)", minHeight: "100vh" }}>
+      <Navbar />
+      <div
+        className="main-content"
+        style={{
+          marginLeft: "70px",
+          padding: "20px",
+          transition: "margin-left 0.3s ease"
+        }}
+      >
+        <Container fluid>
+          <h2 className="text-center mb-4">🔄 Backup & Recovery System</h2>
 
-        <Row className="mb-4">
-          <Col>
-            <Card>
-              <Card.Header>
-                <h5>📋 Backup Options</h5>
-              </Card.Header>
-              <Card.Body>
-                <p>Select the type of backup you want to create. Each backup will be downloaded as a ZIP file containing relevant data.</p>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+          {alert.show && (
+            <Alert variant={alert.type} className="mb-4">
+              {alert.message}
+            </Alert>
+          )}
 
-        <Row>
-          {availableBackups.map((backup) => (
-            <Col md={6} lg={4} key={backup.id} className="mb-4">
-              <Card className="h-100">
-                <Card.Body className="text-center">
-                  <div style={{ fontSize: "3rem" }}>{backup.icon}</div>
-                  <Card.Title className="mt-3">{backup.name}</Card.Title>
-                  <Card.Text>{backup.description}</Card.Text>
-                  <Button 
-                    variant="primary" 
-                    onClick={() => createBackup(backup)}
-                    className="mt-auto"
-                  >
-                    Create Backup
-                  </Button>
+          <Row className="mb-4">
+            <Col>
+              <Card>
+                <Card.Header>
+                  <h5>📋 Backup Options</h5>
+                </Card.Header>
+                <Card.Body>
+                  <p>Select the type of backup you want to create. Each backup will be downloaded as a ZIP file containing relevant data.</p>
                 </Card.Body>
               </Card>
             </Col>
-          ))}
-        </Row>
+          </Row>
 
-        <Row className="mt-5">
-          <Col>
-            <Card>
-              <Card.Header>
-                <h5>📊 Backup History</h5>
-              </Card.Header>
-              <Card.Body>
-                {backupHistory.length === 0 ? (
-                  <p className="text-muted">No backups created yet.</p>
-                ) : (
-                  <div>
-                    {backupHistory.map((backup, index) => (
-                      <div key={index} className="d-flex justify-content-between align-items-center border-bottom py-2">
-                        <div>
-                          <strong>{backup.type}</strong> - {backup.filename}
+          <Row>
+            {availableBackups.map((backup) => (
+              <Col md={6} lg={4} key={backup.id} className="mb-4">
+                <Card className="h-100">
+                  <Card.Body className="text-center">
+                    <div style={{ fontSize: "3rem" }}>{backup.icon}</div>
+                    <Card.Title className="mt-3">{backup.name}</Card.Title>
+                    <Card.Text>{backup.description}</Card.Text>
+                    <Button
+                      variant="primary"
+                      onClick={() => createBackup(backup)}
+                      className="mt-auto"
+                    >
+                      Create Backup
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+
+          <Row className="mt-5">
+            <Col>
+              <Card>
+                <Card.Header>
+                  <h5>📊 Backup History</h5>
+                </Card.Header>
+                <Card.Body>
+                  {backupHistory.length === 0 ? (
+                    <p className="text-muted">No backups created yet.</p>
+                  ) : (
+                    <div>
+                      {backupHistory.map((backup, index) => (
+                        <div key={index} className="d-flex justify-content-between align-items-center border-bottom py-2">
+                          <div>
+                            <strong>{backup.type}</strong> - {backup.filename}
+                          </div>
+                          <small className="text-muted">{backup.timestamp}</small>
                         </div>
-                        <small className="text-muted">{backup.timestamp}</small>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                      ))}
+                    </div>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
 
-        {/* Progress Modal */}
-        <Modal show={showProgressModal} backdrop="static" centered>
-          <Modal.Header>
-            <Modal.Title>Creating Backup</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="text-center">
-              <h5>Backing up: {currentBackup}</h5>
-              <ProgressBar 
-                now={backupProgress} 
-                label={`${backupProgress}%`} 
-                className="mt-3"
-                style={{ height: '25px' }}
-              />
-              <p className="mt-2 text-muted">
-                Please wait while we create your backup...
-              </p>
-            </div>
-          </Modal.Body>
-        </Modal>
-      </Container>
+          {/* Progress Modal */}
+          <Modal show={showProgressModal} backdrop="static" centered>
+            <Modal.Header>
+              <Modal.Title>Creating Backup</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="text-center">
+                <h5>Backing up: {currentBackup}</h5>
+                <ProgressBar
+                  now={backupProgress}
+                  label={`${backupProgress}%`}
+                  className="mt-3"
+                  style={{ height: '25px' }}
+                />
+                <p className="mt-2 text-muted">
+                  Please wait while we create your backup...
+                </p>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </Container>
+      </div>
     </div>
   );
 };
