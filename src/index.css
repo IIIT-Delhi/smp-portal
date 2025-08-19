@@ -1,0 +1,104 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+/* Import our custom theme */
+@import './styles/theme.css';
+
+/* Bootstrap CSS (keep existing functionality) */
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+/* Global Reset and Base Styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--light-gray);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Override Bootstrap with our theme colors */
+.btn-primary {
+  background-color: var(--orange-highlight) !important;
+  border-color: var(--orange-highlight) !important;
+}
+
+.btn-primary:hover {
+  background-color: #e55a00 !important;
+  border-color: #e55a00 !important;
+}
+
+.btn-secondary {
+  background-color: var(--accent-blue) !important;
+  border-color: var(--accent-blue) !important;
+}
+
+.btn-secondary:hover {
+  background-color: #004494 !important;
+  border-color: #004494 !important;
+}
+
+.btn-outline-primary {
+  color: var(--orange-highlight) !important;
+  border-color: var(--orange-highlight) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--orange-highlight) !important;
+  border-color: var(--orange-highlight) !important;
+}
+
+.btn-outline-secondary {
+  color: var(--accent-blue) !important;
+  border-color: var(--accent-blue) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--accent-blue) !important;
+  border-color: var(--accent-blue) !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-blue);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark-blue);
+}
+
+/* Focus styles for accessibility */
+*:focus {
+  outline: 2px solid var(--orange-highlight);
+  outline-offset: 2px;
+}
+
+/* Selection styles */
+::selection {
+  background-color: rgba(255, 111, 0, 0.2);
+  color: var(--primary-dark-blue);
+}

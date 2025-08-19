@@ -1,67 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import iiitdLogo from "../../images/iiitd_logo_colour.png";
 
 const Navbar = () => {
   const { userDetails, logout } = useAuth();
-  const role = userDetails?.role;
-  const navStyle = {
-    // backgroundColor: "#3fada8",
-    backgroundColor: "white",
-    padding: "0.5rem 1rem",
-    display: "flex",
-    justifyContent: "space-between", // Align items horizontally
-    alignItems: "center", // Align items vertical
-    borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)", // Add shadow near the bottom border
-  };
-
-  const listStyle = {
-    listStyle: "none",
-    display: "flex",
-    gap: "20px",
-  };
-
-  const linkStyle = {
-    color: "black",
-    fontWeight: 500,
-    fontSize: 15,
-    textDecoration: "none",
-    position: "relative", // Add position relative to create space for the underline
-    transition: "color 0.3s ease", // Add transition for smooth effect
-    borderRadius: "10px",
-    marginRight: "15px",
-  };
-
-  const underlineStyle = {
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    width: "100%",
-    height: "2px",
-    backgroundColor: "#3fad88", // Green color for the underline
-    transition: "transform 0.3s ease", // Add transition for smooth effect
-    transformOrigin: "center", // Center the transform origin for smoother animation
-    transform: "scaleX(0)", // Initially hide the underline
-  };
-
-  const handleMouseEnter = (e) => {
-    const underline = e.target.querySelector(".underline");
-    if (underline) underline.style.transform = "scaleX(1)";
-  };
-
-  const handleMouseLeave = (e) => {
-    const underline = e.target.querySelector(".underline");
-    if (underline) underline.style.transform = "scaleX(0)";
-  };
-
-  const activeLinkStyle = {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-  };
-
-  // const history = useHistory();
   const navigate = useNavigate();
+  const role = userDetails?.role;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const handleLogout = () => {
     const confirmLogout = window.confirm("Are you sure you want to log out?");
     if (confirmLogout) {
@@ -70,145 +17,372 @@ const Navbar = () => {
     }
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <nav className="navbar navbar-expand navbar-dark" style={navStyle}>
-      <img
-        className="navbar-brand"
-        src={iiitdLogo}
-        alt="IIITD Logo"
-        style={{ width: "250px", marginRight: "10px" }}
-      />
-      <ul className="navbar-nav ml-auto">
-        {userDetails?.id !== -1 &&
-          ((role === "mentor" && userDetails?.status === 5) ||
-            role === "admin" ||
-            role === "mentee") && (
-            <>
-              <li className="nav-item" style={listStyle}>
-                <NavLink
-                  to={`/users/${role}/profile`}
-                  className="nav-link"
-                  style={linkStyle}
-                  activestyle={activeLinkStyle}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  PROFILE
-                  <div className="underline" style={underlineStyle}></div>
-                  <div className="underline" style={underlineStyle}></div>
-                </NavLink>
-              </li>
+    <nav className="navbar navbar-expand-lg" style={{
+      backgroundColor: "var(--white)",
+      borderBottom: "1px solid var(--border-light)",
+      boxShadow: "0 2px 8px var(--shadow-light)",
+      padding: "0.75rem 0",
+      position: "sticky",
+      top: 0,
+      zIndex: 1000
+    }}>
+      <div className="container">
+        {/* Brand */}
+        <NavLink to={`/users/${role}/profile`} className="navbar-brand d-flex align-items-center">
+          <img 
+            src={iiitdLogo} 
+            alt="IIIT Delhi Logo" 
+            style={{ 
+              height: "45px", 
+              width: "auto",
+              marginRight: "12px"
+            }}
+          />
+          <span style={{
+            fontSize: "1.25rem",
+            fontWeight: "600",
+            color: "var(--primary-dark-blue)",
+            display: window.innerWidth > 768 ? "inline" : "none"
+          }}>
+            SMP Portal
+          </span>
+        </NavLink>
+
+        {/* Mobile menu toggle */}
+        <button 
+          className="navbar-toggler d-lg-none"
+          type="button"
+          onClick={toggleMenu}
+          style={{
+            border: "none",
+            background: "none",
+            padding: "0.5rem",
+            borderRadius: "8px"
+          }}
+        >
+          <span style={{
+            display: "block",
+            width: "25px",
+            height: "3px",
+            backgroundColor: "var(--primary-dark-blue)",
+            margin: "3px 0",
+            borderRadius: "2px",
+            transition: "0.3s"
+          }}></span>
+          <span style={{
+            display: "block",
+            width: "25px",
+            height: "3px",
+            backgroundColor: "var(--primary-dark-blue)",
+            margin: "3px 0",
+            borderRadius: "2px",
+            transition: "0.3s"
+          }}></span>
+          <span style={{
+            display: "block",
+            width: "25px",
+            height: "3px",
+            backgroundColor: "var(--primary-dark-blue)",
+            margin: "3px 0",
+            borderRadius: "2px",
+            transition: "0.3s"
+          }}></span>
+        </button>
+
+        {/* Navigation Links */}
+        <div className={`navbar-collapse ${isMenuOpen ? 'show' : 'collapse'}`}>
+          <ul className="navbar-nav ms-auto d-flex align-items-center gap-2">
+            {userDetails?.id !== -1 &&
+              ((role === "mentor" && userDetails?.status === 5) ||
+                role === "admin" ||
+                role === "mentee") && (
+                <>
+                  {/* Profile Link */}
+                  <li className="nav-item">
+                    <NavLink
+                      to={`/users/${role}/profile`}
+                      className="nav-link"
+                      style={{
+                        color: "var(--text-primary)",
+                        textDecoration: "none",
+                        fontWeight: "500",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        transition: "all 0.3s ease",
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "rgba(0, 85, 164, 0.05)";
+                        e.target.style.color = "var(--accent-blue)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "transparent";
+                        e.target.style.color = "var(--text-primary)";
+                      }}
+                    >
+                      <span>👤</span>
+                      Profile
+                    </NavLink>
+                  </li>
+
+                  {/* Meetings Link */}
+                  <li className="nav-item">
+                    <NavLink
+                      to={`/users/${role}/Meetings`}
+                      className="nav-link"
+                      style={{
+                        color: "var(--text-primary)",
+                        textDecoration: "none",
+                        fontWeight: "500",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        transition: "all 0.3s ease",
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "rgba(0, 85, 164, 0.05)";
+                        e.target.style.color = "var(--accent-blue)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "transparent";
+                        e.target.style.color = "var(--text-primary)";
+                      }}
+                    >
+                      <span>📅</span>
+                      Meetings
+                    </NavLink>
+                  </li>
+                </>
+              )}
+
+            {/* Role-specific navigation */}
+            {role === "mentee" && (
               <li className="nav-item">
                 <NavLink
-                  to={`/users/${role}/Meetings`}
+                  to={`/users/${role}/form`}
                   className="nav-link"
-                  style={linkStyle}
-                  activestyle={activeLinkStyle}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
+                  style={{
+                    color: "var(--text-primary)",
+                    textDecoration: "none",
+                    fontWeight: "500",
+                    padding: "8px 16px",
+                    borderRadius: "8px",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "rgba(0, 85, 164, 0.05)";
+                    e.target.style.color = "var(--accent-blue)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.color = "var(--text-primary)";
+                  }}
                 >
-                  MEETINGS
-                  <div className="underline" style={underlineStyle}></div>
-                  <div className="underline" style={underlineStyle}></div>
+                  <span>📝</span>
+                  Feedback
                 </NavLink>
               </li>
-            </>
-          )}
-        {role === "mentee" && (
-          <>
-            <li className="nav-item">
-              <NavLink
-                to={`/users/${role}/form`}
-                className="nav-link"
-                style={linkStyle}
-                activestyle={activeLinkStyle}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                FEEDBACK FORM
-                <div className="underline" style={underlineStyle}></div>
-              </NavLink>
-            </li>
-            {/* Add more mentee-specific tabs here */}
-          </>
-        )}
-        {role === "mentor" && <>{/* Add more mentor-specific tabs here */}</>}
-        {role === "admin" && (
-          <>
-            <li className="nav-item">
-              <NavLink
-                to={`/users/${role}/mentors`}
-                className="nav-link"
-                style={linkStyle}
-                activestyle={activeLinkStyle}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                MENTORS
-                <div className="underline" style={underlineStyle}></div>
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                to={`/users/${role}/mentees`}
-                className="nav-link"
-                style={linkStyle}
-                activestyle={activeLinkStyle}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                MENTEES
-                <div className="underline" style={underlineStyle}></div>
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                to={`/users/${role}/form`}
-                className="nav-link"
-                style={linkStyle}
-                activestyle={activeLinkStyle}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                FORMS
-                <div className="underline" style={underlineStyle}></div>
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                to={`/users/${role}/form-management`}
-                className="nav-link"
-                style={linkStyle}
-                activestyle={activeLinkStyle}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                FORM MANAGEMENT
-                <div className="underline" style={underlineStyle}></div>
-              </NavLink>
-            </li>
-            {/* Add more admin-specific tabs here */}
-          </>
-        )}
-        {role && (
-          <li
-            className="nav-item"
-            style={linkStyle}
-            activestyle={activeLinkStyle}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-          >
-            <button
-              className="btn btn-link nav-link"
-              style={{ color: "black", textDecoration: "none" }}
-              onClick={handleLogout}
-            >
-              LOGOUT
-              <div className="underline" style={underlineStyle}></div>
-            </button>
-          </li>
-        )}
-      </ul>
+            )}
+
+            {role === "admin" && (
+              <>
+                <li className="nav-item">
+                  <NavLink
+                    to={`/users/${role}/mentors`}
+                    className="nav-link"
+                    style={{
+                      color: "var(--text-primary)",
+                      textDecoration: "none",
+                      fontWeight: "500",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      transition: "all 0.3s ease",
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "rgba(0, 85, 164, 0.05)";
+                      e.target.style.color = "var(--accent-blue)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.color = "var(--text-primary)";
+                    }}
+                  >
+                    <span>🎓</span>
+                    Mentors
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    to={`/users/${role}/mentees`}
+                    className="nav-link"
+                    style={{
+                      color: "var(--text-primary)",
+                      textDecoration: "none",
+                      fontWeight: "500",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      transition: "all 0.3s ease",
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "rgba(0, 85, 164, 0.05)";
+                      e.target.style.color = "var(--accent-blue)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.color = "var(--text-primary)";
+                    }}
+                  >
+                    <span>👩‍🎓</span>
+                    Mentees
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    to={`/users/${role}/form`}
+                    className="nav-link"
+                    style={{
+                      color: "var(--text-primary)",
+                      textDecoration: "none",
+                      fontWeight: "500",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      transition: "all 0.3s ease",
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "rgba(0, 85, 164, 0.05)";
+                      e.target.style.color = "var(--accent-blue)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.color = "var(--text-primary)";
+                    }}
+                  >
+                    <span>📋</span>
+                    Forms
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    to={`/users/${role}/form-management`}
+                    className="nav-link"
+                    style={{
+                      color: "var(--text-primary)",
+                      textDecoration: "none",
+                      fontWeight: "500",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      transition: "all 0.3s ease",
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "rgba(0, 85, 164, 0.05)";
+                      e.target.style.color = "var(--accent-blue)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.color = "var(--text-primary)";
+                    }}
+                  >
+                    <span>⚙️</span>
+                    Manage
+                  </NavLink>
+                </li>
+              </>
+            )}
+
+            {/* User Profile & Logout */}
+            {role && (
+              <li className="nav-item dropdown">
+                <div className="d-flex align-items-center gap-3 ms-3">
+                  {/* User Avatar */}
+                  <div 
+                    className="user-avatar"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      backgroundColor: "var(--accent-blue)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "white",
+                      fontWeight: "600",
+                      fontSize: "0.875rem",
+                      border: "2px solid var(--border-light)",
+                      cursor: "pointer"
+                    }}
+                    title={userDetails?.name || userDetails?.email}
+                  >
+                    {userDetails?.name ? userDetails.name.charAt(0).toUpperCase() : 
+                     userDetails?.email ? userDetails.email.charAt(0).toUpperCase() : '?'}
+                  </div>
+
+                  {/* Logout Button */}
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      backgroundColor: "transparent",
+                      border: "2px solid var(--accent-blue)",
+                      color: "var(--accent-blue)",
+                      padding: "6px 16px",
+                      borderRadius: "8px",
+                      fontWeight: "500",
+                      cursor: "pointer",
+                      transition: "all 0.3s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "var(--accent-blue)";
+                      e.target.style.color = "white";
+                      e.target.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                      e.target.style.color = "var(--accent-blue)";
+                      e.target.style.transform = "translateY(0)";
+                    }}
+                  >
+                    <span>🚪</span>
+                    Logout
+                  </button>
+                </div>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
     </nav>
   );
 };
