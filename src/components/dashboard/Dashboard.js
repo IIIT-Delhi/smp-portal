@@ -558,8 +558,8 @@ const Dashboard = () => {
                     src={userData?.mentorImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.mentorName || 'Mentor')}&background=FF6F00&color=fff&size=100`}
                     alt="Mentor Profile"
                     style={{
-                      width: "80px",
-                      height: "80px",
+                      width: "50px",
+                      height: "50px",
                       borderRadius: "50%",
                       objectFit: "cover",
                       border: "3px solid var(--white)",
@@ -582,7 +582,7 @@ const Dashboard = () => {
 
             {userDetails.role === "mentee" && userData?.mentorId === "NULL" && (
               <Card>
-                <Card.Body className="text-center">
+                <Card.Body className="text-center" style={{ minHeight: "305px" }}>
                   <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
                   <h6 className="mb-2" style={{ color: "var(--warning)" }}>Mentor Not Assigned</h6>
                   <p className="text-muted small mb-0">

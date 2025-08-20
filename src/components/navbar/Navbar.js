@@ -84,7 +84,7 @@ const Navbar = () => {
   return (
     <>
       {/* Mobile Menu Toggle Button */}
-      {isMobile && (
+      {isMobile && !isMenuOpen && (
         <button
           className="mobile-menu-toggle"
           onClick={toggleMenu}
@@ -149,32 +149,63 @@ const Navbar = () => {
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
             display: "flex",
             alignItems: "center",
-            justifyContent: isMenuOpen ? "flex-start" : "center",
+            justifyContent: isMenuOpen ? "space-between" : "center",
             gap: "12px",
             minHeight: "70px"
           }}
         >
-          {!isMenuOpen && (
-            <span style={{
-              fontSize: "1.1rem",
-              fontWeight: "600",
-              color: "white",
-              whiteSpace: "nowrap",
-              overflow: "hidden"
-            }}>
-              SMP
-            </span>
-          )}
-          {isMenuOpen && (
-            <span style={{
-              fontSize: "1.1rem",
-              fontWeight: "600",
-              color: "white",
-              whiteSpace: "nowrap",
-              overflow: "hidden"
-            }}>
-              SMP Portal
-            </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            {!isMenuOpen && (
+              <span style={{
+                fontSize: "1.1rem",
+                fontWeight: "600",
+                color: "white",
+                whiteSpace: "nowrap",
+                overflow: "hidden"
+              }}>
+                SMP
+              </span>
+            )}
+            {isMenuOpen && (
+              <span style={{
+                fontSize: "1.1rem",
+                fontWeight: "600",
+                color: "white",
+                whiteSpace: "nowrap",
+                overflow: "hidden"
+              }}>
+                SMP Portal
+              </span>
+            )}
+          </div>
+
+          {/* Close button for mobile */}
+          {isMobile && isMenuOpen && (
+            <button
+              onClick={closeMenu}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "white",
+                fontSize: "1.5rem",
+                cursor: "pointer",
+                padding: "4px",
+                borderRadius: "4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "32px",
+                height: "32px"
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "transparent";
+              }}
+            >
+              ✕
+            </button>
           )}
         </div>
 
