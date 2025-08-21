@@ -1,0 +1,257 @@
+/* Navbar Styles */
+.navbar {
+    --primary-dark-blue: #003262;
+    --accent-blue: #0055A4;
+    --white: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-light: #e9ecef;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+}
+
+/* Hamburger Menu Animation */
+.hamburger-menu {
+    position: relative;
+    width: 24px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.hamburger-line {
+    display: block;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background-color: var(--primary-dark-blue);
+    border-radius: 2px;
+    transition: 0.25s ease-in-out;
+}
+
+.hamburger-line:nth-child(1) {
+    top: 0px;
+}
+
+.hamburger-line:nth-child(2) {
+    top: 7px;
+}
+
+.hamburger-line:nth-child(3) {
+    top: 14px;
+}
+
+/* Active state */
+.hamburger-menu.active .hamburger-line:nth-child(1) {
+    top: 7px;
+    transform: rotate(135deg);
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+    left: -60px;
+}
+
+.hamburger-menu.active .hamburger-line:nth-child(3) {
+    top: 7px;
+    transform: rotate(-135deg);
+}
+
+/* Slide-out menu */
+.slide-menu {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    height: 100vh;
+    width: 280px;
+    background-color: var(--white);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease-in-out;
+    z-index: 1000;
+    padding-top: 80px;
+    border-left: 1px solid var(--border-light);
+}
+
+.slide-menu.open {
+    right: 0;
+}
+
+/* Menu overlay */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Navigation items hover effects */
+.nav-item-slide {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 85, 164, 0.05), transparent);
+    transition: left 0.5s;
+}
+
+.nav-item-slide:hover::before {
+    left: 100%;
+}
+
+.nav-item-slide:hover {
+    background-color: rgba(0, 85, 164, 0.05);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+    transform: translateX(5px);
+}
+
+/* User avatar animation */
+.user-avatar {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.user-avatar::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid var(--accent-blue);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+.user-avatar:hover::after {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Logout button animation */
+.logout-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.logout-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--accent-blue);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.logout-button:hover::before {
+    left: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .slide-menu {
+        width: 250px;
+        right: -250px;
+    }
+
+    .slide-menu.open {
+        right: 0;
+    }
+}
+
+/* Active nav link styling */
+.nav-item-slide.active {
+    background-color: rgba(0, 85, 164, 0.1);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.nav-item-slide.active::before {
+    background: linear-gradient(90deg, transparent, rgba(0, 85, 164, 0.1), transparent);
+}
+
+/* Sidebar Responsive Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 70px;
+    background: linear-gradient(135deg, var(--primary-dark-blue) 0%, var(--accent-blue) 100%);
+    transition: width 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar:hover {
+    width: 240px;
+}
+
+/* Mobile responsive adjustments for sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease, width 0.3s ease;
+    }
+
+    .sidebar.mobile-open {
+        width: 240px;
+        transform: translateX(0);
+    }
+
+    /* Mobile hamburger button */
+    .mobile-menu-toggle {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background: var(--primary-dark-blue);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        display: block;
+    }
+
+    /* Hide mobile button on desktop */
+    @media (min-width: 769px) {
+        .mobile-menu-toggle {
+            display: none;
+        }
+    }
+}

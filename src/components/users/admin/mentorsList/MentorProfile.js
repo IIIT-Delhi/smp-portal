@@ -28,7 +28,7 @@ const MentorProfile = ({ mentor, onClose }) => {
         });
     }
   }, [mentor]);
-  
+
 
   const saveRemarks = async () => {
     try {
@@ -128,7 +128,7 @@ const MentorProfile = ({ mentor, onClose }) => {
               </div>
               <div className="col-md-8">
                 <h5>Mentees:</h5>
-                <table className="table table-bordered">
+                <table className="table table-hover">
                   <thead>
                     <tr>
                       <th>Name</th>

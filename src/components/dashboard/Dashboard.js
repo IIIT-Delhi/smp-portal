@@ -10,14 +10,165 @@ const Dashboard = () => {
   const { userDetails } = useAuth();
   const [userData, setUserData] = useState(null);
   const [assignedMentees, setAssignedMentees] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState({});
   const [loading, setLoading] = useState(true);
-  
+
   const schema = {
     id: "",
     name: "",
     email: "",
     contact: "",
     department: "",
+  };
+
+  // Fetch dashboard statistics based on role
+  const fetchDashboardStats = async () => {
+    try {
+      switch (userDetails.role) {
+        case "admin":
+          try {
+            const [mentorsRes, menteesRes, meetingsRes] = await Promise.all([
+              axios.get("http://localhost:8000/api/getAllMentors/"),
+              axios.get("http://localhost:8000/api/getAllMentees/"),
+              axios.post("http://localhost:8000/api/getMeetings/", {
+                role: "admin",
+                id: userDetails.id
+              })
+            ]);
+
+            const mentorsData = Array.isArray(mentorsRes.data) ? mentorsRes.data : JSON.parse(mentorsRes.data);
+            const menteesData = Array.isArray(menteesRes.data) ? menteesRes.data : JSON.parse(menteesRes.data);
+            const meetingsData = Array.isArray(meetingsRes.data) ? meetingsRes.data : JSON.parse(meetingsRes.data);
+
+            // Count active pairs (mentees with assigned mentors)
+            const activePairs = menteesData.filter(mentee => mentee.mentorId && mentee.mentorId !== "NULL").length;
+
+            // Count this week's meetings
+            const currentWeek = new Date();
+            const weekStart = new Date(currentWeek.setDate(currentWeek.getDate() - currentWeek.getDay()));
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+
+            // Handle both array of meetings and categorized meetings object
+            let allMeetings = [];
+            if (meetingsData.upcomingMeeting && meetingsData.previousMeeting) {
+              allMeetings = [...meetingsData.upcomingMeeting, ...meetingsData.previousMeeting];
+            } else if (Array.isArray(meetingsData)) {
+              allMeetings = meetingsData;
+            }
+
+            const thisWeekMeetings = allMeetings.filter(meeting => {
+              const meetingDate = new Date(meeting.date);
+              return meetingDate >= weekStart && meetingDate <= weekEnd;
+            }).length;
+
+            setDashboardStats({
+              totalMentors: mentorsData.length,
+              totalMentees: menteesData.length,
+              activePairs: activePairs,
+              thisWeekMeetings: thisWeekMeetings
+            });
+          } catch (error) {
+            console.error("Error fetching admin data:", error);
+            setDashboardStats({
+              totalMentors: 0,
+              totalMentees: 0,
+              activePairs: 0,
+              thisWeekMeetings: 0
+            });
+          }
+          break;
+
+        case "mentee":
+          // Fetch meetings for mentee
+          const menteeId = userDetails.id;
+          try {
+            const [menteeMeetingsRes, feedbackRes] = await Promise.all([
+              axios.post("http://localhost:8000/api/getMeetings/", {
+                role: "mentee",
+                id: menteeId
+              }),
+              axios.post("http://localhost:8000/api/checkFeedbackSubmission/", {
+                menteeId: menteeId
+              })
+            ]);
+
+            const menteeMeetingsData = menteeMeetingsRes.data;
+
+            // Handle both array of meetings and categorized meetings object
+            let allMeetings = [];
+            if (menteeMeetingsData.upcomingMeeting && menteeMeetingsData.previousMeeting) {
+              allMeetings = [...menteeMeetingsData.upcomingMeeting, ...menteeMeetingsData.previousMeeting];
+            } else if (Array.isArray(menteeMeetingsData)) {
+              allMeetings = menteeMeetingsData;
+            }
+
+            // Count attended meetings (assuming past meetings are attended)
+            const attendedMeetings = allMeetings.filter(meeting => new Date(meeting.date) < new Date()).length;
+
+            // Get feedback forms count
+            const feedbackCount = Array.isArray(feedbackRes.data) ? feedbackRes.data.length : 0;
+
+            setDashboardStats({
+              attendedMeetings: attendedMeetings,
+              feedbackForms: feedbackCount
+            });
+          } catch (error) {
+            console.error("Error fetching mentee data:", error);
+            setDashboardStats({
+              attendedMeetings: 0,
+              feedbackForms: 0
+            });
+          }
+          break;
+
+        case "mentor":
+          // Fetch mentor's mentees and meetings
+          const mentorId = userDetails.id;
+          try {
+            const mentorMeetingsRes = await axios.post("http://localhost:8000/api/getMeetings/", {
+              role: "mentor",
+              id: mentorId
+            });
+            const mentorMeetingsData = mentorMeetingsRes.data;
+
+            // Handle both array of meetings and categorized meetings object
+            let allMeetings = [];
+            if (mentorMeetingsData.upcomingMeeting && mentorMeetingsData.previousMeeting) {
+              allMeetings = [...mentorMeetingsData.upcomingMeeting, ...mentorMeetingsData.previousMeeting];
+            } else if (Array.isArray(mentorMeetingsData)) {
+              allMeetings = mentorMeetingsData;
+            }
+
+            // Get assigned mentees count from the user data that should be fetched
+            const assignedMenteesCount = assignedMentees.length;
+
+            // Count upcoming meetings
+            const upcomingMeetings = allMeetings.filter(meeting => new Date(meeting.date) > new Date()).length;
+
+            setDashboardStats({
+              assignedMentees: assignedMenteesCount,
+              upcomingMeetings: upcomingMeetings,
+              totalMeetings: allMeetings.length
+            });
+          } catch (error) {
+            console.error("Error fetching mentor data:", error);
+            setDashboardStats({
+              assignedMentees: assignedMentees.length,
+              upcomingMeetings: 0,
+              totalMeetings: 0
+            });
+          }
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      // Set default values on error
+      setDashboardStats({});
+    }
   };
 
   const fetchAttributeId = async (id) => {
@@ -51,7 +202,7 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      
+
       if (userDetails.role === "mentor") {
         try {
           const userDataTemp = await fetchAttributeId(userDetails.id);
@@ -89,7 +240,10 @@ const Dashboard = () => {
       } else {
         setUserData(userDetails);
       }
-      
+
+      // Fetch dashboard statistics for all roles
+      await fetchDashboardStats();
+
       setLoading(false);
     };
 
@@ -97,26 +251,26 @@ const Dashboard = () => {
   }, [userDetails]); // Added userDetails as dependency
 
   // Dashboard stats for different roles
-  const getDashboardStats = () => {
+  const getDashboardData = () => {
     switch (userDetails.role) {
       case "mentor":
         return [
           {
             title: "Assigned Mentees",
-            value: userData?.menteesToMentors?.length || 0,
-            icon: "👩‍🎓",
+            value: dashboardStats.assignedMentees || assignedMentees.length,
+            icon: "�",
             color: "var(--accent-blue)"
           },
           {
-            title: "Total Meetings",
-            value: "12", // This should come from API
+            title: "Upcoming Meetings",
+            value: dashboardStats.upcomingMeetings || "0",
             icon: "📅",
             color: "var(--orange-highlight)"
           },
           {
-            title: "This Month",
-            value: "3", // This should come from API
-            icon: "📊",
+            title: "Total Meetings",
+            value: dashboardStats.totalMeetings || "0",
+            icon: "✅",
             color: "var(--success)"
           }
         ];
@@ -130,13 +284,13 @@ const Dashboard = () => {
           },
           {
             title: "Meetings Attended",
-            value: "8", // This should come from API
+            value: dashboardStats.attendedMeetings || "0",
             icon: "✅",
             color: "var(--accent-blue)"
           },
           {
             title: "Feedback Forms",
-            value: "2", // This should come from API
+            value: dashboardStats.feedbackForms || "0",
             icon: "📝",
             color: "var(--orange-highlight)"
           }
@@ -145,25 +299,25 @@ const Dashboard = () => {
         return [
           {
             title: "Total Mentors",
-            value: "45", // This should come from API
+            value: dashboardStats.totalMentors || "0",
             icon: "🎓",
             color: "var(--accent-blue)"
           },
           {
             title: "Total Mentees",
-            value: "120", // This should come from API
+            value: dashboardStats.totalMentees || "0",
             icon: "👩‍🎓",
             color: "var(--orange-highlight)"
           },
           {
             title: "Active Pairs",
-            value: "38", // This should come from API
+            value: dashboardStats.activePairs || "0",
             icon: "👥",
             color: "var(--success)"
           },
           {
             title: "This Week Meetings",
-            value: "15", // This should come from API
+            value: dashboardStats.thisWeekMeetings || "0",
             icon: "📅",
             color: "var(--primary-dark-blue)"
           }
@@ -177,9 +331,9 @@ const Dashboard = () => {
     return (
       <div>
         <Navbar />
-        <Loading 
-          fullScreen 
-          text="Loading your dashboard..." 
+        <Loading
+          fullScreen
+          text="Loading your dashboard..."
           size="lg"
         />
       </div>
@@ -189,8 +343,15 @@ const Dashboard = () => {
   return (
     <div style={{ backgroundColor: "var(--light-gray)", minHeight: "100vh" }}>
       <Navbar />
-      
-      <div className="container py-4">
+
+      <div
+        className="container py-4"
+        style={{
+          marginLeft: "70px",
+          paddingTop: "80px !important",
+          transition: "margin-left 0.3s ease"
+        }}
+      >
         {/* Page Header */}
         <div className="row mb-4">
           <div className="col-12">
@@ -222,8 +383,8 @@ const Dashboard = () => {
         </div>
 
         {/* Dashboard Stats Cards */}
-        <div className="row mb-4">
-          {getDashboardStats().map((stat, index) => (
+        {/* <div className="row mb-4">
+          {getDashboardData().map((stat, index) => (
             <div key={index} className="col-lg-3 col-md-6 mb-3">
               <DashboardCard
                 title={stat.title}
@@ -233,7 +394,7 @@ const Dashboard = () => {
               />
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Main Content */}
         <div className="row">
@@ -286,7 +447,7 @@ const Dashboard = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="mb-3">
                         <div className="row">
                           <div className="col-sm-4">
@@ -341,7 +502,7 @@ const Dashboard = () => {
                               </div>
                             </>
                           )}
-                          
+
                           <div className="mb-3">
                             <div className="row">
                               <div className="col-sm-4">
@@ -397,8 +558,8 @@ const Dashboard = () => {
                     src={userData?.mentorImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.mentorName || 'Mentor')}&background=FF6F00&color=fff&size=100`}
                     alt="Mentor Profile"
                     style={{
-                      width: "80px",
-                      height: "80px",
+                      width: "50px",
+                      height: "50px",
                       borderRadius: "50%",
                       objectFit: "cover",
                       border: "3px solid var(--white)",
@@ -421,7 +582,7 @@ const Dashboard = () => {
 
             {userDetails.role === "mentee" && userData?.mentorId === "NULL" && (
               <Card>
-                <Card.Body className="text-center">
+                <Card.Body className="text-center" style={{ minHeight: "305px" }}>
                   <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
                   <h6 className="mb-2" style={{ color: "var(--warning)" }}>Mentor Not Assigned</h6>
                   <p className="text-muted small mb-0">

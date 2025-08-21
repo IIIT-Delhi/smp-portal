@@ -509,7 +509,7 @@ const MtechMentorsList = () => {
         >
           <div className="table-body">
             <table
-              className="table table-bordered table-hover mb-4 mx-2"
+              className="table table-hover mb-4 mx-2"
               border="1"
             >
               <thead
