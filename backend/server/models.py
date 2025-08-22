@@ -37,6 +37,7 @@ class Mentee(models.Model):
     contact = models.CharField(null=False, max_length=20)  # Ensure contact is not null
     imgSrc = models.TextField()  # Ensure imgSrc is not null
     mentorId = models.CharField(max_length=50)  # Ensure mentorId is not null
+    first_login_completed = models.BooleanField(default=False)  # Track if initial setup is completed
 
     def __str__(self):
         return self.id

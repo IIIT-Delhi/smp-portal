@@ -3,15 +3,17 @@ import Navbar from "../navbar/Navbar";
 import { useAuth } from "../../context/AuthContext";
 import Table from "../Table";
 import { DashboardCard, Loading, Card } from "../ui";
+import InitialSetup from "../mentee/InitialSetup";
 import axios from "axios";
 import deparmentOptions from "../../data/departmentOptions.json";
 
 const Dashboard = () => {
-  const { userDetails } = useAuth();
+  const { userDetails, setUserDetails } = useAuth();
   const [userData, setUserData] = useState(null);
   const [assignedMentees, setAssignedMentees] = useState([]);
   const [dashboardStats, setDashboardStats] = useState({});
   const [loading, setLoading] = useState(true);
+  const [showInitialSetup, setShowInitialSetup] = useState(false);
 
   const schema = {
     id: "",
@@ -89,7 +91,7 @@ const Dashboard = () => {
                 id: menteeId
               }),
               axios.post("http://localhost:8000/api/checkFeedbackSubmission/", {
-                menteeId: menteeId
+                id: menteeId
               })
             ]);
 
@@ -106,8 +108,8 @@ const Dashboard = () => {
             // Count attended meetings (assuming past meetings are attended)
             const attendedMeetings = allMeetings.filter(meeting => new Date(meeting.date) < new Date()).length;
 
-            // Get feedback forms count
-            const feedbackCount = Array.isArray(feedbackRes.data) ? feedbackRes.data.length : 0;
+            // Get feedback forms count - check if feedback has been submitted
+            const feedbackCount = feedbackRes.data.hasSubmitted ? 1 : 0;
 
             setDashboardStats({
               attendedMeetings: attendedMeetings,
@@ -202,6 +204,23 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
+
+      // Check if mentee needs to complete initial setup
+      if (userDetails.role === "mentee" && userDetails.id !== -1) {
+        try {
+          const response = await axios.post("http://localhost:8000/api/checkFirstLoginStatus/", {
+            id: userDetails.id
+          });
+
+          if (!response.data.first_login_completed) {
+            setShowInitialSetup(true);
+            setLoading(false);
+            return;
+          }
+        } catch (error) {
+          console.error("Error checking first login status:", error);
+        }
+      }
 
       if (userDetails.role === "mentor") {
         try {
@@ -326,6 +345,24 @@ const Dashboard = () => {
         return [];
     }
   };
+
+  const handleSetupComplete = () => {
+    // Update userDetails to reflect completion
+    const updatedUserDetails = {
+      ...userDetails,
+      first_login_completed: true
+    };
+    setUserDetails(updatedUserDetails);
+    localStorage.setItem("userDetails", JSON.stringify(updatedUserDetails));
+    setShowInitialSetup(false);
+    // Reload the page data
+    window.location.reload();
+  };
+
+  // Show initial setup modal for mentees who haven't completed it
+  if (showInitialSetup && userDetails.role === "mentee") {
+    return <InitialSetup userDetails={userDetails} onSetupComplete={handleSetupComplete} />;
+  }
 
   if (loading) {
     return (

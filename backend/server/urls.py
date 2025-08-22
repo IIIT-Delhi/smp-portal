@@ -36,6 +36,10 @@ urlpatterns = [
     path('api/deleteMentorById/', views.delete_mentor_by_id, name='deleteMentorById'),
     path('api/deleteMenteeById/', views.delete_mentee_by_id, name='deleteMenteeById'),
 
+    # Initial setup APIs for mentees
+    path('api/checkFirstLoginStatus/', views.check_first_login_status, name='checkFirstLoginStatus'),
+    path('api/completeInitialSetup/', views.complete_initial_setup, name='completeInitialSetup'),
+
     # Save Mentor Remarks
     path('api/<str:candidate_id>/saveMentorRemarks/', views.save_mentor_remarks, name='saveMentorRemarks'),
 
