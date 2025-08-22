@@ -142,7 +142,7 @@ const AuthButton = () => {
             }}
           >
             <span>👩‍🎓</span>
-            Login as Mentee
+            Mentee Login
           </button>
 
           {/* Mentor Login */}
@@ -161,7 +161,7 @@ const AuthButton = () => {
             }}
           >
             <span>🎓</span>
-            {enrollmentFormStatus == 1 ? "Apply to be Mentor" : "Login as Mentor"}
+            {enrollmentFormStatus == 1 ? "Apply to be Mentor" : "Mentor Login"}
           </button>
 
           {/* Admin Login - Hidden as requested in original code */}
