@@ -15,6 +15,7 @@ import PrivateRoute from "./routes/PrivateRoute";
 import FormResponses from "./components/users/admin/forms/FormResponses";
 import MeetingList from "./components/Meetings/MeetingList";
 import MtechMentorsList from "./components/users/admin/mentorsList/MtechMentorsList";
+import HistoricalData from "./components/admin/HistoricalData";
 
 // Import responsive styles
 import "./styles/responsive.css";
@@ -154,6 +155,17 @@ function App() {
                   allowedRole={"admin"}
                 >
                   <FormResponses />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/users/admin/historical-data"
+              element={
+                <PrivateRoute
+                  path="/users/admin/historical-data"
+                  allowedRole={"admin"}
+                >
+                  <HistoricalData />
                 </PrivateRoute>
               }
             />

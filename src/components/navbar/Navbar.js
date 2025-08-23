@@ -74,7 +74,8 @@ const Navbar = () => {
         { to: `/users/${role}/mentors`, icon: "🎓", label: "Mentors" },
         { to: `/users/${role}/mentees`, icon: "👩‍🎓", label: "Mentees" },
         { to: `/users/${role}/form`, icon: "📋", label: "Forms" },
-        { to: `/users/${role}/form-management`, icon: "⚙️", label: "Manage" }
+        { to: `/users/${role}/form-management`, icon: "⚙️", label: "Manage" },
+        { to: `/users/${role}/historical-data`, icon: "📊", label: "Historical" }
       );
     }
 

@@ -3,6 +3,7 @@ from django.urls import path, include
 import server.view as views
 from server.view import json_form_management_views as json_views
 from server.view import email_schedule_views as email_views
+from server.view import historical_views as historical_views
 
 urlpatterns = [
     path('', views.index, name="home"),
@@ -90,4 +91,10 @@ urlpatterns = [
     path('api/sendTodaysEmails/', email_views.send_todays_emails, name='sendTodaysEmails'),
     path('api/rescheduleFailedEmails/', email_views.reschedule_failed_emails, name='rescheduleFailedEmails'),
     path('api/getEmailLogs/', email_views.get_email_logs, name='getEmailLogs'),
+    
+    # Historical Data APIs
+    path('api/getHistoricalData/', historical_views.get_historical_data, name='getHistoricalData'),
+    path('api/archiveCurrentData/', historical_views.archive_current_data, name='archiveCurrentData'),
+    path('api/getAcademicYears/', historical_views.get_academic_years, name='getAcademicYears'),
+    path('api/getHistoricalStatistics/', historical_views.get_historical_statistics, name='getHistoricalStatistics'),
 ]

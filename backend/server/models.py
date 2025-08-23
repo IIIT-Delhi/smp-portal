@@ -199,3 +199,66 @@ class EmailLog(models.Model):
     class Meta:
         app_label = 'server'
         db_table = 'email_log'
+
+
+class HistoricalData(models.Model):
+    """
+    Model to store historical mentor and mentee data from previous years.
+    This table archives data when new batches are added.
+    """
+    id = models.AutoField(primary_key=True)
+    academic_year = models.CharField(max_length=20)  # e.g., "2024-2025"
+    semester = models.CharField(max_length=20, default="Even")  # "Odd" or "Even"
+    user_type = models.CharField(max_length=10)  # "mentor" or "mentee" or "candidate"
+    user_id = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    email = models.CharField(max_length=100)
+    department = models.CharField(max_length=50)
+    contact = models.CharField(max_length=20, null=True, blank=True)
+    imgSrc = models.TextField(null=True, blank=True)
+    
+    # Mentor specific fields
+    year = models.CharField(max_length=20, null=True, blank=True)  # For mentors
+    score = models.CharField(max_length=20, null=True, blank=True)  # For candidates/mentors
+    status = models.IntegerField(null=True, blank=True)  # For candidates/mentors
+    size = models.CharField(max_length=10, null=True, blank=True)  # For candidates
+    remarks = models.TextField(null=True, blank=True)  # For candidates/mentors
+    
+    # Mentee specific fields  
+    mentorId = models.CharField(max_length=50, null=True, blank=True)  # For mentees
+    first_login_completed = models.BooleanField(default=False)  # For mentees
+    
+    # Archive metadata
+    archived_at = models.DateTimeField(auto_now_add=True)
+    archived_by = models.CharField(max_length=100, null=True, blank=True)  # Admin who archived
+    
+    def __str__(self):
+        return f"{self.academic_year} - {self.user_type} - {self.name}"
+    
+    class Meta:
+        app_label = 'server'
+        db_table = 'historical_data'
+        indexes = [
+            models.Index(fields=['academic_year', 'user_type']),
+            models.Index(fields=['user_type', 'department']),
+        ]
+
+
+class AcademicYear(models.Model):
+    """
+    Model to track academic years and manage current active year.
+    """
+    id = models.AutoField(primary_key=True)
+    year = models.CharField(max_length=20, unique=True)  # e.g., "2024-2025"
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_current = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.year} {'(Current)' if self.is_current else ''}"
+    
+    class Meta:
+        app_label = 'server'
+        db_table = 'academic_year'
+        ordering = ['-year']
