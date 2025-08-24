@@ -1,0 +1,82 @@
+{
+  "questions": [
+    {
+      "id": "rq1",
+      "question": "Q1: Your mentee shared an issue and you offered some suggestions but the mentee criticizes your suggestions, calling them stupid and impractical. What do you do?",
+      "options": [
+        "1. Reprimand the mentee to maintain your respect and authority.",
+        "2. Use humor to communicate with your mentees by laughing off the comment and responding in a manner similar to how the mentee spoke.",
+        "3. Ask the mentee why they found the suggestions stupid and impractical and then revise your suggestions or explain yourself better.",
+        "4. Accept the mentee’s harsh words as constructive criticism and communicate with them more consciously moving forward.",
+        "5. Ignore the comments and keep the atmosphere positive. Steer the conversation in another direction.",
+        "6. Clearly and calmly explain to the mentee why your suggestions are do-able."
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": "rq2",
+      "question": "Q2: Your mentee shares that they have not left their room in days, do not feel like eating and haven’t been able to sleep. What do you do?",
+      "options": [
+        "1. Invite your mentee out for a fun evening, bond with them, and try to understand what is bothering them.",
+        "2. Speak to the mentee and let them know that you’re there for them and can be contacted anytime for any support.",
+        "3. Tell them that everyone gets depressed sometimes and they need to tough it out and emerge strong.",
+        "4. Try reasoning with them about their thoughts and emotions to get them back on track.",
+        "5. Suggest them to visit the Well-being Cell or SMP Faculty for the guidance and support since this isn’t your expertise and you may not be able to properly support them.",
+        "6. Make them aware of their academic and other responsibilities and work that is coming up so they can assess their priorities."
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": "rq3",
+      "question": "Q3: Your mentee wanted to meet you but when you met they were sitting quietly. What do you do?",
+      "options": [
+        "1. Ask them why they wanted to meet and if they wanted to discuss something in particular.",
+        "2. Sit with them in silence until they feel comfortable enough to start talking.",
+        "3. Let them know about the other commitments you have coming up so they start talking.",
+        "4. Start talking about a common topic till they get comfortable enough to share with you.",
+        "5. Direct questions to them about your meeting and your life till you find out what the matter is.",
+        "6. Call other mentees so that the mentee can get comfortable by having their batchmates around and speak openly."
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": "rq4",
+      "question": "Q4: You confront your mentee about their silence and they get uncomfortable and defensive. How do you aid the situation?",
+      "options": [
+        "1. Apologize to your mentee for upsetting them and let them know it won’t happen again.",
+        "2. Ask them if they are feeling uncomfortable to confirm before apologizing or taking any other action.",
+        "3. Wind up the meeting quickly to put an end to the awkward situation for both parties.",
+        "4. Deviate the conversation to another topic and not bring up the reason for meeting again.",
+        "5. You start with neutral conversation with them and then push them to find out more about the issues they may be facing.",
+        "6. Tell them you are just concerned for them and want to discuss with them and for that you expect them to open up."
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": "rq5",
+      "question": "Q5: Your mentee does not seem to be making any friends in their batch and prefers finding you and spending all their time with you. How would you set a boundary if you don’t feel comfortable with this?",
+      "options": [
+        "1. Call a meeting with all mentees and try to help them to start making friends through that group interaction.",
+        "2. Communicate frankly and honestly that you need space and you don’t like their current behavior.",
+        "3. Give them the cold shoulder for a little time till the pattern breaks.",
+        "4. Let things be as they are because they are probably temporary and you do not wish to hurt someone new to college.",
+        "5. Let them know that you really appreciate their company but you’re feeling overwhelmed and offer an alternative like a regular meeting.",
+        "6. Ask your mentee to make friends with their batchmates or they won’t be able to grow."
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "id": "rq6",
+      "question": "Q6: Why do you want to be IIITD Student Mentor?",
+      "options": [
+        "1. I have maintained a good academic and extracurricular record so I think I’d have a lot to offer to the program.",
+        "2. I am keen to pass on the college culture to the new students.",
+        "3. I am inspired by my mentor who helped me adapt to college and learn effectively.",
+        "4. I’m looking for personal growth and development and to add some leadership experience to my resume.",
+        "5. I have had a vast variety of experiences in college and I believe I can really help someone new adapt well.",
+        "6. I’m empathetic and easy to talk to so I’d help juniors assimilate with ease."
+      ],
+      "correctAnswer": 1
+    }
+  ]
+}

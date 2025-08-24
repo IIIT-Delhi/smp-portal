@@ -25,12 +25,12 @@ export const AuthProvider = ({ children }) => {
   const fetchAttributeId = async (email, role) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/getIdByEmail/",
+        "http://localhost:8000/api/getIdByEmail/",
         JSON.stringify({ email: email, role: role })
       );
-  
+
       let userData;
-  
+
       if (typeof response.data === "string") {
         // If response.data is a string, parse it as JSON
         const dataObject = JSON.parse(response.data);
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
         // If response.data is already an object, access id directly
         userData = response.data;
       }
-  
+
       if (userData) {
         // console.log("Attribute ID:", id);
         // Update the userDetails with the retrieved 'id'
@@ -54,17 +54,42 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-   const login = async (user) => {
-     const userData = await fetchAttributeId(user.email, user.role);
-     const updatedUserData = { ...userData, role: user.role };
+  const login = async (user) => {
+    const userData = await fetchAttributeId(user.email, user.role);
+    const updatedUserData = { ...userData, role: user.role, email: user.email };
 
-     setUserDetails(updatedUserData);
+    setUserDetails(updatedUserData);
 
-     // Save user details to localStorage on successful login
-     localStorage.setItem("userDetails", JSON.stringify(updatedUserData));
+    //  if(userDetails.id === -1){
+    //   setUserDetails({...userDetails,email : user.email})
+    //  }
 
-     // Additional logic for different scenarios if needed
-   };
+    // console.log(updatedUserData)
+
+    // Save user details to localStorage on successful login
+    localStorage.setItem("userDetails", JSON.stringify(updatedUserData));
+
+    // Check first login status for mentees
+    if (user.role === 'mentee' && userData.id !== -1) {
+      try {
+        const response = await axios.post("http://localhost:8000/api/checkFirstLoginStatus/", {
+          id: userData.id
+        });
+
+        // Update userDetails with first login status
+        const updatedUserDataWithStatus = {
+          ...updatedUserData,
+          first_login_completed: response.data.first_login_completed
+        };
+        setUserDetails(updatedUserDataWithStatus);
+        localStorage.setItem("userDetails", JSON.stringify(updatedUserDataWithStatus));
+      } catch (error) {
+        console.error("Error checking first login status:", error);
+      }
+    }
+
+    // Additional logic for different scenarios if needed
+  };
 
 
   const logout = () => {
@@ -86,6 +111,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     userDetails,
+    setUserDetails,
     login,
     logout,
   };
