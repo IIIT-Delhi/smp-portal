@@ -16,11 +16,12 @@ const Dashboard = () => {
   const [showInitialSetup, setShowInitialSetup] = useState(false);
 
   const schema = {
-    id: "",
-    name: "",
-    email: "",
-    contact: "",
-    department: "",
+    id: "ID",
+    name: "Name",
+    email: "Email",
+    contact: "Contact",
+    department: "Department",
+    image: "Photo",
   };
 
   // Fetch dashboard statistics based on role
@@ -233,15 +234,53 @@ const Dashboard = () => {
 
             if (menteeDetails.length > 0) {
               const menteeRows = menteeDetails.map((mentee) => {
-                const [id, name, email, contact, department] = mentee;
+                const [id, name, email, contact, department, imgSrc] = mentee;
 
                 return (
                   <tr key={id}>
-                    <td>{id}</td>
-                    <td>{name}</td>
-                    <td>{email}</td>
-                    <td>{contact}</td>
-                    <td>{deparmentOptions[department]}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                      <span>{id}</span>
+                    </td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{name}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{email}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{contact}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{deparmentOptions[department]}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {imgSrc && imgSrc !== 'null' && imgSrc !== '' ? (
+                          <img
+                            src={imgSrc}
+                            alt={`${name}'s profile`}
+                            style={{
+                              width: '50px',
+                              height: '50px',
+                              borderRadius: '50%',
+                              objectFit: 'cover',
+                              border: '2px solid #ddd'
+                            }}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div style={{
+                            width: '50px',
+                            height: '50px',
+                            borderRadius: '50%',
+                            backgroundColor: '#f0f0f0',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: '2px solid #ddd',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            color: '#666'
+                          }}>
+                            {name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 );
               });
